@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block body %}
+
+<h1>复权核对</h1>
+<p class="lede">
+  数据源只给你一个复权价，不告诉你它怎么算的。这一页把每一笔公司行动都拿出来，
+  用数据源自己给的复权价反推出隐含派息，再和它自己上报的派息金额比。
+  两个数字都来自同一个数据源，对不上就是它自己和自己矛盾，不需要任何外部资料就能判定其中一个错了。
+</p>
+
+<div class="tiles">
+  <div class="tile"><div class="k">核对派息笔数</div><div class="v">{{ stats.total }}</div>
+    <div class="sub">涉及 {{ stats.symbols }} 只标的</div></div>
+  <div class="tile"><div class="k">自洽</div><div class="v">{{ stats.ok }}</div>
+    <div class="sub">倍数 1.0000</div></div>
+  <div class="tile"><div class="k">不自洽</div><div class="v">{{ stats.bad }}</div>
+    <div class="sub">需人工判定</div></div>
+  <div class="tile"><div class="k">受影响交易日</div><div class="v">{{ stats.affected_days }}</div>
+    <div class="sub">复权价不可直接使用</div></div>
+</div>
+
+<h2>核对方法</h2>
+<div class="card">
+<p style="margin-top:0">对每一个除权日，做两件事然后比：</p>
+<p><b>一、按公司行动自算复权因子。</b>最新交易日因子取 1，从后往前逐日累乘。
+遇到拆股比例 R 就把更早日期的因子乘 1/R，遇到每股派息 D 就乘（除权前收盘 − D）÷ 除权前收盘。
+口径与 yfinance 的 Adj Close 一致，两者才可比。</p>
+<p><b>二、从数据源的复权价反推它实际扣了多少。</b>取除权日与前一交易日的
+复权价对收盘价之比，两者的变化量乘以除权前收盘，得到隐含派息。</p>
+<p style="margin-bottom:0">如果数据源内部一致，隐含派息应当等于它自己上报的派息金额，倍数为 1.0000。</p>
+</div>
+
+<h2>逐笔核对结果</h2>
+<div class="scroll">
+<table>
+<thead><tr><th>除权日</th><th>代码</th><th>名称</th><th class="num">上报派息</th><th>币种</th>
+  <th class="num">除权前收盘</th><th class="num">复权反推派息</th><th class="num">倍数</th><th>判定</th></tr></thead>
+<tbody>
+{% for r in rows %}
+<tr>
+  <td class="mono">{{ r.ex_date }}</td>
+  <td class="mono dim">{{ r.display_code }}</td>
+  <td class="name"><a href="../stock/{{ r.slug }}.html">{{ r.name }}</a></td>
+  <td class="num">{{ r.amount_fmt }}</td>
+  <td class="dim">{{ r.currency }}</td>
+  <td class="num dim">{{ r.prev_fmt }}</td>
+  <td class="num">{{ r.implied_fmt }}</td>
+  <td class="num {{ 'up' if r.bad }}"><b>{{ r.mult_fmt }}</b></td>
+  <td>{% if r.bad %}<span class="badge open"><span class="dot"></span>不自洽</span>
+      {% else %}<span class="badge ok"><span class="dot"></span>自洽</span>{% endif %}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+<h2>首轮结论</h2>
+<div class="card">
+{{ finding | safe }}
+</div>
+
+{% if affected %}
+<h2>受影响标的的复权价对比</h2>
+{% for a in affected %}
+<h3>{{ a.name }} <span class="dim mono" style="font-weight:400">{{ a.display_code }}</span></h3>
+<div class="legend">
+  <span class="item"><span class="swatch" style="background:var(--series-1)"></span>自算复权价</span>
+  <span class="item"><span class="swatch" style="background:var(--series-2)"></span>数据源复权价</span>
+</div>
+{{ a.chart }}
+<figcaption>{{ a.caption }}</figcaption>
+{% endfor %}
+{% endif %}
+
+{% endblock %}

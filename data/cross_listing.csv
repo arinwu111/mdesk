@@ -1,0 +1,8 @@
+pair_id,symbol_a,symbol_b,ratio,fx_pair,tolerance_pct,note
+BABA-9988,9988.HK,BABA,8,HKDUSD=X,3,1 份 ADS 对应 8 股港股，同一家公司双重主要上市，价差应极小
+XPEV-9868,9868.HK,XPEV,2,HKDUSD=X,3,1 份 ADS 对应 2 股港股，比例待系统核实
+HSBC-0005,0005.HK,HSBC,5,HKDUSD=X,3,1 份 ADS 对应 5 股港股
+TSM-2330,2330.TW,TSM,5,TWDUSD=X,25,ADR 长期对台股有溢价，阈值放宽，监控的是溢价突变而非溢价本身
+MIDEA-AH,0300.HK,000333.SZ,1,CNYHKD=X,60,A+H 溢价属正常现象，此处监控溢价率突变不监控溢价本身
+HENGRUI-AH,1276.HK,600276.SS,1,CNYHKD=X,60,同上
+SMIC-AH,0981.HK,688981.SS,1,CNYHKD=X,120,中芯 A 股长期高溢价，阈值最宽

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>美的集团 · mdesk</title>
+<link rel="stylesheet" href="../static/style.css">
+<style>
+.chartbox { position: relative; }
+.chartbox .tip {
+  position: absolute; top: 6px; transform: translateX(-50%);
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 7px 10px; font-size: 12px; pointer-events: none; opacity: 0;
+  transition: opacity .1s; white-space: nowrap; box-shadow: 0 2px 10px rgba(0,0,0,.10);
+  color: var(--ink);
+}
+.chartbox .tip b { display: block; color: var(--ink-muted); font-weight: 500;
+  font-size: 11px; margin-bottom: 3px; }
+.chartbox .tip span { display: flex; align-items: center; gap: 6px; }
+.chartbox .tip i { width: 9px; height: 2px; border-radius: 1px; flex: none; }
+.chartbox .tip em { font-style: normal; margin-left: auto; padding-left: 14px;
+  font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">mdesk<span>港美股行情数据工作台</span></div>
+    <div class="stamp">数据截至 2026-08-14　生成于 2026-08-16 18:29</div>
+  </div>
+  <nav class="tabs">
+    <span class="group-label">日常</span>
+    <a href="../index.html"       class="on">自选股</a>
+    <a href="../calendar.html"    class="">事件日历</a>
+    <a href="../newlisting.html"  class="">次新股</a>
+    <span class="sep"></span>
+    <span class="group-label">运营</span>
+    <a href="../ops/index.html"      class="">异常清单</a>
+    <a href="../ops/corpaction.html" class="">复权核对</a>
+    <a href="../ops/rules.html"      class="">规则库</a>
+    <a href="../ops/ledger.html"     class="">处理台账</a>
+    <a href="../ops/report.html"     class="">运营报告</a>
+  </nav>
+</header>
+
+<div class="wrap">
+
+
+<h1>美的集团 <span class="dim mono" style="font-weight:400">HK 00300</span></h1>
+<p class="lede">
+  家电　港股　普通股<br>案例价值：A+H，H 股次新，A+H 价差观察
+</p>
+
+<div class="tiles">
+  <div class="tile"><div class="k">最新价</div><div class="v">95.900</div>
+    <div class="sub">HKD　2026-08-14</div></div>
+  <div class="tile"><div class="k">日涨跌</div><div class="v down">-0.52%</div>
+    <div class="sub">较前收盘 96.400</div></div>
+  <div class="tile"><div class="k">市值</div><div class="v">7,316 亿</div>
+    <div class="sub">HKD</div></div>
+  <div class="tile"><div class="k">PE(TTM)</div><div class="v">14.2</div>
+    <div class="sub">有盈利</div></div>
+  <div class="tile"><div class="k">数据质量</div>
+    <div class="v"><span class="badge ok" style="font-size:20px">
+      <span class="dot" style="width:11px;height:11px"></span>正常</span></div>
+    <div class="sub">0 条待查异常</div></div>
+</div>
+
+<h2>复权价走势</h2>
+
+<div class="chartbox" data-chart="{&quot;left&quot;: 56, &quot;right&quot;: 14, &quot;width&quot;: 880, &quot;x&quot;: [&quot;24-10&quot;, &quot;24-10&quot;, &quot;24-10&quot;, &quot;24-10&quot;, &quot;24-10&quot;, &quot;24-10&quot;, &quot;24-10&quot;, &quot;24-10&quot;, &quot;24-10&quot;, &quot;24-10&quot;, &quot;24-10&quot;, &quot;24-10&quot;, &quot;24-10&quot;, &quot;24-10&quot;, &quot;24-10&quot;, &quot;24-10&quot;, &quot;24-10&quot;, &quot;24-10&quot;, &quot;24-10&quot;, &quot;24-10&quot;, &quot;24-10&quot;, &quot;24-11&quot;, &quot;24-11&quot;, &quot;24-11&quot;, &quot;24-11&quot;, &quot;24-11&quot;, &quot;24-11&quot;, &quot;24-11&quot;, &quot;24-11&quot;, &quot;24-11&quot;, &quot;24-11&quot;, &quot;24-11&quot;, &quot;24-11&quot;, &quot;24-11&quot;, &quot;24-11&quot;, &quot;24-11&quot;, &quot;24-11&quot;, &quot;24-11&quot;, &quot;24-11&quot;, &quot;24-11&quot;, &quot;24-11&quot;, &quot;24-11&quot;, &quot;24-12&quot;, &quot;24-12&quot;, &quot;24-12&quot;, &quot;24-12&quot;, &quot;24-12&quot;, &quot;24-12&quot;, &quot;24-12&quot;, &quot;24-12&quot;, &quot;24-12&quot;, &quot;24-12&quot;, &quot;24-12&quot;, &quot;24-12&quot;, &quot;24-12&quot;, &quot;24-12&quot;, &quot;24-12&quot;, &quot;24-12&quot;, &quot;24-12&quot;, &quot;24-12&quot;, &quot;24-12&quot;, &quot;24-12&quot;, &quot;25-01&quot;, &quot;25-01&quot;, &quot;25-01&quot;, &quot;25-01&quot;, &quot;25-01&quot;, &quot;25-01&quot;, &quot;25-01&quot;, &quot;25-01&quot;, &quot;25-01&quot;, &quot;25-01&quot;, &quot;25-01&quot;, &quot;25-01&quot;, &quot;25-01&quot;, &quot;25-01&quot;, &quot;25-01&quot;, &quot;25-01&quot;, &quot;25-01&quot;, &quot;25-01&quot;, &quot;25-01&quot;, &quot;25-02&quot;, &quot;25-02&quot;, &quot;25-02&quot;, &quot;25-02&quot;, &quot;25-02&quot;, &quot;25-02&quot;, &quot;25-02&quot;, &quot;25-02&quot;, &quot;25-02&quot;, &quot;25-02&quot;, &quot;25-02&quot;, &quot;25-02&quot;, &quot;25-02&quot;, &quot;25-02&quot;, &quot;25-02&quot;, &quot;25-02&quot;, &quot;25-02&quot;, &quot;25-02&quot;, &quot;25-02&quot;, &quot;25-02&quot;, &quot;25-03&quot;, &quot;25-03&quot;, &quot;25-03&quot;, &quot;25-03&quot;, &quot;25-03&quot;, &quot;25-03&quot;, &quot;25-03&quot;, &quot;25-03&quot;, &quot;25-03&quot;, &quot;25-03&quot;, &quot;25-03&quot;, &quot;25-03&quot;, &quot;25-03&quot;, &quot;25-03&quot;, &quot;25-03&quot;, &quot;25-03&quot;, &quot;25-03&quot;, &quot;25-03&quot;, &quot;25-03&quot;, &quot;25-03&quot;, &quot;25-03&quot;, &quot;25-04&quot;, &quot;25-04&quot;, &quot;25-04&quot;, &quot;25-04&quot;, &quot;25-04&quot;, &quot;25-04&quot;, &quot;25-04&quot;, &quot;25-04&quot;, &quot;25-04&quot;, &quot;25-04&quot;, &quot;25-04&quot;, &quot;25-04&quot;, &quot;25-04&quot;, &quot;25-04&quot;, &quot;25-04&quot;, &quot;25-04&quot;, &quot;25-04&quot;, &quot;25-04&quot;, &quot;25-04&quot;, &quot;25-05&quot;, &quot;25-05&quot;, &quot;25-05&quot;, &quot;25-05&quot;, &quot;25-05&quot;, &quot;25-05&quot;, &quot;25-05&quot;, &quot;25-05&quot;, &quot;25-05&quot;, &quot;25-05&quot;, &quot;25-05&quot;, &quot;25-05&quot;, &quot;25-05&quot;, &quot;25-05&quot;, &quot;25-05&quot;, &quot;25-05&quot;, &quot;25-05&quot;, &quot;25-05&quot;, &quot;25-05&quot;, &quot;25-05&quot;, &quot;25-06&quot;, &quot;25-06&quot;, &quot;25-06&quot;, &quot;25-06&quot;, &quot;25-06&quot;, &quot;25-06&quot;, &quot;25-06&quot;, &quot;25-06&quot;, &quot;25-06&quot;, &quot;25-06&quot;, &quot;25-06&quot;, &quot;25-06&quot;, &quot;25-06&quot;, &quot;25-06&quot;, &quot;25-06&quot;, &quot;25-06&quot;, &quot;25-06&quot;, &quot;25-06&quot;, &quot;25-06&quot;, &quot;25-06&quot;, &quot;25-06&quot;, &quot;25-07&quot;, &quot;25-07&quot;, &quot;25-07&quot;, &quot;25-07&quot;, &quot;25-07&quot;, &quot;25-07&quot;, &quot;25-07&quot;, &quot;25-07&quot;, &quot;25-07&quot;, &quot;25-07&quot;, &quot;25-07&quot;, &quot;25-07&quot;, &quot;25-07&quot;, &quot;25-07&quot;, &quot;25-07&quot;, &quot;25-07&quot;, &quot;25-07&quot;, &quot;25-07&quot;, &quot;25-07&quot;, &quot;25-07&quot;, &quot;25-07&quot;, &quot;25-07&quot;, &quot;25-08&quot;, &quot;25-08&quot;, &quot;25-08&quot;, &quot;25-08&quot;, &quot;25-08&quot;, &quot;25-08&quot;, &quot;25-08&quot;, &quot;25-08&quot;, &quot;25-08&quot;, &quot;25-08&quot;, &quot;25-08&quot;, &quot;25-08&quot;, &quot;25-08&quot;, &quot;25-08&quot;, &quot;25-08&quot;, &quot;25-08&quot;, &quot;25-08&quot;, &quot;25-08&quot;, &quot;25-08&quot;, &quot;25-08&quot;, &quot;25-08&quot;, &quot;25-09&quot;, &quot;25-09&quot;, &quot;25-09&quot;, &quot;25-09&quot;, &quot;25-09&quot;, &quot;25-09&quot;, &quot;25-09&quot;, &quot;25-09&quot;, &quot;25-09&quot;, &quot;25-09&quot;, &quot;25-09&quot;, &quot;25-09&quot;, &quot;25-09&quot;, &quot;25-09&quot;, &quot;25-09&quot;, &quot;25-09&quot;, &quot;25-09&quot;, &quot;25-09&quot;, &quot;25-09&quot;, &quot;25-09&quot;, &quot;25-09&quot;, &quot;25-09&quot;, &quot;25-10&quot;, &quot;25-10&quot;, &quot;25-10&quot;, &quot;25-10&quot;, &quot;25-10&quot;, &quot;25-10&quot;, &quot;25-10&quot;, &quot;25-10&quot;, &quot;25-10&quot;, &quot;25-10&quot;, &quot;25-10&quot;, &quot;25-10&quot;, &quot;25-10&quot;, &quot;25-10&quot;, &quot;25-10&quot;, &quot;25-10&quot;, &quot;25-10&quot;, &quot;25-10&quot;, &quot;25-10&quot;, &quot;25-10&quot;, &quot;25-11&quot;, &quot;25-11&quot;, &quot;25-11&quot;, &quot;25-11&quot;, &quot;25-11&quot;, &quot;25-11&quot;, &quot;25-11&quot;, &quot;25-11&quot;, &quot;25-11&quot;, &quot;25-11&quot;, &quot;25-11&quot;, &quot;25-11&quot;, &quot;25-11&quot;, &quot;25-11&quot;, &quot;25-11&quot;, &quot;25-11&quot;, &quot;25-11&quot;, &quot;25-11&quot;, &quot;25-11&quot;, &quot;25-11&quot;, &quot;25-12&quot;, &quot;25-12&quot;, &quot;25-12&quot;, &quot;25-12&quot;, &quot;25-12&quot;, &quot;25-12&quot;, &quot;25-12&quot;, &quot;25-12&quot;, &quot;25-12&quot;, &quot;25-12&quot;, &quot;25-12&quot;, &quot;25-12&quot;, &quot;25-12&quot;, &quot;25-12&quot;, &quot;25-12&quot;, &quot;25-12&quot;, &quot;25-12&quot;, &quot;25-12&quot;, &quot;25-12&quot;, &quot;25-12&quot;, &quot;25-12&quot;, &quot;26-01&quot;, &quot;26-01&quot;, &quot;26-01&quot;, &quot;26-01&quot;, &quot;26-01&quot;, &quot;26-01&quot;, &quot;26-01&quot;, &quot;26-01&quot;, &quot;26-01&quot;, &quot;26-01&quot;, &quot;26-01&quot;, &quot;26-01&quot;, &quot;26-01&quot;, &quot;26-01&quot;, &quot;26-01&quot;, &quot;26-01&quot;, &quot;26-01&quot;, &quot;26-01&quot;, &quot;26-01&quot;, &quot;26-01&quot;, &quot;26-01&quot;, &quot;26-02&quot;, &quot;26-02&quot;, &quot;26-02&quot;, &quot;26-02&quot;, &quot;26-02&quot;, &quot;26-02&quot;, &quot;26-02&quot;, &quot;26-02&quot;, &quot;26-02&quot;, &quot;26-02&quot;, &quot;26-02&quot;, &quot;26-02&quot;, &quot;26-02&quot;, &quot;26-02&quot;, &quot;26-02&quot;, &quot;26-02&quot;, &quot;26-02&quot;, &quot;26-03&quot;, &quot;26-03&quot;, &quot;26-03&quot;, &quot;26-03&quot;, &quot;26-03&quot;, &quot;26-03&quot;, &quot;26-03&quot;, &quot;26-03&quot;, &quot;26-03&quot;, &quot;26-03&quot;, &quot;26-03&quot;, &quot;26-03&quot;, &quot;26-03&quot;, &quot;26-03&quot;, &quot;26-03&quot;, &quot;26-03&quot;, &quot;26-03&quot;, &quot;26-03&quot;, &quot;26-03&quot;, &quot;26-03&quot;, &quot;26-03&quot;, &quot;26-03&quot;, &quot;26-04&quot;, &quot;26-04&quot;, &quot;26-04&quot;, &quot;26-04&quot;, &quot;26-04&quot;, &quot;26-04&quot;, &quot;26-04&quot;, &quot;26-04&quot;, &quot;26-04&quot;, &quot;26-04&quot;, &quot;26-04&quot;, &quot;26-04&quot;, &quot;26-04&quot;, &quot;26-04&quot;, &quot;26-04&quot;, &quot;26-04&quot;, &quot;26-04&quot;, &quot;26-04&quot;, &quot;26-04&quot;, &quot;26-05&quot;, &quot;26-05&quot;, &quot;26-05&quot;, &quot;26-05&quot;, &quot;26-05&quot;, &quot;26-05&quot;, &quot;26-05&quot;, &quot;26-05&quot;, &quot;26-05&quot;, &quot;26-05&quot;, &quot;26-05&quot;, &quot;26-05&quot;, &quot;26-05&quot;, &quot;26-05&quot;, &quot;26-05&quot;, &quot;26-05&quot;, &quot;26-05&quot;, &quot;26-05&quot;, &quot;26-05&quot;, &quot;26-06&quot;, &quot;26-06&quot;, &quot;26-06&quot;, &quot;26-06&quot;, &quot;26-06&quot;, &quot;26-06&quot;, &quot;26-06&quot;, &quot;26-06&quot;, &quot;26-06&quot;, &quot;26-06&quot;, &quot;26-06&quot;, &quot;26-06&quot;, &quot;26-06&quot;, &quot;26-06&quot;, &quot;26-06&quot;, &quot;26-06&quot;, &quot;26-06&quot;, &quot;26-06&quot;, &quot;26-06&quot;, &quot;26-06&quot;, &quot;26-06&quot;, &quot;26-07&quot;, &quot;26-07&quot;, &quot;26-07&quot;, &quot;26-07&quot;, &quot;26-07&quot;, &quot;26-07&quot;, &quot;26-07&quot;, &quot;26-07&quot;, &quot;26-07&quot;, &quot;26-07&quot;, &quot;26-07&quot;, &quot;26-07&quot;, &quot;26-07&quot;, &quot;26-07&quot;, &quot;26-07&quot;, &quot;26-07&quot;, &quot;26-07&quot;, &quot;26-07&quot;, &quot;26-07&quot;, &quot;26-07&quot;, &quot;26-07&quot;, &quot;26-07&quot;, &quot;26-08&quot;, &quot;26-08&quot;, &quot;26-08&quot;, &quot;26-08&quot;, &quot;26-08&quot;, &quot;26-08&quot;, &quot;26-08&quot;, &quot;26-08&quot;, &quot;26-08&quot;, &quot;26-08&quot;], &quot;px&quot;: [56.0, 57.8, 59.5, 61.3, 63.1, 64.8, 66.6, 68.4, 70.1, 71.9, 73.7, 75.5, 77.2, 79.0, 80.8, 82.5, 84.3, 86.1, 87.8, 89.6, 91.4, 93.1, 94.9, 96.7, 98.4, 100.2, 102.0, 103.8, 105.5, 107.3, 109.1, 110.8, 112.6, 114.4, 116.1, 117.9, 119.7, 121.4, 123.2, 125.0, 126.7, 128.5, 130.3, 132.0, 133.8, 135.6, 137.4, 139.1, 140.9, 142.7, 144.4, 146.2, 148.0, 149.7, 151.5, 153.3, 155.0, 156.8, 158.6, 160.3, 162.1, 163.9, 165.7, 167.4, 169.2, 171.0, 172.7, 174.5, 176.3, 178.0, 179.8, 181.6, 183.3, 185.1, 186.9, 188.6, 190.4, 192.2, 193.9, 195.7, 197.5, 199.3, 201.0, 202.8, 204.6, 206.3, 208.1, 209.9, 211.6, 213.4, 215.2, 216.9, 218.7, 220.5, 222.2, 224.0, 225.8, 227.6, 229.3, 231.1, 232.9, 234.6, 236.4, 238.2, 239.9, 241.7, 243.5, 245.2, 247.0, 248.8, 250.5, 252.3, 254.1, 255.8, 257.6, 259.4, 261.2, 262.9, 264.7, 266.5, 268.2, 270.0, 271.8, 273.5, 275.3, 277.1, 278.8, 280.6, 282.4, 284.1, 285.9, 287.7, 289.4, 291.2, 293.0, 294.8, 296.5, 298.3, 300.1, 301.8, 303.6, 305.4, 307.1, 308.9, 310.7, 312.4, 314.2, 316.0, 317.7, 319.5, 321.3, 323.1, 324.8, 326.6, 328.4, 330.1, 331.9, 333.7, 335.4, 337.2, 339.0, 340.7, 342.5, 344.3, 346.0, 347.8, 349.6, 351.3, 353.1, 354.9, 356.7, 358.4, 360.2, 362.0, 363.7, 365.5, 367.3, 369.0, 370.8, 372.6, 374.3, 376.1, 377.9, 379.6, 381.4, 383.2, 385.0, 386.7, 388.5, 390.3, 392.0, 393.8, 395.6, 397.3, 399.1, 400.9, 402.6, 404.4, 406.2, 407.9, 409.7, 411.5, 413.2, 415.0, 416.8, 418.6, 420.3, 422.1, 423.9, 425.6, 427.4, 429.2, 430.9, 432.7, 434.5, 436.2, 438.0, 439.8, 441.5, 443.3, 445.1, 446.9, 448.6, 450.4, 452.2, 453.9, 455.7, 457.5, 459.2, 461.0, 462.8, 464.5, 466.3, 468.1, 469.8, 471.6, 473.4, 475.1, 476.9, 478.7, 480.5, 482.2, 484.0, 485.8, 487.5, 489.3, 491.1, 492.8, 494.6, 496.4, 498.1, 499.9, 501.7, 503.4, 505.2, 507.0, 508.8, 510.5, 512.3, 514.1, 515.8, 517.6, 519.4, 521.1, 522.9, 524.7, 526.4, 528.2, 530.0, 531.7, 533.5, 535.3, 537.0, 538.8, 540.6, 542.4, 544.1, 545.9, 547.7, 549.4, 551.2, 553.0, 554.7, 556.5, 558.3, 560.0, 561.8, 563.6, 565.3, 567.1, 568.9, 570.7, 572.4, 574.2, 576.0, 577.7, 579.5, 581.3, 583.0, 584.8, 586.6, 588.3, 590.1, 591.9, 593.6, 595.4, 597.2, 598.9, 600.7, 602.5, 604.3, 606.0, 607.8, 609.6, 611.3, 613.1, 614.9, 616.6, 618.4, 620.2, 621.9, 623.7, 625.5, 627.2, 629.0, 630.8, 632.6, 634.3, 636.1, 637.9, 639.6, 641.4, 643.2, 644.9, 646.7, 648.5, 650.2, 652.0, 653.8, 655.5, 657.3, 659.1, 660.8, 662.6, 664.4, 666.2, 667.9, 669.7, 671.5, 673.2, 675.0, 676.8, 678.5, 680.3, 682.1, 683.8, 685.6, 687.4, 689.1, 690.9, 692.7, 694.4, 696.2, 698.0, 699.8, 701.5, 703.3, 705.1, 706.8, 708.6, 710.4, 712.1, 713.9, 715.7, 717.4, 719.2, 721.0, 722.7, 724.5, 726.3, 728.1, 729.8, 731.6, 733.4, 735.1, 736.9, 738.7, 740.4, 742.2, 744.0, 745.7, 747.5, 749.3, 751.0, 752.8, 754.6, 756.3, 758.1, 759.9, 761.7, 763.4, 765.2, 767.0, 768.7, 770.5, 772.3, 774.0, 775.8, 777.6, 779.3, 781.1, 782.9, 784.6, 786.4, 788.2, 790.0, 791.7, 793.5, 795.3, 797.0, 798.8, 800.6, 802.3, 804.1, 805.9, 807.6, 809.4, 811.2, 812.9, 814.7, 816.5, 818.2, 820.0, 821.8, 823.6, 825.3, 827.1, 828.9, 830.6, 832.4, 834.2, 835.9, 837.7, 839.5, 841.2, 843.0, 844.8, 846.5, 848.3, 850.1, 851.9, 853.6, 855.4, 857.2, 858.9, 860.7, 862.5, 864.2, 866.0], &quot;series&quot;: [{&quot;name&quot;: &quot;收盘价&quot;, &quot;color&quot;: &quot;var(--series-1)&quot;, &quot;py&quot;: [66.6, 119.8, 68.5, 55.6, 125.3, 132.7, 121.5, 142.0, 155.8, 167.7, 190.5, 175.7, 184.7, 167.0, 161.9, 170.9, 164.8, 164.5, 171.2, 190.5, 196.6, 208.8, 201.7, 190.5, 210.4, 215.8, 203.3, 204.9, 209.4, 201.1, 209.7, 213.6, 217.4, 215.2, 220.7, 234.8, 230.0, 211.3, 216.2, 196.9, 211.0, 220.3, 216.2, 211.0, 188.5, 189.8, 206.2, 206.2, 180.5, 171.2, 171.9, 185.0, 196.3, 186.6, 176.7, 185.3, 186.3, 179.2, 165.8, 177.0, 184.4, 180.5, 186.3, 182.1, 182.1, 173.5, 156.4, 148.1, 170.9, 182.1, 183.7, 185.3, 184.1, 182.1, 175.4, 177.0, 194.3, 193.0, 195.0, 190.8, 185.3, 186.9, 184.1, 199.1, 192.7, 182.1, 180.8, 184.1, 187.6, 194.3, 177.0, 188.5, 181.5, 192.1, 202.0, 201.1, 202.4, 215.8, 195.9, 173.8, 189.8, 208.5, 196.3, 196.6, 195.6, 192.7, 202.0, 201.1, 205.9, 209.7, 193.0, 197.5, 150.7, 160.3, 177.3, 180.8, 164.5, 168.0, 165.4, 168.0, 175.4, 158.4, 180.8, 173.8, 197.2, 256.3, 243.1, 225.5, 221.0, 219.4, 221.9, 211.0, 223.2, 220.3, 212.6, 203.3, 199.8, 203.0, 195.0, 191.1, 193.4, 185.0, 187.6, 191.4, 186.3, 176.3, 156.4, 158.1, 164.2, 163.5, 165.4, 150.7, 141.0, 138.1, 139.1, 134.9, 143.6, 138.5, 134.0, 127.9, 136.5, 133.7, 167.4, 180.2, 184.1, 176.3, 176.7, 178.9, 180.2, 184.7, 191.1, 181.8, 177.6, 185.0, 187.6, 186.6, 191.8, 180.8, 172.8, 179.2, 184.4, 187.6, 177.6, 174.7, 167.7, 174.4, 176.7, 177.3, 175.7, 169.3, 168.3, 157.1, 163.5, 166.1, 165.1, 154.5, 152.9, 139.8, 155.2, 160.3, 158.4, 158.1, 152.6, 176.7, 178.3, 176.0, 167.4, 166.1, 160.9, 161.6, 156.8, 153.6, 149.4, 145.5, 147.1, 145.9, 135.3, 143.0, 139.8, 144.6, 126.6, 130.8, 142.3, 141.7, 140.7, 126.9, 108.3, 124.0, 130.4, 110.2, 104.8, 105.1, 108.9, 107.7, 114.1, 115.0, 122.7, 115.0, 129.2, 119.5, 134.9, 136.5, 130.1, 142.0, 140.4, 136.5, 137.5, 134.3, 131.4, 143.9, 144.6, 136.9, 143.3, 151.3, 152.6, 137.8, 139.1, 144.9, 137.8, 136.9, 135.3, 130.1, 126.3, 126.3, 137.5, 131.7, 126.3, 136.5, 125.3, 123.4, 106.7, 112.5, 104.8, 112.8, 88.7, 90.0, 95.1, 103.5, 115.0, 111.2, 100.9, 105.4, 95.5, 102.8, 93.8, 94.2, 97.4, 94.2, 84.9, 81.3, 81.6, 78.4, 83.6, 94.8, 94.2, 99.3, 93.8, 98.3, 99.9, 101.2, 107.0, 105.7, 105.1, 106.0, 107.7, 124.7, 115.4, 122.7, 92.2, 104.4, 105.7, 99.9, 104.8, 94.2, 110.2, 124.3, 122.4, 118.2, 114.1, 114.4, 106.4, 104.4, 115.4, 117.9, 117.9, 124.0, 124.3, 111.8, 115.7, 115.0, 106.7, 98.7, 93.5, 100.3, 99.6, 89.4, 90.3, 82.6, 86.1, 78.1, 60.8, 65.3, 73.3, 73.0, 74.3, 82.3, 104.4, 114.4, 118.9, 119.2, 113.1, 124.0, 113.7, 109.3, 110.2, 117.0, 117.6, 118.9, 111.8, 126.3, 128.2, 147.5, 134.9, 132.7, 143.0, 143.6, 161.9, 127.6, 126.3, 125.0, 117.0, 116.0, 114.1, 123.7, 117.3, 111.2, 98.7, 91.6, 85.8, 81.6, 89.4, 90.6, 92.9, 95.1, 103.8, 93.2, 89.7, 98.0, 109.3, 102.5, 117.9, 117.9, 109.3, 101.6, 104.8, 87.7, 77.2, 76.8, 89.4, 83.6, 88.4, 93.8, 107.3, 108.9, 119.5, 115.0, 92.2, 89.7, 81.3, 95.5, 99.3, 94.2, 86.5, 83.6, 83.9, 77.8, 82.3, 86.8, 93.2, 125.0, 134.9, 141.0, 152.6, 157.1, 149.7, 125.9, 135.3, 113.4, 106.4, 98.3, 104.8, 99.6, 97.7, 95.8, 95.5, 90.6, 75.5, 76.5, 73.3, 59.8, 54.7, 56.3, 47.6, 57.2, 56.6, 47.0, 33.8, 30.6, 27.7, 38.0, 43.1, 39.3, 39.6, 51.1, 38.6, 42.8, 48.6, 46.7, 49.9], &quot;val&quot;: [&quot;93.30&quot;, &quot;85.00&quot;, &quot;93.00&quot;, &quot;95.00&quot;, &quot;84.15&quot;, &quot;83.00&quot;, &quot;84.75&quot;, &quot;81.55&quot;, &quot;79.40&quot;, &quot;77.55&quot;, &quot;74.00&quot;, &quot;76.30&quot;, &quot;74.90&quot;, &quot;77.65&quot;, &quot;78.45&quot;, &quot;77.05&quot;, &quot;78.00&quot;, &quot;78.05&quot;, &quot;77.00&quot;, &quot;74.00&quot;, &quot;73.05&quot;, &quot;71.15&quot;, &quot;72.25&quot;, &quot;74.00&quot;, &quot;70.90&quot;, &quot;70.05&quot;, &quot;72.00&quot;, &quot;71.75&quot;, &quot;71.05&quot;, &quot;72.35&quot;, &quot;71.00&quot;, &quot;70.40&quot;, &quot;69.80&quot;, &quot;70.15&quot;, &quot;69.30&quot;, &quot;67.10&quot;, &quot;67.85&quot;, &quot;70.75&quot;, &quot;70.00&quot;, &quot;73.00&quot;, &quot;70.80&quot;, &quot;69.35&quot;, &quot;70.00&quot;, &quot;70.80&quot;, &quot;74.30&quot;, &quot;74.10&quot;, &quot;71.55&quot;, &quot;71.55&quot;, &quot;75.55&quot;, &quot;77.00&quot;, &quot;76.90&quot;, &quot;74.85&quot;, &quot;73.10&quot;, &quot;74.60&quot;, &quot;76.15&quot;, &quot;74.80&quot;, &quot;74.65&quot;, &quot;75.75&quot;, &quot;77.85&quot;, &quot;76.10&quot;, &quot;74.95&quot;, &quot;75.55&quot;, &quot;74.65&quot;, &quot;75.30&quot;, &quot;75.30&quot;, &quot;76.65&quot;, &quot;79.30&quot;, &quot;80.60&quot;, &quot;77.05&quot;, &quot;75.30&quot;, &quot;75.05&quot;, &quot;74.80&quot;, &quot;75.00&quot;, &quot;75.30&quot;, &quot;76.35&quot;, &quot;76.10&quot;, &quot;73.40&quot;, &quot;73.60&quot;, &quot;73.30&quot;, &quot;73.95&quot;, &quot;74.80&quot;, &quot;74.55&quot;, &quot;75.00&quot;, &quot;72.65&quot;, &quot;73.65&quot;, &quot;75.30&quot;, &quot;75.50&quot;, &quot;75.00&quot;, &quot;74.45&quot;, &quot;73.40&quot;, &quot;76.10&quot;, &quot;74.30&quot;, &quot;75.40&quot;, &quot;73.75&quot;, &quot;72.20&quot;, &quot;72.35&quot;, &quot;72.15&quot;, &quot;70.05&quot;, &quot;73.15&quot;, &quot;76.60&quot;, &quot;74.10&quot;, &quot;71.20&quot;, &quot;73.10&quot;, &quot;73.05&quot;, &quot;73.20&quot;, &quot;73.65&quot;, &quot;72.20&quot;, &quot;72.35&quot;, &quot;71.60&quot;, &quot;71.00&quot;, &quot;73.60&quot;, &quot;72.90&quot;, &quot;80.20&quot;, &quot;78.70&quot;, &quot;76.05&quot;, &quot;75.50&quot;, &quot;78.05&quot;, &quot;77.50&quot;, &quot;77.90&quot;, &quot;77.50&quot;, &quot;76.35&quot;, &quot;79.00&quot;, &quot;75.50&quot;, &quot;76.60&quot;, &quot;72.95&quot;, &quot;63.75&quot;, &quot;65.80&quot;, &quot;68.55&quot;, &quot;69.25&quot;, &quot;69.50&quot;, &quot;69.10&quot;, &quot;70.80&quot;, &quot;68.90&quot;, &quot;69.35&quot;, &quot;70.55&quot;, &quot;72.00&quot;, &quot;72.55&quot;, &quot;72.05&quot;, &quot;73.30&quot;, &quot;73.90&quot;, &quot;73.55&quot;, &quot;74.85&quot;, &quot;74.45&quot;, &quot;73.85&quot;, &quot;74.65&quot;, &quot;76.20&quot;, &quot;79.30&quot;, &quot;79.05&quot;, &quot;78.10&quot;, &quot;78.20&quot;, &quot;77.90&quot;, &quot;80.20&quot;, &quot;81.70&quot;, &quot;82.15&quot;, &quot;82.00&quot;, &quot;82.65&quot;, &quot;81.30&quot;, &quot;82.10&quot;, &quot;82.80&quot;, &quot;83.75&quot;, &quot;82.40&quot;, &quot;82.85&quot;, &quot;77.60&quot;, &quot;75.60&quot;, &quot;75.00&quot;, &quot;76.20&quot;, &quot;76.15&quot;, &quot;75.80&quot;, &quot;75.60&quot;, &quot;74.90&quot;, &quot;73.90&quot;, &quot;75.35&quot;, &quot;76.00&quot;, &quot;74.85&quot;, &quot;74.45&quot;, &quot;74.60&quot;, &quot;73.80&quot;, &quot;75.50&quot;, &quot;76.75&quot;, &quot;75.75&quot;, &quot;74.95&quot;, &quot;74.45&quot;, &quot;76.00&quot;, &quot;76.45&quot;, &quot;77.55&quot;, &quot;76.50&quot;, &quot;76.15&quot;, &quot;76.05&quot;, &quot;76.30&quot;, &quot;77.30&quot;, &quot;77.45&quot;, &quot;79.20&quot;, &quot;78.20&quot;, &quot;77.80&quot;, &quot;77.95&quot;, &quot;79.60&quot;, &quot;79.85&quot;, &quot;81.90&quot;, &quot;79.50&quot;, &quot;78.70&quot;, &quot;79.00&quot;, &quot;79.05&quot;, &quot;79.90&quot;, &quot;76.15&quot;, &quot;75.90&quot;, &quot;76.25&quot;, &quot;77.60&quot;, &quot;77.80&quot;, &quot;78.60&quot;, &quot;78.50&quot;, &quot;79.25&quot;, &quot;79.75&quot;, &quot;80.40&quot;, &quot;81.00&quot;, &quot;80.75&quot;, &quot;80.95&quot;, &quot;82.60&quot;, &quot;81.40&quot;, &quot;81.90&quot;, &quot;81.15&quot;, &quot;83.95&quot;, &quot;83.30&quot;, &quot;81.50&quot;, &quot;81.60&quot;, &quot;81.75&quot;, &quot;83.90&quot;, &quot;86.80&quot;, &quot;84.35&quot;, &quot;83.35&quot;, &quot;86.50&quot;, &quot;87.35&quot;, &quot;87.30&quot;, &quot;86.70&quot;, &quot;86.90&quot;, &quot;85.90&quot;, &quot;85.75&quot;, &quot;84.55&quot;, &quot;85.75&quot;, &quot;83.55&quot;, &quot;85.05&quot;, &quot;82.65&quot;, &quot;82.40&quot;, &quot;83.40&quot;, &quot;81.55&quot;, &quot;81.80&quot;, &quot;82.40&quot;, &quot;82.25&quot;, &quot;82.75&quot;, &quot;83.20&quot;, &quot;81.25&quot;, &quot;81.15&quot;, &quot;82.35&quot;, &quot;81.35&quot;, &quot;80.10&quot;, &quot;79.90&quot;, &quot;82.20&quot;, &quot;82.00&quot;, &quot;81.10&quot;, &quot;82.20&quot;, &quot;82.35&quot;, &quot;82.60&quot;, &quot;83.40&quot;, &quot;84.00&quot;, &quot;84.00&quot;, &quot;82.25&quot;, &quot;83.15&quot;, &quot;84.00&quot;, &quot;82.40&quot;, &quot;84.15&quot;, &quot;84.45&quot;, &quot;87.05&quot;, &quot;86.15&quot;, &quot;87.35&quot;, &quot;86.10&quot;, &quot;89.85&quot;, &quot;89.65&quot;, &quot;88.85&quot;, &quot;87.55&quot;, &quot;85.75&quot;, &quot;86.35&quot;, &quot;87.95&quot;, &quot;87.25&quot;, &quot;88.80&quot;, &quot;87.65&quot;, &quot;89.05&quot;, &quot;89.00&quot;, &quot;88.50&quot;, &quot;89.00&quot;, &quot;90.45&quot;, &quot;91.00&quot;, &quot;90.95&quot;, &quot;91.45&quot;, &quot;90.65&quot;, &quot;88.90&quot;, &quot;89.00&quot;, &quot;88.20&quot;, &quot;89.05&quot;, &quot;88.35&quot;, &quot;88.10&quot;, &quot;87.90&quot;, &quot;87.00&quot;, &quot;87.20&quot;, &quot;87.30&quot;, &quot;87.15&quot;, &quot;86.90&quot;, &quot;84.25&quot;, &quot;85.70&quot;, &quot;84.55&quot;, &quot;89.30&quot;, &quot;87.40&quot;, &quot;87.20&quot;, &quot;88.10&quot;, &quot;87.35&quot;, &quot;89.00&quot;, &quot;86.50&quot;, &quot;84.30&quot;, &quot;84.60&quot;, &quot;85.25&quot;, &quot;85.90&quot;, &quot;85.85&quot;, &quot;87.10&quot;, &quot;87.40&quot;, &quot;85.70&quot;, &quot;85.30&quot;, &quot;85.30&quot;, &quot;84.35&quot;, &quot;84.30&quot;, &quot;86.25&quot;, &quot;85.65&quot;, &quot;85.75&quot;, &quot;87.05&quot;, &quot;88.30&quot;, &quot;89.10&quot;, &quot;88.05&quot;, &quot;88.15&quot;, &quot;89.75&quot;, &quot;89.60&quot;, &quot;90.80&quot;, &quot;90.25&quot;, &quot;91.50&quot;, &quot;94.20&quot;, &quot;93.50&quot;, &quot;92.25&quot;, &quot;92.30&quot;, &quot;92.10&quot;, &quot;90.85&quot;, &quot;87.40&quot;, &quot;85.85&quot;, &quot;85.15&quot;, &quot;85.10&quot;, &quot;86.05&quot;, &quot;84.35&quot;, &quot;85.95&quot;, &quot;86.65&quot;, &quot;86.50&quot;, &quot;85.45&quot;, &quot;85.35&quot;, &quot;85.15&quot;, &quot;86.25&quot;, &quot;84.00&quot;, &quot;83.70&quot;, &quot;80.70&quot;, &quot;82.65&quot;, &quot;83.00&quot;, &quot;81.40&quot;, &quot;81.30&quot;, &quot;78.45&quot;, &quot;83.80&quot;, &quot;84.00&quot;, &quot;84.20&quot;, &quot;85.45&quot;, &quot;85.60&quot;, &quot;85.90&quot;, &quot;84.40&quot;, &quot;85.40&quot;, &quot;86.35&quot;, &quot;88.30&quot;, &quot;89.40&quot;, &quot;90.30&quot;, &quot;90.95&quot;, &quot;89.75&quot;, &quot;89.55&quot;, &quot;89.20&quot;, &quot;88.85&quot;, &quot;87.50&quot;, &quot;89.15&quot;, &quot;89.70&quot;, &quot;88.40&quot;, &quot;86.65&quot;, &quot;87.70&quot;, &quot;85.30&quot;, &quot;85.30&quot;, &quot;86.65&quot;, &quot;87.85&quot;, &quot;87.35&quot;, &quot;90.00&quot;, &quot;91.65&quot;, &quot;91.70&quot;, &quot;89.75&quot;, &quot;90.65&quot;, &quot;89.90&quot;, &quot;89.05&quot;, &quot;86.95&quot;, &quot;86.70&quot;, &quot;85.05&quot;, &quot;85.75&quot;, &quot;89.30&quot;, &quot;89.70&quot;, &quot;91.00&quot;, &quot;88.80&quot;, &quot;88.20&quot;, &quot;89.00&quot;, &quot;90.20&quot;, &quot;90.65&quot;, &quot;90.60&quot;, &quot;91.55&quot;, &quot;90.85&quot;, &quot;90.15&quot;, &quot;89.15&quot;, &quot;84.20&quot;, &quot;82.65&quot;, &quot;81.70&quot;, &quot;79.90&quot;, &quot;79.20&quot;, &quot;80.35&quot;, &quot;84.05&quot;, &quot;82.60&quot;, &quot;86.00&quot;, &quot;87.10&quot;, &quot;88.35&quot;, &quot;87.35&quot;, &quot;88.15&quot;, &quot;88.45&quot;, &quot;88.75&quot;, &quot;88.80&quot;, &quot;89.55&quot;, &quot;91.90&quot;, &quot;91.75&quot;, &quot;92.25&quot;, &quot;94.35&quot;, &quot;95.15&quot;, &quot;94.90&quot;, &quot;96.25&quot;, &quot;94.75&quot;, &quot;94.85&quot;, &quot;96.35&quot;, &quot;98.40&quot;, &quot;98.90&quot;, &quot;99.35&quot;, &quot;97.75&quot;, &quot;96.95&quot;, &quot;97.55&quot;, &quot;97.50&quot;, &quot;95.70&quot;, &quot;97.65&quot;, &quot;97.00&quot;, &quot;96.10&quot;, &quot;96.40&quot;, &quot;95.90&quot;]}], &quot;yLabel&quot;: &quot;&quot;}"><svg class="chart" viewBox="0 0 880 300" width="880" height="300" role="img" preserveAspectRatio="xMidYMid meet"><line x1="56" y1="270.0" x2="866" y2="270.0" stroke="var(--grid)" stroke-width="1"/><text x="47" y="274.0" text-anchor="end" font-size="11" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">61.61</text><line x1="56" y1="206.0" x2="866" y2="206.0" stroke="var(--grid)" stroke-width="1"/><text x="47" y="210.0" text-anchor="end" font-size="11" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">71.58</text><line x1="56" y1="142.0" x2="866" y2="142.0" stroke="var(--grid)" stroke-width="1"/><text x="47" y="146.0" text-anchor="end" font-size="11" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">81.55</text><line x1="56" y1="78.0" x2="866" y2="78.0" stroke="var(--grid)" stroke-width="1"/><text x="47" y="82.0" text-anchor="end" font-size="11" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">91.52</text><line x1="56" y1="14.0" x2="866" y2="14.0" stroke="var(--grid)" stroke-width="1"/><text x="47" y="18.0" text-anchor="end" font-size="11" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">101.5</text><text x="56.0" y="291" text-anchor="middle" font-size="11" fill="var(--ink-muted)">24-10</text><text x="216.9" y="291" text-anchor="middle" font-size="11" fill="var(--ink-muted)">25-02</text><text x="377.9" y="291" text-anchor="middle" font-size="11" fill="var(--ink-muted)">25-07</text><text x="538.8" y="291" text-anchor="middle" font-size="11" fill="var(--ink-muted)">25-11</text><text x="699.8" y="291" text-anchor="middle" font-size="11" fill="var(--ink-muted)">26-03</text><text x="860.7" y="291" text-anchor="middle" font-size="11" fill="var(--ink-muted)">26-08</text><path d="M56.0,66.6 L57.8,119.8 L59.5,68.5 L61.3,55.6 L63.1,125.3 L64.8,132.7 L66.6,121.5 L68.4,142.0 L70.1,155.8 L71.9,167.7 L73.7,190.5 L75.5,175.7 L77.2,184.7 L79.0,167.0 L80.8,161.9 L82.5,170.9 L84.3,164.8 L86.1,164.5 L87.8,171.2 L89.6,190.5 L91.4,196.6 L93.1,208.8 L94.9,201.7 L96.7,190.5 L98.4,210.4 L100.2,215.8 L102.0,203.3 L103.8,204.9 L105.5,209.4 L107.3,201.1 L109.1,209.7 L110.8,213.6 L112.6,217.4 L114.4,215.2 L116.1,220.7 L117.9,234.8 L119.7,230.0 L121.4,211.3 L123.2,216.2 L125.0,196.9 L126.7,211.0 L128.5,220.3 L130.3,216.2 L132.0,211.0 L133.8,188.5 L135.6,189.8 L137.4,206.2 L139.1,206.2 L140.9,180.5 L142.7,171.2 L144.4,171.9 L146.2,185.0 L148.0,196.3 L149.7,186.6 L151.5,176.7 L153.3,185.3 L155.0,186.3 L156.8,179.2 L158.6,165.8 L160.3,177.0 L162.1,184.4 L163.9,180.5 L165.7,186.3 L167.4,182.1 L169.2,182.1 L171.0,173.5 L172.7,156.4 L174.5,148.1 L176.3,170.9 L178.0,182.1 L179.8,183.7 L181.6,185.3 L183.3,184.1 L185.1,182.1 L186.9,175.4 L188.6,177.0 L190.4,194.3 L192.2,193.0 L193.9,195.0 L195.7,190.8 L197.5,185.3 L199.3,186.9 L201.0,184.1 L202.8,199.1 L204.6,192.7 L206.3,182.1 L208.1,180.8 L209.9,184.1 L211.6,187.6 L213.4,194.3 L215.2,177.0 L216.9,188.5 L218.7,181.5 L220.5,192.1 L222.2,202.0 L224.0,201.1 L225.8,202.4 L227.6,215.8 L229.3,195.9 L231.1,173.8 L232.9,189.8 L234.6,208.5 L236.4,196.3 L238.2,196.6 L239.9,195.6 L241.7,192.7 L243.5,202.0 L245.2,201.1 L247.0,205.9 L248.8,209.7 L250.5,193.0 L252.3,197.5 L254.1,150.7 L255.8,160.3 L257.6,177.3 L259.4,180.8 L261.2,164.5 L262.9,168.0 L264.7,165.4 L266.5,168.0 L268.2,175.4 L270.0,158.4 L271.8,180.8 L273.5,173.8 L275.3,197.2 L277.1,256.3 L278.8,243.1 L280.6,225.5 L282.4,221.0 L284.1,219.4 L285.9,221.9 L287.7,211.0 L289.4,223.2 L291.2,220.3 L293.0,212.6 L294.8,203.3 L296.5,199.8 L298.3,203.0 L300.1,195.0 L301.8,191.1 L303.6,193.4 L305.4,185.0 L307.1,187.6 L308.9,191.4 L310.7,186.3 L312.4,176.3 L314.2,156.4 L316.0,158.1 L317.7,164.2 L319.5,163.5 L321.3,165.4 L323.1,150.7 L324.8,141.0 L326.6,138.1 L328.4,139.1 L330.1,134.9 L331.9,143.6 L333.7,138.5 L335.4,134.0 L337.2,127.9 L339.0,136.5 L340.7,133.7 L342.5,167.4 L344.3,180.2 L346.0,184.1 L347.8,176.3 L349.6,176.7 L351.3,178.9 L353.1,180.2 L354.9,184.7 L356.7,191.1 L358.4,181.8 L360.2,177.6 L362.0,185.0 L363.7,187.6 L365.5,186.6 L367.3,191.8 L369.0,180.8 L370.8,172.8 L372.6,179.2 L374.3,184.4 L376.1,187.6 L377.9,177.6 L379.6,174.7 L381.4,167.7 L383.2,174.4 L385.0,176.7 L386.7,177.3 L388.5,175.7 L390.3,169.3 L392.0,168.3 L393.8,157.1 L395.6,163.5 L397.3,166.1 L399.1,165.1 L400.9,154.5 L402.6,152.9 L404.4,139.8 L406.2,155.2 L407.9,160.3 L409.7,158.4 L411.5,158.1 L413.2,152.6 L415.0,176.7 L416.8,178.3 L418.6,176.0 L420.3,167.4 L422.1,166.1 L423.9,160.9 L425.6,161.6 L427.4,156.8 L429.2,153.6 L430.9,149.4 L432.7,145.5 L434.5,147.1 L436.2,145.9 L438.0,135.3 L439.8,143.0 L441.5,139.8 L443.3,144.6 L445.1,126.6 L446.9,130.8 L448.6,142.3 L450.4,141.7 L452.2,140.7 L453.9,126.9 L455.7,108.3 L457.5,124.0 L459.2,130.4 L461.0,110.2 L462.8,104.8 L464.5,105.1 L466.3,108.9 L468.1,107.7 L469.8,114.1 L471.6,115.0 L473.4,122.7 L475.1,115.0 L476.9,129.2 L478.7,119.5 L480.5,134.9 L482.2,136.5 L484.0,130.1 L485.8,142.0 L487.5,140.4 L489.3,136.5 L491.1,137.5 L492.8,134.3 L494.6,131.4 L496.4,143.9 L498.1,144.6 L499.9,136.9 L501.7,143.3 L503.4,151.3 L505.2,152.6 L507.0,137.8 L508.8,139.1 L510.5,144.9 L512.3,137.8 L514.1,136.9 L515.8,135.3 L517.6,130.1 L519.4,126.3 L521.1,126.3 L522.9,137.5 L524.7,131.7 L526.4,126.3 L528.2,136.5 L530.0,125.3 L531.7,123.4 L533.5,106.7 L535.3,112.5 L537.0,104.8 L538.8,112.8 L540.6,88.7 L542.4,90.0 L544.1,95.1 L545.9,103.5 L547.7,115.0 L549.4,111.2 L551.2,100.9 L553.0,105.4 L554.7,95.5 L556.5,102.8 L558.3,93.8 L560.0,94.2 L561.8,97.4 L563.6,94.2 L565.3,84.9 L567.1,81.3 L568.9,81.6 L570.7,78.4 L572.4,83.6 L574.2,94.8 L576.0,94.2 L577.7,99.3 L579.5,93.8 L581.3,98.3 L583.0,99.9 L584.8,101.2 L586.6,107.0 L588.3,105.7 L590.1,105.1 L591.9,106.0 L593.6,107.7 L595.4,124.7 L597.2,115.4 L598.9,122.7 L600.7,92.2 L602.5,104.4 L604.3,105.7 L606.0,99.9 L607.8,104.8 L609.6,94.2 L611.3,110.2 L613.1,124.3 L614.9,122.4 L616.6,118.2 L618.4,114.1 L620.2,114.4 L621.9,106.4 L623.7,104.4 L625.5,115.4 L627.2,117.9 L629.0,117.9 L630.8,124.0 L632.6,124.3 L634.3,111.8 L636.1,115.7 L637.9,115.0 L639.6,106.7 L641.4,98.7 L643.2,93.5 L644.9,100.3 L646.7,99.6 L648.5,89.4 L650.2,90.3 L652.0,82.6 L653.8,86.1 L655.5,78.1 L657.3,60.8 L659.1,65.3 L660.8,73.3 L662.6,73.0 L664.4,74.3 L666.2,82.3 L667.9,104.4 L669.7,114.4 L671.5,118.9 L673.2,119.2 L675.0,113.1 L676.8,124.0 L678.5,113.7 L680.3,109.3 L682.1,110.2 L683.8,117.0 L685.6,117.6 L687.4,118.9 L689.1,111.8 L690.9,126.3 L692.7,128.2 L694.4,147.5 L696.2,134.9 L698.0,132.7 L699.8,143.0 L701.5,143.6 L703.3,161.9 L705.1,127.6 L706.8,126.3 L708.6,125.0 L710.4,117.0 L712.1,116.0 L713.9,114.1 L715.7,123.7 L717.4,117.3 L719.2,111.2 L721.0,98.7 L722.7,91.6 L724.5,85.8 L726.3,81.6 L728.1,89.4 L729.8,90.6 L731.6,92.9 L733.4,95.1 L735.1,103.8 L736.9,93.2 L738.7,89.7 L740.4,98.0 L742.2,109.3 L744.0,102.5 L745.7,117.9 L747.5,117.9 L749.3,109.3 L751.0,101.6 L752.8,104.8 L754.6,87.7 L756.3,77.2 L758.1,76.8 L759.9,89.4 L761.7,83.6 L763.4,88.4 L765.2,93.8 L767.0,107.3 L768.7,108.9 L770.5,119.5 L772.3,115.0 L774.0,92.2 L775.8,89.7 L777.6,81.3 L779.3,95.5 L781.1,99.3 L782.9,94.2 L784.6,86.5 L786.4,83.6 L788.2,83.9 L790.0,77.8 L791.7,82.3 L793.5,86.8 L795.3,93.2 L797.0,125.0 L798.8,134.9 L800.6,141.0 L802.3,152.6 L804.1,157.1 L805.9,149.7 L807.6,125.9 L809.4,135.3 L811.2,113.4 L812.9,106.4 L814.7,98.3 L816.5,104.8 L818.2,99.6 L820.0,97.7 L821.8,95.8 L823.6,95.5 L825.3,90.6 L827.1,75.5 L828.9,76.5 L830.6,73.3 L832.4,59.8 L834.2,54.7 L835.9,56.3 L837.7,47.6 L839.5,57.2 L841.2,56.6 L843.0,47.0 L844.8,33.8 L846.5,30.6 L848.3,27.7 L850.1,38.0 L851.9,43.1 L853.6,39.3 L855.4,39.6 L857.2,51.1 L858.9,38.6 L860.7,42.8 L862.5,48.6 L864.2,46.7 L866.0,49.9" fill="none" stroke="var(--series-1)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><line class="cross" x1="0" y1="14" x2="0" y2="270" stroke="var(--axis)" stroke-width="1" opacity="0"/><circle class="hd" r="4" fill="var(--series-1)" stroke="var(--surface)" stroke-width="2" opacity="0"/><rect class="hit" x="56" y="14" width="810" height="256" fill="transparent"/></svg></div>
+<figcaption>
+  
+  自算复权价与数据源完全一致，图上只有一条线。近 459 个交易日。
+  
+</figcaption>
+
+<h2>公司行动</h2>
+
+<div class="scroll">
+<table>
+<thead><tr><th>除权日</th><th>类型</th><th class="num">每股金额</th><th class="num">比例</th>
+  <th class="num">除权前收盘</th><th class="num">占前收盘</th><th>备注</th></tr></thead>
+<tbody>
+
+<tr>
+  <td class="mono">2026-06-18</td>
+  <td>现金派息</td>
+  <td class="num">4.3673 HKD</td>
+  <td class="num">—</td>
+  <td class="num dim">89.150</td>
+  <td class="num dim">4.90%</td>
+  <td class="dim wide"></td>
+</tr>
+
+<tr>
+  <td class="mono">2025-10-30</td>
+  <td>现金派息</td>
+  <td class="num">0.5469 HKD</td>
+  <td class="num">—</td>
+  <td class="num dim">82.250</td>
+  <td class="num dim">0.66%</td>
+  <td class="dim wide"></td>
+</tr>
+
+<tr>
+  <td class="mono">2025-06-03</td>
+  <td>现金派息</td>
+  <td class="num">3.8147 HKD</td>
+  <td class="num">—</td>
+  <td class="num dim">82.850</td>
+  <td class="num dim">4.60%</td>
+  <td class="dim wide"></td>
+</tr>
+
+</tbody>
+</table>
+</div>
+
+
+<h2>该标的的异常记录</h2>
+
+<p class="dim">当前没有命中任何校验规则。</p>
+
+
+
+
+<footer class="foot">
+  mdesk 自建港美股行情数据工作台　行情来源 yfinance，仅用于数据质量核对与个人自用，不构成任何投资建议。<br>
+  本轮共 35 只标的、16 条校验规则，未处理异常 93 条。
+</footer>
+</div>
+
+<script>
+document.querySelectorAll('.chartbox').forEach(function (box) {
+  var cfg = JSON.parse(box.dataset.chart);
+  var svg = box.querySelector('svg');
+  var cross = svg.querySelector('.cross');
+  var dots = svg.querySelectorAll('.hd');
+  var hit = svg.querySelector('.hit');
+  var tip = document.createElement('div');
+  tip.className = 'tip';
+  box.appendChild(tip);
+
+  function nearest(clientX) {
+    var r = svg.getBoundingClientRect();
+    var vx = (clientX - r.left) / r.width * cfg.width;
+    var best = 0, bd = Infinity;
+    for (var i = 0; i < cfg.px.length; i++) {
+      var d = Math.abs(cfg.px[i] - vx);
+      if (d < bd) { bd = d; best = i; }
+    }
+    return best;
+  }
+
+  function show(e) {
+    var i = nearest(e.clientX);
+    cross.setAttribute('x1', cfg.px[i]);
+    cross.setAttribute('x2', cfg.px[i]);
+    cross.setAttribute('opacity', '1');
+    var lines = '<b>' + cfg.x[i] + '</b>';
+    cfg.series.forEach(function (s, k) {
+      var dot = dots[k];
+      if (s.py[i] === null) { dot.setAttribute('opacity', '0'); return; }
+      dot.setAttribute('cx', cfg.px[i]);
+      dot.setAttribute('cy', s.py[i]);
+      dot.setAttribute('opacity', '1');
+      lines += '<span><i style="background:' + s.color + '"></i>' +
+               s.name + '<em>' + s.val[i] + '</em></span>';
+    });
+    tip.innerHTML = lines;
+    var r = svg.getBoundingClientRect();
+    var left = cfg.px[i] / cfg.width * r.width;
+    tip.style.left = Math.min(Math.max(left, 70), r.width - 70) + 'px';
+    tip.style.opacity = '1';
+  }
+
+  function hide() {
+    cross.setAttribute('opacity', '0');
+    dots.forEach(function (d) { d.setAttribute('opacity', '0'); });
+    tip.style.opacity = '0';
+  }
+
+  hit.addEventListener('mousemove', show);
+  hit.addEventListener('mouseleave', hide);
+  hit.addEventListener('touchmove', function (e) {
+    if (e.touches.length) { show(e.touches[0]); }
+  }, { passive: true });
+});
+</script>
+</body>
+</html>

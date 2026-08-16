@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block body %}
+
+<h1>异常清单</h1>
+<p class="lede">
+  这是后厨。每天盘前看 P0，盘后逐条判断原因，处理结论填进
+  <a href="ledger.html">处理台账</a>。P0 当场处理，P1 记台账排期，P2 归档观察。
+</p>
+
+<div class="tiles">
+  <div class="tile"><div class="k">未处理 P0</div><div class="v">{{ counts.P0 }}</div>
+    <div class="sub">当场处理</div></div>
+  <div class="tile"><div class="k">未处理 P1</div><div class="v">{{ counts.P1 }}</div>
+    <div class="sub">记台账排期</div></div>
+  <div class="tile"><div class="k">未处理 P2</div><div class="v">{{ counts.P2 }}</div>
+    <div class="sub">归档观察</div></div>
+  <div class="tile"><div class="k">已处理</div><div class="v">{{ counts.handled }}</div>
+    <div class="sub">累计</div></div>
+  <div class="tile"><div class="k">规则命中率</div><div class="v">{{ counts.hit_rules }}/{{ meta.n_rules }}</div>
+    <div class="sub">本轮有命中的规则数</div></div>
+</div>
+
+{% for sev in ['P0', 'P1', 'P2'] %}
+{% if groups[sev] %}
+<h2><span class="sev {{ sev }}">{{ sev }}</span>　{{ sev_label[sev] }}　共 {{ groups[sev]|length }} 条</h2>
+<div class="scroll">
+<table>
+<thead><tr><th>业务日</th><th>规则</th><th>标的</th><th>说明</th><th>首次发现</th></tr></thead>
+<tbody>
+{% for i in groups[sev][:60] %}
+<tr>
+  <td class="mono">{{ i.biz_date }}</td>
+  <td class="mono dim" title="{{ i.rule_name }}">{{ i.rule_id }}</td>
+  <td class="name">{% if i.slug %}<a href="../stock/{{ i.slug }}.html">{{ i.name }}</a>
+      {% else %}{{ i.name }}{% endif %}</td>
+  <td class="wide">{{ i.detail }}</td>
+  <td class="mono dim">{{ i.first_seen }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% if groups[sev]|length > 60 %}
+<p class="dim">另有 {{ groups[sev]|length - 60 }} 条同级别记录未展示，完整清单见处理台账。</p>
+{% endif %}
+{% endif %}
+{% endfor %}
+
+<h2>本轮各规则命中情况</h2>
+{{ hit_chart }}
+<figcaption>横轴为命中条数。无命中的规则不代表无效，代表当前数据在该维度上是干净的。</figcaption>
+
+{% endblock %}

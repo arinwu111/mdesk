@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block body %}
+
+<h1>处理台账</h1>
+<p class="lede">
+  每条异常的人工判断记录都留在这里。系统只负责发现，判断原因和决定怎么修是人做的事。
+  攒上三个月，这张表就是一份没法临时编出来的工作记录。
+</p>
+
+<div class="tiles">
+  <div class="tile"><div class="k">累计异常</div><div class="v">{{ stats.total }}</div>
+    <div class="sub">去重后</div></div>
+  <div class="tile"><div class="k">待查</div><div class="v">{{ stats.open }}</div>
+    <div class="sub">未填写处理意见</div></div>
+  <div class="tile"><div class="k">已解释</div><div class="v">{{ stats.explained }}</div>
+    <div class="sub">原因查明，数字可用</div></div>
+  <div class="tile"><div class="k">已修复</div><div class="v">{{ stats.fixed }}</div>
+    <div class="sub">已做数据修正</div></div>
+  <div class="tile"><div class="k">已忽略</div><div class="v">{{ stats.ignored }}</div>
+    <div class="sub">确认为正常现象</div></div>
+</div>
+
+<h2>如何填写</h2>
+<div class="card">
+<p style="margin-top:0">台账目前通过一条命令填写，处理记录写进库里，重跑采集和规则都不会覆盖：</p>
+<pre style="background:var(--plane);border:1px solid var(--border);border-radius:8px;padding:12px 14px;overflow-x:auto;font-size:12.5px;margin:10px 0"><code>python3 -m mdesk.handle DQ-CA-001 9988.HK 2025-06-11 \
+    --status explained \
+    --note "数据源用美元派息金额扣减港币价格，自算复权价为准"</code></pre>
+<p style="margin-bottom:0">status 可填 explained（原因已查明、数字可用）、fixed（已修正数据）、
+ignored（确认为正常现象）。填了 explained 之后，日常视图里该标的的角标会从红变黄。</p>
+</div>
+
+<h2>全部记录</h2>
+<div class="scroll">
+<table>
+<thead><tr><th>业务日</th><th>规则</th><th>级别</th><th>标的</th><th>说明</th>
+  <th>状态</th><th>处理记录</th><th>处理时间</th></tr></thead>
+<tbody>
+{% for r in rows %}
+<tr>
+  <td class="mono">{{ r.biz_date }}</td>
+  <td class="mono dim">{{ r.rule_id }}</td>
+  <td><span class="sev {{ r.severity }}">{{ r.severity }}</span></td>
+  <td class="name">{% if r.slug %}<a href="../stock/{{ r.slug }}.html">{{ r.name }}</a>
+      {% else %}{{ r.name }}{% endif %}</td>
+  <td class="wide">{{ r.detail }}</td>
+  <td><span class="badge {{ r.badge }}"><span class="dot"></span>{{ r.status_label }}</span></td>
+  <td class="dim wide">{{ r.handling_note or '—' }}</td>
+  <td class="mono dim">{{ r.handled_at or '—' }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% if truncated %}
+<p class="dim">仅展示最近 {{ rows|length }} 条，共 {{ stats.total }} 条。</p>
+{% endif %}
+
+{% endblock %}

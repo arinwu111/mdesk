@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block body %}
+
+<h1>{{ s.name }} <span class="dim mono" style="font-weight:400">{{ s.display_code }}</span></h1>
+<p class="lede">
+  {{ s.sector }}　{{ s.market_label }}　{{ s.type_label }}
+  {%- if s.case_note %}<br>案例价值：{{ s.case_note }}{% endif %}
+</p>
+
+<div class="tiles">
+  <div class="tile"><div class="k">最新价</div><div class="v">{{ s.close_fmt }}</div>
+    <div class="sub">{{ s.currency }}　{{ s.trade_date }}</div></div>
+  <div class="tile"><div class="k">日涨跌</div><div class="v {{ s.dir }}">{{ s.change_fmt }}</div>
+    <div class="sub">较前收盘 {{ s.prev_fmt }}</div></div>
+  <div class="tile"><div class="k">市值</div><div class="v">{{ s.mcap_fmt }}</div>
+    <div class="sub">{{ s.currency }}</div></div>
+  <div class="tile"><div class="k">PE(TTM)</div><div class="v">{{ s.pe_fmt }}</div>
+    <div class="sub">{{ s.pe_note }}</div></div>
+  <div class="tile"><div class="k">数据质量</div>
+    <div class="v"><span class="badge {{ s.badge }}" style="font-size:20px">
+      <span class="dot" style="width:11px;height:11px"></span>{{ s.badge_label }}</span></div>
+    <div class="sub">{{ s.open_count }} 条待查异常</div></div>
+</div>
+
+<h2>复权价走势</h2>
+{% if s.two_series %}
+<div class="legend">
+  <span class="item"><span class="swatch" style="background:var(--series-1)"></span>自算复权价</span>
+  <span class="item"><span class="swatch" style="background:var(--series-2)"></span>数据源复权价</span>
+</div>
+{% endif %}
+{{ s.chart }}
+<figcaption>
+  {% if s.two_series %}
+  两条线本应完全重合。这只标的的自算复权价与数据源给的对不上，差异原因见下方公司行动，
+  以及运营视图的<a href="../ops/corpaction.html">复权核对</a>页。
+  {% else %}
+  自算复权价与数据源完全一致，图上只有一条线。近 {{ s.n_points }} 个交易日。
+  {% endif %}
+</figcaption>
+
+<h2>公司行动</h2>
+{% if s.actions %}
+<div class="scroll">
+<table>
+<thead><tr><th>除权日</th><th>类型</th><th class="num">每股金额</th><th class="num">比例</th>
+  <th class="num">除权前收盘</th><th class="num">占前收盘</th><th>备注</th></tr></thead>
+<tbody>
+{% for a in s.actions %}
+<tr>
+  <td class="mono">{{ a.ex_date }}</td>
+  <td>{{ a.type_label }}</td>
+  <td class="num">{{ a.amount_fmt }}</td>
+  <td class="num">{{ a.ratio_fmt }}</td>
+  <td class="num dim">{{ a.prev_fmt }}</td>
+  <td class="num dim">{{ a.pct_fmt }}</td>
+  <td class="dim wide">{{ a.note }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% else %}
+<p class="dim">近两年无派息、拆股或其他公司行动记录。</p>
+{% endif %}
+
+<h2>该标的的异常记录</h2>
+{% if s.issues %}
+<div class="scroll">
+<table>
+<thead><tr><th>业务日</th><th>规则</th><th>级别</th><th>说明</th><th>状态</th><th>处理记录</th></tr></thead>
+<tbody>
+{% for i in s.issues %}
+<tr>
+  <td class="mono">{{ i.biz_date }}</td>
+  <td class="mono dim">{{ i.rule_id }}</td>
+  <td><span class="sev {{ i.severity }}">{{ i.severity }}</span></td>
+  <td class="wide">{{ i.detail }}</td>
+  <td>{{ i.status_label }}</td>
+  <td class="dim wide">{{ i.handling_note or '待填写' }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% else %}
+<p class="dim">当前没有命中任何校验规则。</p>
+{% endif %}
+
+{% endblock %}

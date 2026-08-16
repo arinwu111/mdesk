@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>运营报告 · mdesk</title>
+<link rel="stylesheet" href="../static/style.css">
+<style>
+.chartbox { position: relative; }
+.chartbox .tip {
+  position: absolute; top: 6px; transform: translateX(-50%);
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 7px 10px; font-size: 12px; pointer-events: none; opacity: 0;
+  transition: opacity .1s; white-space: nowrap; box-shadow: 0 2px 10px rgba(0,0,0,.10);
+  color: var(--ink);
+}
+.chartbox .tip b { display: block; color: var(--ink-muted); font-weight: 500;
+  font-size: 11px; margin-bottom: 3px; }
+.chartbox .tip span { display: flex; align-items: center; gap: 6px; }
+.chartbox .tip i { width: 9px; height: 2px; border-radius: 1px; flex: none; }
+.chartbox .tip em { font-style: normal; margin-left: auto; padding-left: 14px;
+  font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">mdesk<span>港美股行情数据工作台</span></div>
+    <div class="stamp">数据截至 2026-08-14　生成于 2026-08-16 18:29</div>
+  </div>
+  <nav class="tabs">
+    <span class="group-label">日常</span>
+    <a href="../index.html"       class="">自选股</a>
+    <a href="../calendar.html"    class="">事件日历</a>
+    <a href="../newlisting.html"  class="">次新股</a>
+    <span class="sep"></span>
+    <span class="group-label">运营</span>
+    <a href="../ops/index.html"      class="">异常清单</a>
+    <a href="../ops/corpaction.html" class="">复权核对</a>
+    <a href="../ops/rules.html"      class="">规则库</a>
+    <a href="../ops/ledger.html"     class="">处理台账</a>
+    <a href="../ops/report.html"     class="on">运营报告</a>
+  </nav>
+</header>
+
+<div class="wrap">
+
+
+<h1>数据质量运营报告</h1>
+<p class="lede">
+  报告期 2024-08-14 至 2026-08-14（首期，覆盖全部采集窗口）　共监控 35 只标的、16 条校验规则。
+  本报告由系统自动汇总，结论与改进建议部分需要人工补充。
+</p>
+
+<h2>一、总体情况</h2>
+<div class="tiles">
+  <div class="tile"><div class="k">采集成功率</div><div class="v">85%</div>
+    <div class="sub">112/132 个数据集</div></div>
+  <div class="tile"><div class="k">行情数据量</div><div class="v">19,239</div>
+    <div class="sub">日线行数</div></div>
+  <div class="tile"><div class="k">公司行动</div><div class="v">119</div>
+    <div class="sub">近两年</div></div>
+  <div class="tile"><div class="k">异常总数</div><div class="v">98</div>
+    <div class="sub">P0 3 · P1 82 · P2 13</div></div>
+  <div class="tile"><div class="k">异常率</div><div class="v">0.509%</div>
+    <div class="sub">异常条数 ÷ 行情行数</div></div>
+</div>
+
+<h2>二、异常按域分布</h2>
+<svg viewBox="0 0 880 172" width="880" height="172" role="img"><g><title>price 域命中 93 条</title><text x="210" y="19" text-anchor="end" font-size="12" fill="var(--ink-2)">price（行情域）</text><path d="M222,8 H814.0 A4,4 0 0 1 818.0,12 V18 A4,4 0 0 1 814.0,22 H222 Z" fill="var(--series-1)"/><text x="826.0" y="19" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">93</text></g><g><title>corp_action 域命中 4 条</title><text x="210" y="45" text-anchor="end" font-size="12" fill="var(--ink-2)">corp_action（公司行动域）</text><path d="M222,34 H243.63440860215053 A4,4 0 0 1 247.63440860215053,38 V44 A4,4 0 0 1 243.63440860215053,48 H222 Z" fill="var(--series-1)"/><text x="255.63440860215053" y="45" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">4</text></g><g><title>fundamental 域命中 1 条</title><text x="210" y="71" text-anchor="end" font-size="12" fill="var(--ink-2)">fundamental（基本面域）</text><path d="M222,60 H224.40860215053763 A4,4 0 0 1 228.40860215053763,64 V70 A4,4 0 0 1 224.40860215053763,74 H222 Z" fill="var(--series-1)"/><text x="236.40860215053763" y="71" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>ref 域命中 0 条</title><text x="210" y="97" text-anchor="end" font-size="12" fill="var(--ink-2)">ref（主数据域）</text><path d="M222,86 H222.0 A1.5,1.5 0 0 1 223.5,87.5 V98.5 A1.5,1.5 0 0 1 222.0,100 H222 Z" fill="var(--series-1)"/><text x="231.5" y="97" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">0</text></g><g><title>cross 域命中 0 条</title><text x="210" y="123" text-anchor="end" font-size="12" fill="var(--ink-2)">cross（跨市场域）</text><path d="M222,112 H222.0 A1.5,1.5 0 0 1 223.5,113.5 V124.5 A1.5,1.5 0 0 1 222.0,126 H222 Z" fill="var(--series-1)"/><text x="231.5" y="123" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">0</text></g><g><title>ops 域命中 0 条</title><text x="210" y="149" text-anchor="end" font-size="12" fill="var(--ink-2)">ops（作业域）</text><path d="M222,138 H222.0 A1.5,1.5 0 0 1 223.5,139.5 V150.5 A1.5,1.5 0 0 1 222.0,152 H222 Z" fill="var(--series-1)"/><text x="231.5" y="149" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">0</text></g><line x1="222" y1="4" x2="222" y2="168" stroke="var(--axis)" stroke-width="1"/></svg>
+<figcaption>横轴为异常条数。域的划分对应规则库的分组。</figcaption>
+
+<h2>三、异常按标的分布</h2>
+<svg viewBox="0 0 880 712" width="880" height="712" role="img"><g><title>智谱 命中 14 条</title><text x="210" y="19" text-anchor="end" font-size="12" fill="var(--ink-2)">智谱</text><path d="M222,8 H814.0 A4,4 0 0 1 818.0,12 V18 A4,4 0 0 1 814.0,22 H222 Z" fill="var(--series-1)"/><text x="826.0" y="19" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">14</text></g><g><title>Oklo 命中 12 条</title><text x="210" y="43" text-anchor="end" font-size="12" fill="var(--ink-2)">Oklo</text><path d="M222,32 H728.8571428571429 A4,4 0 0 1 732.8571428571429,36 V42 A4,4 0 0 1 728.8571428571429,46 H222 Z" fill="var(--series-1)"/><text x="740.8571428571429" y="43" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">12</text></g><g><title>IonQ 命中 10 条</title><text x="210" y="67" text-anchor="end" font-size="12" fill="var(--ink-2)">IonQ</text><path d="M222,56 H643.7142857142858 A4,4 0 0 1 647.7142857142858,60 V66 A4,4 0 0 1 643.7142857142858,70 H222 Z" fill="var(--series-1)"/><text x="655.7142857142858" y="67" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">10</text></g><g><title>闪迪 命中 6 条</title><text x="210" y="91" text-anchor="end" font-size="12" fill="var(--ink-2)">闪迪</text><path d="M222,80 H473.42857142857144 A4,4 0 0 1 477.42857142857144,84 V90 A4,4 0 0 1 473.42857142857144,94 H222 Z" fill="var(--series-1)"/><text x="485.42857142857144" y="91" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">6</text></g><g><title>HK 命中 6 条</title><text x="210" y="115" text-anchor="end" font-size="12" fill="var(--ink-2)">HK</text><path d="M222,104 H473.42857142857144 A4,4 0 0 1 477.42857142857144,108 V114 A4,4 0 0 1 473.42857142857144,118 H222 Z" fill="var(--series-1)"/><text x="485.42857142857144" y="115" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">6</text></g><g><title>Circle 命中 6 条</title><text x="210" y="139" text-anchor="end" font-size="12" fill="var(--ink-2)">Circle</text><path d="M222,128 H473.42857142857144 A4,4 0 0 1 477.42857142857144,132 V138 A4,4 0 0 1 473.42857142857144,142 H222 Z" fill="var(--series-1)"/><text x="485.42857142857144" y="139" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">6</text></g><g><title>Nebius 命中 5 条</title><text x="210" y="163" text-anchor="end" font-size="12" fill="var(--ink-2)">Nebius</text><path d="M222,152 H430.8571428571429 A4,4 0 0 1 434.8571428571429,156 V162 A4,4 0 0 1 430.8571428571429,166 H222 Z" fill="var(--series-1)"/><text x="442.8571428571429" y="163" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">5</text></g><g><title>优必选 命中 4 条</title><text x="210" y="187" text-anchor="end" font-size="12" fill="var(--ink-2)">优必选</text><path d="M222,176 H388.2857142857143 A4,4 0 0 1 392.2857142857143,180 V186 A4,4 0 0 1 388.2857142857143,190 H222 Z" fill="var(--series-1)"/><text x="400.2857142857143" y="187" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">4</text></g><g><title>中芯国际 A 命中 3 条</title><text x="210" y="211" text-anchor="end" font-size="12" fill="var(--ink-2)">中芯国际 A</text><path d="M222,200 H345.7142857142857 A4,4 0 0 1 349.7142857142857,204 V210 A4,4 0 0 1 345.7142857142857,214 H222 Z" fill="var(--series-1)"/><text x="357.7142857142857" y="211" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">3</text></g><g><title>阿里巴巴-W 命中 3 条</title><text x="210" y="235" text-anchor="end" font-size="12" fill="var(--ink-2)">阿里巴巴-W</text><path d="M222,224 H345.7142857142857 A4,4 0 0 1 349.7142857142857,228 V234 A4,4 0 0 1 345.7142857142857,238 H222 Z" fill="var(--series-1)"/><text x="357.7142857142857" y="235" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">3</text></g><g><title>华虹半导体 命中 3 条</title><text x="210" y="259" text-anchor="end" font-size="12" fill="var(--ink-2)">华虹半导体</text><path d="M222,248 H345.7142857142857 A4,4 0 0 1 349.7142857142857,252 V258 A4,4 0 0 1 345.7142857142857,262 H222 Z" fill="var(--series-1)"/><text x="357.7142857142857" y="259" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">3</text></g><g><title>Lumentum 命中 3 条</title><text x="210" y="283" text-anchor="end" font-size="12" fill="var(--ink-2)">Lumentum</text><path d="M222,272 H345.7142857142857 A4,4 0 0 1 349.7142857142857,276 V282 A4,4 0 0 1 345.7142857142857,286 H222 Z" fill="var(--series-1)"/><text x="357.7142857142857" y="283" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">3</text></g><g><title>台积电 命中 2 条</title><text x="210" y="307" text-anchor="end" font-size="12" fill="var(--ink-2)">台积电</text><path d="M222,296 H303.1428571428571 A4,4 0 0 1 307.1428571428571,300 V306 A4,4 0 0 1 303.1428571428571,310 H222 Z" fill="var(--series-1)"/><text x="315.1428571428571" y="307" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">2</text></g><g><title>中芯国际 命中 2 条</title><text x="210" y="331" text-anchor="end" font-size="12" fill="var(--ink-2)">中芯国际</text><path d="M222,320 H303.1428571428571 A4,4 0 0 1 307.1428571428571,324 V330 A4,4 0 0 1 303.1428571428571,334 H222 Z" fill="var(--series-1)"/><text x="315.1428571428571" y="331" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">2</text></g><g><title>泡泡玛特 命中 2 条</title><text x="210" y="355" text-anchor="end" font-size="12" fill="var(--ink-2)">泡泡玛特</text><path d="M222,344 H303.1428571428571 A4,4 0 0 1 307.1428571428571,348 V354 A4,4 0 0 1 303.1428571428571,358 H222 Z" fill="var(--series-1)"/><text x="315.1428571428571" y="355" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">2</text></g><g><title>特斯拉 命中 2 条</title><text x="210" y="379" text-anchor="end" font-size="12" fill="var(--ink-2)">特斯拉</text><path d="M222,368 H303.1428571428571 A4,4 0 0 1 307.1428571428571,372 V378 A4,4 0 0 1 303.1428571428571,382 H222 Z" fill="var(--series-1)"/><text x="315.1428571428571" y="379" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">2</text></g><g><title>Celsius 命中 2 条</title><text x="210" y="403" text-anchor="end" font-size="12" fill="var(--ink-2)">Celsius</text><path d="M222,392 H303.1428571428571 A4,4 0 0 1 307.1428571428571,396 V402 A4,4 0 0 1 303.1428571428571,406 H222 Z" fill="var(--series-1)"/><text x="315.1428571428571" y="403" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">2</text></g><g><title>AMD 命中 2 条</title><text x="210" y="427" text-anchor="end" font-size="12" fill="var(--ink-2)">AMD</text><path d="M222,416 H303.1428571428571 A4,4 0 0 1 307.1428571428571,420 V426 A4,4 0 0 1 303.1428571428571,430 H222 Z" fill="var(--series-1)"/><text x="315.1428571428571" y="427" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">2</text></g><g><title>SK 海力士 命中 1 条</title><text x="210" y="451" text-anchor="end" font-size="12" fill="var(--ink-2)">SK 海力士</text><path d="M222,440 H260.57142857142856 A4,4 0 0 1 264.57142857142856,444 V450 A4,4 0 0 1 260.57142857142856,454 H222 Z" fill="var(--series-1)"/><text x="272.57142857142856" y="451" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>汇丰控股 命中 1 条</title><text x="210" y="475" text-anchor="end" font-size="12" fill="var(--ink-2)">汇丰控股</text><path d="M222,464 H260.57142857142856 A4,4 0 0 1 264.57142857142856,468 V474 A4,4 0 0 1 260.57142857142856,478 H222 Z" fill="var(--series-1)"/><text x="272.57142857142856" y="475" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>Robinhood 命中 1 条</title><text x="210" y="499" text-anchor="end" font-size="12" fill="var(--ink-2)">Robinhood</text><path d="M222,488 H260.57142857142856 A4,4 0 0 1 264.57142857142856,492 V498 A4,4 0 0 1 260.57142857142856,502 H222 Z" fill="var(--series-1)"/><text x="272.57142857142856" y="499" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>美的集团 A 命中 1 条</title><text x="210" y="523" text-anchor="end" font-size="12" fill="var(--ink-2)">美的集团 A</text><path d="M222,512 H260.57142857142856 A4,4 0 0 1 264.57142857142856,516 V522 A4,4 0 0 1 260.57142857142856,526 H222 Z" fill="var(--series-1)"/><text x="272.57142857142856" y="523" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>小鹏汽车-W 命中 1 条</title><text x="210" y="547" text-anchor="end" font-size="12" fill="var(--ink-2)">小鹏汽车-W</text><path d="M222,536 H260.57142857142856 A4,4 0 0 1 264.57142857142856,540 V546 A4,4 0 0 1 260.57142857142856,550 H222 Z" fill="var(--series-1)"/><text x="272.57142857142856" y="547" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>雅诗兰黛 命中 1 条</title><text x="210" y="571" text-anchor="end" font-size="12" fill="var(--ink-2)">雅诗兰黛</text><path d="M222,560 H260.57142857142856 A4,4 0 0 1 264.57142857142856,564 V570 A4,4 0 0 1 260.57142857142856,574 H222 Z" fill="var(--series-1)"/><text x="272.57142857142856" y="571" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>拼多多 命中 1 条</title><text x="210" y="595" text-anchor="end" font-size="12" fill="var(--ink-2)">拼多多</text><path d="M222,584 H260.57142857142856 A4,4 0 0 1 264.57142857142856,588 V594 A4,4 0 0 1 260.57142857142856,598 H222 Z" fill="var(--series-1)"/><text x="272.57142857142856" y="595" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>紫金矿业 A 命中 1 条</title><text x="210" y="619" text-anchor="end" font-size="12" fill="var(--ink-2)">紫金矿业 A</text><path d="M222,608 H260.57142857142856 A4,4 0 0 1 264.57142857142856,612 V618 A4,4 0 0 1 260.57142857142856,622 H222 Z" fill="var(--series-1)"/><text x="272.57142857142856" y="619" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>恒瑞医药 A 命中 1 条</title><text x="210" y="643" text-anchor="end" font-size="12" fill="var(--ink-2)">恒瑞医药 A</text><path d="M222,632 H260.57142857142856 A4,4 0 0 1 264.57142857142856,636 V642 A4,4 0 0 1 260.57142857142856,646 H222 Z" fill="var(--series-1)"/><text x="272.57142857142856" y="643" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>恒瑞医药 命中 1 条</title><text x="210" y="667" text-anchor="end" font-size="12" fill="var(--ink-2)">恒瑞医药</text><path d="M222,656 H260.57142857142856 A4,4 0 0 1 264.57142857142856,660 V666 A4,4 0 0 1 260.57142857142856,670 H222 Z" fill="var(--series-1)"/><text x="272.57142857142856" y="667" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>阿斯麦 命中 1 条</title><text x="210" y="691" text-anchor="end" font-size="12" fill="var(--ink-2)">阿斯麦</text><path d="M222,680 H260.57142857142856 A4,4 0 0 1 264.57142857142856,684 V690 A4,4 0 0 1 260.57142857142856,694 H222 Z" fill="var(--series-1)"/><text x="272.57142857142856" y="691" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><line x1="222" y1="4" x2="222" y2="708" stroke="var(--axis)" stroke-width="1"/></svg>
+<figcaption>只列出有异常命中的标的，横轴为异常条数。</figcaption>
+
+<h2>四、本期重点问题</h2>
+
+<div class="card">
+  <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+    <span class="sev P0">P0</span>
+    <span style="font-weight:600">数据源派息金额与其复权价不自洽</span>
+    <span class="pill">9988.HK、0005.HK 共 3 笔</span>
+  </div>
+  <p style="color:var(--ink-2);margin:10px 0 0">阿里巴巴两次派息全部不自洽，汇丰最近一次不自洽，隐含倍数均为 7.847，等于港币兑美元联系汇率。数据源用美元金额扣减了港币价格。两只中招的都是同时有美股 ADR 的港股，纯港股和纯美股标的全部自洽。<b>处理</b>：复权价一律以自算为准，不使用数据源的 Adj Close。<b>待办</b>：两周后复检汇丰，验证「新派息临时错、事后自动修正」的假设。</p>
+</div>
+
+<div class="card">
+  <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+    <span class="sev P1">P1</span>
+    <span style="font-weight:600">阿里巴巴历史复权价整段偏低</span>
+    <span class="pill">445 个交易日</span>
+  </div>
+  <p style="color:var(--ink-2);margin:10px 0 0">受上述问题影响，阿里全历史 445 个交易日的复权价偏低最多 2.201%。任何基于数据源复权价计算的历史涨跌幅、区间收益、波动率都会有系统性偏差。<b>处理</b>：该标的的历史分析全部改用 mart_adj_price 的自算列。</p>
+</div>
+
+<div class="card">
+  <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+    <span class="sev P2">P2</span>
+    <span style="font-weight:600">港股半日市当日成交量整体缺失</span>
+    <span class="pill">6 个交易日</span>
+  </div>
+  <p style="color:var(--ink-2);margin:10px 0 0">平安夜、除夕、农历新年前一日共 6 天，港股标的成交量集体为零。港交所这几天只有早市，数据源不返回成交量。这属于已知市场规则而非数据错误。<b>处理</b>：这些日期跳过成交量相关计算。<b>待办</b>：半日市日历每年从港交所公告更新一次，已列入 SOP 年度事项。</p>
+</div>
+
+
+<h2>五、规则迭代记录</h2>
+<div class="scroll">
+<table>
+<thead><tr><th>规则</th><th>名称</th><th>级别</th><th class="num">本期命中</th><th>迭代说明</th></tr></thead>
+<tbody>
+
+<tr>
+  <td class="mono">DQ-CA-001</td>
+  <td>数据源派息金额与其复权价不自洽</td>
+  <td><span class="sev P0">P0</span></td>
+  <td class="num">3</td>
+  <td class="wide dim">项目的核心规则，也是第一条真正抓到东西的规则。首轮就命中阿里 9988.HK 两次派息全错、汇丰 0005.HK 最近一次派息错，隐含倍数均为 7.847，恰等于港币兑美元联系汇率，说明数据源用美元金额去扣减港币价格。两只中招的都是有美股 ADR 的港股。初版规则按受影响的每个交易日报警，阿里一个根因刷出 445 条，改为按除权日定位根因后降到 3 条。</td>
+</tr>
+
+<tr>
+  <td class="mono">DQ-CA-002</td>
+  <td>拆合股比例超出常理</td>
+  <td><span class="sev P0">P0</span></td>
+  <td class="num">0</td>
+  <td class="wide dim">拆股比例填反是复权出错最隐蔽的原因，因为价格曲线看起来仍然连续，只是整段被缩放了。</td>
+</tr>
+
+<tr>
+  <td class="mono">DQ-CA-003</td>
+  <td>派息金额超过股价一成</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="num">0</td>
+  <td class="wide dim">高股息标的如中国石油会正常命中，需要人工确认是特别股息还是数据错。这类规则的价值不在于零误报，在于强制你每次都去看一眼。</td>
+</tr>
+
+<tr>
+  <td class="mono">DQ-CA-004</td>
+  <td>自算复权序列整体偏离</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="num">1</td>
+  <td class="wide dim">从 DQ-CA-001 拆出来的。根因和影响范围要分开报：根因一条，用于定位和修复；影响范围一条，用于判断这只标的的历史数据还能不能用。</td>
+</tr>
+
+<tr>
+  <td class="mono">DQ-CRS-001</td>
+  <td>跨市场折算价差超阈值</td>
+  <td><span class="sev P0">P0</span></td>
+  <td class="num">0</td>
+  <td class="wide dim">阈值按对子分别设定：双重主要上市如阿里、小鹏取 3%，ADR 溢价常态化的台积电取 25%，A+H 溢价属正常现象所以放到 60% 以上，监控的是溢价突变而非溢价本身。</td>
+</tr>
+
+<tr>
+  <td class="mono">DQ-FUN-001</td>
+  <td>市值或股本缺失</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="num">0</td>
+  <td class="wide dim">预期 SDR 和次新股会命中。SKHY 是存托凭证结构、智谱和紫金黄金国际是次新股，免费数据源对这类标的的基本面覆盖通常最差。</td>
+</tr>
+
+<tr>
+  <td class="mono">DQ-FUN-002</td>
+  <td>盈利为正却没有市盈率</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="num">0</td>
+  <td class="wide dim">这条规则是为了把「无盈利所以没有 PE」和「有盈利但字段丢了」分开。优必选、智谱、OKLO 这类无盈利标的不该因为 PE 为空被告警。</td>
+</tr>
+
+<tr>
+  <td class="mono">DQ-FUN-003</td>
+  <td>估值指标极端值</td>
+  <td><span class="sev P2">P2</span></td>
+  <td class="num">1</td>
+  <td class="wide dim">微利公司的 PE 天然会很大，所以定 P2。真正要防的是分母单位错位，比如把千元当成元。</td>
+</tr>
+
+<tr>
+  <td class="mono">DQ-OPS-001</td>
+  <td>采集作业未成功</td>
+  <td><span class="sev P0">P0</span></td>
+  <td class="num">0</td>
+  <td class="wide dim">监控系统自己也需要被监控。静默失败比报错更危险，因为看板照常显示，只是数字停在了昨天。首轮跑完发现 20 只标的两年内无任何公司行动被判为 empty 而误报，已排除该组合。采集层只记录事实，判断什么算异常是规则层的事。</td>
+</tr>
+
+<tr>
+  <td class="mono">DQ-PRC-001</td>
+  <td>OHLC 逻辑越界</td>
+  <td><span class="sev P0">P0</span></td>
+  <td class="num">0</td>
+  <td class="wide dim">最基础的自洽性检查，零误报。任何数据源只要命中这条就说明清洗环节有问题。</td>
+</tr>
+
+<tr>
+  <td class="mono">DQ-PRC-002</td>
+  <td>无公司行动的异常跳空</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="num">81</td>
+  <td class="wide dim">首版阈值对全部标的统一取 20%。预期对 IONQ、OKLO 这类高波动标的会大量误报，届时需按标的历史波动率分层，这条规则的迭代过程本身就是要记录的东西。</td>
+</tr>
+
+<tr>
+  <td class="mono">DQ-PRC-003</td>
+  <td>个股零成交量但价格变动</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="num">0</td>
+  <td class="wide dim">初版不区分个股与全市场，港股半日市当天十来只标的一起命中，噪声很大。加上同市场同日命中占比的判据后，只保留孤立出现的情况，全市场性的交给 DQ-PRC-005。</td>
+</tr>
+
+<tr>
+  <td class="mono">DQ-PRC-004</td>
+  <td>交易日序列断档</td>
+  <td><span class="sev P2">P2</span></td>
+  <td class="num">6</td>
+  <td class="wide dim">长假会误报，所以定为 P2 观察级。真正要抓的是长期停牌和历史断层，比如 Nebius 前身停牌两年多后复牌改代码这种情况。</td>
+</tr>
+
+<tr>
+  <td class="mono">DQ-PRC-005</td>
+  <td>全市场成交量缺失</td>
+  <td><span class="sev P2">P2</span></td>
+  <td class="num">6</td>
+  <td class="wide dim">首轮命中 6 天，全部是香港半日市：平安夜、除夕、农历新年前一日。港交所这几天只有早市，数据源不返回成交量。这属于已知的市场规则而非数据错误，定为 P2 观察级，处理方式是在这些日期跳过成交量相关计算。半日市日历需要每年从港交所公告更新一次，已写入 SOP 的年度事项。</td>
+</tr>
+
+<tr>
+  <td class="mono">DQ-REF-001</td>
+  <td>证券代码有效性校验</td>
+  <td><span class="sev P0">P0</span></td>
+  <td class="num">0</td>
+  <td class="wide dim">建库第一条规则。起因是整理自选股时发现用户给的名单里 MBIS/HOLD 是笔误、DRAM/SKHY 无法确认、智谱缺代码。证券代码本身就是需要校验的数据。</td>
+</tr>
+
+<tr>
+  <td class="mono">DQ-REF-002</td>
+  <td>证券类型登记一致性</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="num">0</td>
+  <td class="wide dim">ETF 没有 EPS 和 PE 是正常的，股票没有才是异常。若类型登记错了，字段缺失类规则会大面积误报。</td>
+</tr>
+
+</tbody>
+</table>
+</div>
+
+<h2>六、已知缺口与下期计划</h2>
+<div class="card">
+<ol style="margin:0;padding-left:20px;color:var(--ink-2)">
+<li style="margin-bottom:8px"><b>无前瞻性公司行动日历。</b>当前只有已发生的除权除息，拿不到未来的预告。要补需要接入港交所披露易和 SEC EDGAR 的公告原文并解析。这是下一版最优先项，因为「明天哪只票除息」比「上个月哪只票除过息」有用得多。</li><li style="margin-bottom:8px"><b>无新股首日检查。</b>次新股页只能从行情起点反推上市时间，无法区分「新上市」和「数据源覆盖起点晚」，也做不了首日字段完整性检查。</li><li style="margin-bottom:8px"><b>单一数据源。</b>目前全部依赖 yfinance，跨源比对无法进行。本期发现的问题靠的是数据源内部自洽性检查，这条路能走通但覆盖面有限。接入 akshare 作为第二源后，可以增加一整个 cross-source 域的规则。</li><li style="margin-bottom:8px"><b>DQ-PRC-002 阈值未分层。</b>异常跳空阈值对全部标的统一取 20%，在智谱、OKLO、IONQ 这类高波动标的上贡献了大部分命中。下一步按标的历史波动率分层设定阈值。</li><li style="margin-bottom:8px"><b>台账填写尚未形成习惯。</b>当前所有异常状态都是 open，没有一条人工处理记录。按 SOP 每日盘后动线补齐，这是整个项目积累价值的地方。</li>
+</ol>
+</div>
+
+
+
+<footer class="foot">
+  mdesk 自建港美股行情数据工作台　行情来源 yfinance，仅用于数据质量核对与个人自用，不构成任何投资建议。<br>
+  本轮共 35 只标的、16 条校验规则，未处理异常 93 条。
+</footer>
+</div>
+
+<script>
+document.querySelectorAll('.chartbox').forEach(function (box) {
+  var cfg = JSON.parse(box.dataset.chart);
+  var svg = box.querySelector('svg');
+  var cross = svg.querySelector('.cross');
+  var dots = svg.querySelectorAll('.hd');
+  var hit = svg.querySelector('.hit');
+  var tip = document.createElement('div');
+  tip.className = 'tip';
+  box.appendChild(tip);
+
+  function nearest(clientX) {
+    var r = svg.getBoundingClientRect();
+    var vx = (clientX - r.left) / r.width * cfg.width;
+    var best = 0, bd = Infinity;
+    for (var i = 0; i < cfg.px.length; i++) {
+      var d = Math.abs(cfg.px[i] - vx);
+      if (d < bd) { bd = d; best = i; }
+    }
+    return best;
+  }
+
+  function show(e) {
+    var i = nearest(e.clientX);
+    cross.setAttribute('x1', cfg.px[i]);
+    cross.setAttribute('x2', cfg.px[i]);
+    cross.setAttribute('opacity', '1');
+    var lines = '<b>' + cfg.x[i] + '</b>';
+    cfg.series.forEach(function (s, k) {
+      var dot = dots[k];
+      if (s.py[i] === null) { dot.setAttribute('opacity', '0'); return; }
+      dot.setAttribute('cx', cfg.px[i]);
+      dot.setAttribute('cy', s.py[i]);
+      dot.setAttribute('opacity', '1');
+      lines += '<span><i style="background:' + s.color + '"></i>' +
+               s.name + '<em>' + s.val[i] + '</em></span>';
+    });
+    tip.innerHTML = lines;
+    var r = svg.getBoundingClientRect();
+    var left = cfg.px[i] / cfg.width * r.width;
+    tip.style.left = Math.min(Math.max(left, 70), r.width - 70) + 'px';
+    tip.style.opacity = '1';
+  }
+
+  function hide() {
+    cross.setAttribute('opacity', '0');
+    dots.forEach(function (d) { d.setAttribute('opacity', '0'); });
+    tip.style.opacity = '0';
+  }
+
+  hit.addEventListener('mousemove', show);
+  hit.addEventListener('mouseleave', hide);
+  hit.addEventListener('touchmove', function (e) {
+    if (e.touches.length) { show(e.touches[0]); }
+  }, { passive: true });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+symbol,display_code,name,market,sector,instrument_type,is_case,case_note,is_reference
+0700.HK,HK 00700,腾讯控股,HK,互联网,stock,1,曾以实物分派京东与美团股份，实物股息是复权最难处理的一类,0
+9988.HK,HK 09988,阿里巴巴-W,HK,电商,stock,1,港美双重主要上市，对 BABA 按存托比例折算做跨市场价差校验,0
+9868.HK,HK 09868,小鹏汽车-W,HK,汽车,stock,1,港美双重上市，对 XPEV 折算，与阿里形成对照,0
+0857.HK,HK 00857,中国石油股份,HK,能源,stock,1,高股息，派息复权的标准样本,0
+1276.HK,HK 01276,恒瑞医药,HK,医药,stock,1,A+H，H 股为次新，历史数据长度不足的典型,0
+0300.HK,HK 00300,美的集团,HK,家电,stock,1,A+H，H 股次新，A+H 价差观察,0
+2259.HK,HK 02259,紫金黄金国际,HK,有色金属,stock,1,分拆上市叠加次新股，双重案例,0
+0981.HK,HK 00981,中芯国际,HK,半导体,stock,1,A+H，两地估值口径差异,0
+2513.HK,HK 02513,智谱,HK,人工智能,stock,1,次新股且无盈利，估值字段大概率为空或负,0
+9992.HK,HK 09992,泡泡玛特,HK,潮玩消费,stock,1,无股息无拆股，干净对照组,0
+1347.HK,HK 01347,华虹半导体,HK,半导体,stock,0,,0
+9880.HK,HK 09880,优必选,HK,机器人,stock,0,,0
+NVDA,US NVDA,英伟达,US,半导体,stock,1,10 拆 1，拆股复权的教科书样本,0
+GOOGL,US GOOGL,谷歌-A,US,互联网,stock,1,20 拆 1，大比例拆股,0
+GE,US GE,GE Aerospace,US,工业,stock,1,连续两次分拆子公司，母公司历史价需多次调整,0
+HSBC,US HSBC,汇丰控股,US,银行,adr,1,美股 ADR 对应港股 00005，跨市场校验,0
+SKHY,US SKHY,SK 海力士,US,存储半导体,sdr,1,存托凭证结构比 ADR 更冷门，免费数据源大概率给不全,0
+CRCL,US CRCL,Circle,US,加密金融,stock,1,近期 IPO，新股首日字段完整性检查,0
+OKLO,US OKLO,Oklo,US,核能,stock,1,de-SPAC 上市，历史数据前后不连续且无盈利,0
+TSLA,US TSLA,特斯拉,US,汽车,stock,1,历史两次拆股，多次拆股的累计因子链,0
+DIS,US DIS,迪士尼,US,传媒娱乐,stock,1,半年度派息，派息频率不规则,0
+SOXX,US SOXX,iShares 半导体 ETF,US,ETF,etf,1,ETF 无 EPS 与 PE，测字段不适用与真缺失的区分,0
+LITE,US LITE,Lumentum,US,光通信,stock,0,,0
+NBIS,US NBIS,Nebius,US,云计算,stock,0,,0
+SNDK,US SNDK,闪迪,US,存储半导体,stock,0,,0
+AMD,US AMD,AMD,US,半导体,stock,0,,0
+IONQ,US IONQ,IonQ,US,量子计算,stock,0,,0
+CELH,US CELH,Celsius,US,饮料消费,stock,0,,0
+PDD,US PDD,拼多多,US,电商,adr,0,,0
+DRAM,US DRAM,存储主题 ETF,US,ETF,etf,0,,0
+AAPL,US AAPL,苹果,US,消费电子,stock,0,,0
+ASML,US ASML,阿斯麦,US,半导体设备,adr,0,,0
+TSM,US TSM,台积电,US,半导体,adr,0,,0
+EL,US EL,雅诗兰黛,US,美妆消费,stock,0,,0
+HOOD,US HOOD,Robinhood,US,金融科技,stock,0,,0
+BABA,US BABA,阿里巴巴 ADR,US,电商,adr,0,9988.HK 的跨市场对照,1
+XPEV,US XPEV,小鹏汽车 ADR,US,汽车,adr,0,9868.HK 的跨市场对照,1
+0005.HK,HK 00005,汇丰控股,HK,银行,stock,0,HSBC 的跨市场对照,1
+2330.TW,TW 2330,台积电,TW,半导体,stock,0,TSM 的跨市场对照,1
+000333.SZ,CN 000333,美的集团 A,CN,家电,stock,0,0300.HK 的 A+H 对照,1
+600276.SS,CN 600276,恒瑞医药 A,CN,医药,stock,0,1276.HK 的 A+H 对照,1
+688981.SS,CN 688981,中芯国际 A,CN,半导体,stock,0,0981.HK 的 A+H 对照,1
+601899.SS,CN 601899,紫金矿业 A,CN,有色金属,stock,0,2259.HK 的分拆母公司对照,1

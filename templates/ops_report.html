@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block body %}
+
+<h1>数据质量运营报告</h1>
+<p class="lede">
+  报告期 {{ period }}　共监控 {{ meta.n_symbols }} 只标的、{{ meta.n_rules }} 条校验规则。
+  本报告由系统自动汇总，结论与改进建议部分需要人工补充。
+</p>
+
+<h2>一、总体情况</h2>
+<div class="tiles">
+  <div class="tile"><div class="k">采集成功率</div><div class="v">{{ s.fetch_rate }}</div>
+    <div class="sub">{{ s.fetch_ok }}/{{ s.fetch_total }} 个数据集</div></div>
+  <div class="tile"><div class="k">行情数据量</div><div class="v">{{ s.n_price }}</div>
+    <div class="sub">日线行数</div></div>
+  <div class="tile"><div class="k">公司行动</div><div class="v">{{ s.n_actions }}</div>
+    <div class="sub">近两年</div></div>
+  <div class="tile"><div class="k">异常总数</div><div class="v">{{ s.n_issues }}</div>
+    <div class="sub">P0 {{ s.p0 }} · P1 {{ s.p1 }} · P2 {{ s.p2 }}</div></div>
+  <div class="tile"><div class="k">异常率</div><div class="v">{{ s.issue_rate }}</div>
+    <div class="sub">异常条数 ÷ 行情行数</div></div>
+</div>
+
+<h2>二、异常按域分布</h2>
+{{ domain_chart }}
+<figcaption>横轴为异常条数。域的划分对应规则库的分组。</figcaption>
+
+<h2>三、异常按标的分布</h2>
+{{ symbol_chart }}
+<figcaption>只列出有异常命中的标的，横轴为异常条数。</figcaption>
+
+<h2>四、本期重点问题</h2>
+{% for f in findings %}
+<div class="card">
+  <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+    <span class="sev {{ f.severity }}">{{ f.severity }}</span>
+    <span style="font-weight:600">{{ f.title }}</span>
+    <span class="pill">{{ f.scope }}</span>
+  </div>
+  <p style="color:var(--ink-2);margin:10px 0 0">{{ f.body | safe }}</p>
+</div>
+{% endfor %}
+
+<h2>五、规则迭代记录</h2>
+<div class="scroll">
+<table>
+<thead><tr><th>规则</th><th>名称</th><th>级别</th><th class="num">本期命中</th><th>迭代说明</th></tr></thead>
+<tbody>
+{% for r in iterations %}
+<tr>
+  <td class="mono">{{ r.rule_id }}</td>
+  <td>{{ r.name }}</td>
+  <td><span class="sev {{ r.severity }}">{{ r.severity }}</span></td>
+  <td class="num">{{ r.hits }}</td>
+  <td class="wide dim">{{ r.note }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+<h2>六、已知缺口与下期计划</h2>
+<div class="card">
+<ol style="margin:0;padding-left:20px;color:var(--ink-2)">
+{% for g in gaps %}<li style="margin-bottom:8px">{{ g | safe }}</li>{% endfor %}
+</ol>
+</div>
+
+{% endblock %}

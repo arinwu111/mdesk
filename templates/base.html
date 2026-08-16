@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }} · mdesk</title>
+<link rel="stylesheet" href="{{ root }}static/style.css">
+<style>{{ hover_css }}</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">mdesk<span>港美股行情数据工作台</span></div>
+    <div class="stamp">数据截至 {{ meta.data_date }}　生成于 {{ meta.built_at }}</div>
+  </div>
+  <nav class="tabs">
+    <span class="group-label">日常</span>
+    <a href="{{ root }}index.html"       class="{{ 'on' if page == 'index' }}">自选股</a>
+    <a href="{{ root }}calendar.html"    class="{{ 'on' if page == 'calendar' }}">事件日历</a>
+    <a href="{{ root }}newlisting.html"  class="{{ 'on' if page == 'newlisting' }}">次新股</a>
+    <span class="sep"></span>
+    <span class="group-label">运营</span>
+    <a href="{{ root }}ops/index.html"      class="{{ 'on' if page == 'ops' }}">异常清单</a>
+    <a href="{{ root }}ops/corpaction.html" class="{{ 'on' if page == 'corpaction' }}">复权核对</a>
+    <a href="{{ root }}ops/rules.html"      class="{{ 'on' if page == 'rules' }}">规则库</a>
+    <a href="{{ root }}ops/ledger.html"     class="{{ 'on' if page == 'ledger' }}">处理台账</a>
+    <a href="{{ root }}ops/report.html"     class="{{ 'on' if page == 'report' }}">运营报告</a>
+  </nav>
+</header>
+
+<div class="wrap">
+{% block body %}{% endblock %}
+
+<footer class="foot">
+  mdesk 自建港美股行情数据工作台　行情来源 yfinance，仅用于数据质量核对与个人自用，不构成任何投资建议。<br>
+  本轮共 {{ meta.n_symbols }} 只标的、{{ meta.n_rules }} 条校验规则，未处理异常 {{ meta.n_open }} 条。
+</footer>
+</div>
+
+<script>{{ hover_js }}</script>
+</body>
+</html>

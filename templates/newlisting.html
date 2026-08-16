@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block body %}
+
+<h1>次新股</h1>
+<p class="lede">
+  上市时间短的标的，历史数据天然不足，估值指标常常为空，是数据质量问题最集中的一类。
+  这一页按数据起点排序，起点晚于采集窗口起点的，说明它在这段窗口内才开始有行情。
+</p>
+
+<div class="tiles">
+  <div class="tile"><div class="k">窗口内新增</div><div class="v">{{ stats.n_new }}</div>
+    <div class="sub">数据起点晚于 {{ stats.window_start }}</div></div>
+  <div class="tile"><div class="k">上市不足一年</div><div class="v">{{ stats.n_year }}</div>
+    <div class="sub">按数据起点估算</div></div>
+  <div class="tile"><div class="k">估值字段缺失</div><div class="v">{{ stats.n_missing }}</div>
+    <div class="sub">其中 PE 为空</div></div>
+  <div class="tile"><div class="k">最新一只</div><div class="v" style="font-size:18px">{{ stats.newest_name }}</div>
+    <div class="sub">起点 {{ stats.newest_date }}</div></div>
+</div>
+
+<h2>按数据起点排序</h2>
+<div class="scroll">
+<table>
+<thead><tr><th>数据起点</th><th>代码</th><th>名称</th><th>市场</th><th>行业</th>
+  <th class="num">交易日数</th><th class="num">最新价</th><th class="num">PE(TTM)</th>
+  <th class="num">区间涨跌</th><th>数据质量</th></tr></thead>
+<tbody>
+{% for r in rows %}
+<tr>
+  <td class="mono">{{ r.start }}</td>
+  <td class="mono dim">{{ r.display_code }}</td>
+  <td class="name"><a href="stock/{{ r.slug }}.html">{{ r.name }}</a></td>
+  <td class="dim">{{ r.market }}</td>
+  <td class="dim">{{ r.sector }}</td>
+  <td class="num">{{ r.n_days }}</td>
+  <td class="num">{{ r.close_fmt }}</td>
+  <td class="num dim">{{ r.pe_fmt }}</td>
+  <td class="num {{ r.dir }}">{{ r.total_fmt }}</td>
+  <td><span class="badge {{ r.badge }}"><span class="dot"></span>{{ r.badge_label }}</span></td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+<div class="note gap">
+  <b>本版缺口</b>：真正的新股检查要在上市首日盘前完成，需要港交所新上市公告和 SEC 的 S-1、424B4 定价文件，
+  免费行情源都不提供。当前只能从行情数据起点反推上市时间，且无法区分「新上市」和「数据源覆盖起点晚」。
+  首日字段完整性检查（有无开盘价、前收盘是否应为空、总股本是否已录入）也要等公告源接进来才能做。
+</div>
+
+{% endblock %}

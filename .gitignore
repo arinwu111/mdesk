@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.DS_Store
+
+# DuckDB 库文件可从 raw 层重放，不进版本库
+data/*.duckdb
+data/*.duckdb.wal
+
+# 本地编辑器与工具配置
+.claude/
+.vscode/
+.idea/

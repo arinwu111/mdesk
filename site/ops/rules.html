@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>规则库 · mdesk</title>
+<link rel="stylesheet" href="../static/style.css">
+<style>
+.chartbox { position: relative; }
+.chartbox .tip {
+  position: absolute; top: 6px; transform: translateX(-50%);
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 7px 10px; font-size: 12px; pointer-events: none; opacity: 0;
+  transition: opacity .1s; white-space: nowrap; box-shadow: 0 2px 10px rgba(0,0,0,.10);
+  color: var(--ink);
+}
+.chartbox .tip b { display: block; color: var(--ink-muted); font-weight: 500;
+  font-size: 11px; margin-bottom: 3px; }
+.chartbox .tip span { display: flex; align-items: center; gap: 6px; }
+.chartbox .tip i { width: 9px; height: 2px; border-radius: 1px; flex: none; }
+.chartbox .tip em { font-style: normal; margin-left: auto; padding-left: 14px;
+  font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">mdesk<span>港美股行情数据工作台</span></div>
+    <div class="stamp">数据截至 2026-08-14　生成于 2026-08-16 18:29</div>
+  </div>
+  <nav class="tabs">
+    <span class="group-label">日常</span>
+    <a href="../index.html"       class="">自选股</a>
+    <a href="../calendar.html"    class="">事件日历</a>
+    <a href="../newlisting.html"  class="">次新股</a>
+    <span class="sep"></span>
+    <span class="group-label">运营</span>
+    <a href="../ops/index.html"      class="">异常清单</a>
+    <a href="../ops/corpaction.html" class="">复权核对</a>
+    <a href="../ops/rules.html"      class="on">规则库</a>
+    <a href="../ops/ledger.html"     class="">处理台账</a>
+    <a href="../ops/report.html"     class="">运营报告</a>
+  </nav>
+</header>
+
+<div class="wrap">
+
+
+<h1>规则库</h1>
+<p class="lede">
+  规则是数据不是代码。每条规则以一段 SQL 存在库里，加一条规则等于插一行，不需要改程序。
+  每条都带一段来历说明，记录它为什么存在、从哪次问题里长出来的。
+</p>
+
+<div class="tiles">
+  <div class="tile"><div class="k">规则总数</div><div class="v">16</div>
+    <div class="sub">全部启用</div></div>
+  <div class="tile"><div class="k">本轮有命中</div><div class="v">6</div>
+    <div class="sub">其余维度当前干净</div></div>
+  <div class="tile"><div class="k">覆盖域</div><div class="v">6</div>
+    <div class="sub">ref · price · corp_action · fundamental · cross · ops</div></div>
+  <div class="tile"><div class="k">P0 规则</div><div class="v">6</div>
+    <div class="sub">命中即当场处理</div></div>
+</div>
+
+
+
+<h2>ref 主数据域</h2>
+
+<div class="card">
+  <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+    <span class="mono" style="font-weight:600">DQ-REF-001</span>
+    <span style="font-weight:600">证券代码有效性校验</span>
+    <span class="sev P0">P0</span>
+    <span class="pill">本轮无命中</span>
+    <span class="dim" style="margin-left:auto;font-size:12px">建于 2026-08-16</span>
+  </div>
+  <p style="color:var(--ink-2);margin:10px 0 0">自选股名单中的代码在数据源查不到任何行情，通常意味着代码写错、已退市或数据源不覆盖</p>
+  <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink-muted)"><b>来历：</b>建库第一条规则。起因是整理自选股时发现用户给的名单里 MBIS/HOLD 是笔误、DRAM/SKHY 无法确认、智谱缺代码。证券代码本身就是需要校验的数据。</p>
+</div>
+
+<div class="card">
+  <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+    <span class="mono" style="font-weight:600">DQ-REF-002</span>
+    <span style="font-weight:600">证券类型登记一致性</span>
+    <span class="sev P1">P1</span>
+    <span class="pill">本轮无命中</span>
+    <span class="dim" style="margin-left:auto;font-size:12px">建于 2026-08-16</span>
+  </div>
+  <p style="color:var(--ink-2);margin:10px 0 0">自选股名单里登记的品种类型与数据源返回的 quoteType 不一致，会导致后续按类型分流的规则全部走错分支</p>
+  <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink-muted)"><b>来历：</b>ETF 没有 EPS 和 PE 是正常的，股票没有才是异常。若类型登记错了，字段缺失类规则会大面积误报。</p>
+</div>
+
+
+
+
+<h2>price 行情域</h2>
+
+<div class="card">
+  <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+    <span class="mono" style="font-weight:600">DQ-PRC-001</span>
+    <span style="font-weight:600">OHLC 逻辑越界</span>
+    <span class="sev P0">P0</span>
+    <span class="pill">本轮无命中</span>
+    <span class="dim" style="margin-left:auto;font-size:12px">建于 2026-08-16</span>
+  </div>
+  <p style="color:var(--ink-2);margin:10px 0 0">最高价低于最低价，或开盘收盘价落在最高最低区间之外。这类错误一定是数据问题，不可能是真实行情</p>
+  <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink-muted)"><b>来历：</b>最基础的自洽性检查，零误报。任何数据源只要命中这条就说明清洗环节有问题。</p>
+</div>
+
+<div class="card">
+  <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+    <span class="mono" style="font-weight:600">DQ-PRC-002</span>
+    <span style="font-weight:600">无公司行动的异常跳空</span>
+    <span class="sev P1">P1</span>
+    <span class="pill">命中 81 条</span>
+    <span class="dim" style="margin-left:auto;font-size:12px">建于 2026-08-16</span>
+  </div>
+  <p style="color:var(--ink-2);margin:10px 0 0">单日涨跌幅绝对值超过 20%，且当日没有任何公司行动记录。真跳空要能解释，解释不了就是漏了除权除息</p>
+  <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink-muted)"><b>来历：</b>首版阈值对全部标的统一取 20%。预期对 IONQ、OKLO 这类高波动标的会大量误报，届时需按标的历史波动率分层，这条规则的迭代过程本身就是要记录的东西。</p>
+</div>
+
+<div class="card">
+  <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+    <span class="mono" style="font-weight:600">DQ-PRC-003</span>
+    <span style="font-weight:600">个股零成交量但价格变动</span>
+    <span class="sev P1">P1</span>
+    <span class="pill">本轮无命中</span>
+    <span class="dim" style="margin-left:auto;font-size:12px">建于 2026-08-16</span>
+  </div>
+  <p style="color:var(--ink-2);margin:10px 0 0">单只标的成交量为零却有价格变化，且同市场其他标的当日成交正常。孤立出现通常意味着该股停牌而报价仍在推送</p>
+  <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink-muted)"><b>来历：</b>初版不区分个股与全市场，港股半日市当天十来只标的一起命中，噪声很大。加上同市场同日命中占比的判据后，只保留孤立出现的情况，全市场性的交给 DQ-PRC-005。</p>
+</div>
+
+<div class="card">
+  <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+    <span class="mono" style="font-weight:600">DQ-PRC-004</span>
+    <span style="font-weight:600">交易日序列断档</span>
+    <span class="sev P2">P2</span>
+    <span class="pill">命中 6 条</span>
+    <span class="dim" style="margin-left:auto;font-size:12px">建于 2026-08-16</span>
+  </div>
+  <p style="color:var(--ink-2);margin:10px 0 0">相邻两个交易日间隔超过 10 个自然日。可能是长期停牌、数据源缺失，也可能是上市后有过退市重组</p>
+  <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink-muted)"><b>来历：</b>长假会误报，所以定为 P2 观察级。真正要抓的是长期停牌和历史断层，比如 Nebius 前身停牌两年多后复牌改代码这种情况。</p>
+</div>
+
+<div class="card">
+  <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+    <span class="mono" style="font-weight:600">DQ-PRC-005</span>
+    <span style="font-weight:600">全市场成交量缺失</span>
+    <span class="sev P2">P2</span>
+    <span class="pill">命中 6 条</span>
+    <span class="dim" style="margin-left:auto;font-size:12px">建于 2026-08-16</span>
+  </div>
+  <p style="color:var(--ink-2);margin:10px 0 0">同一交易日某个市场过半标的成交量都为零。这不是行情异常，是数据源当日的成交量字段整体缺失</p>
+  <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink-muted)"><b>来历：</b>首轮命中 6 天，全部是香港半日市：平安夜、除夕、农历新年前一日。港交所这几天只有早市，数据源不返回成交量。这属于已知的市场规则而非数据错误，定为 P2 观察级，处理方式是在这些日期跳过成交量相关计算。半日市日历需要每年从港交所公告更新一次，已写入 SOP 的年度事项。</p>
+</div>
+
+
+
+
+<h2>corp_action 公司行动域</h2>
+
+<div class="card">
+  <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+    <span class="mono" style="font-weight:600">DQ-CA-001</span>
+    <span style="font-weight:600">数据源派息金额与其复权价不自洽</span>
+    <span class="sev P0">P0</span>
+    <span class="pill">命中 3 条</span>
+    <span class="dim" style="margin-left:auto;font-size:12px">建于 2026-08-16</span>
+  </div>
+  <p style="color:var(--ink-2);margin:10px 0 0">从数据源自己的复权价反推出的隐含派息，与它自己上报的派息金额对不上。这是纯内部矛盾，不需要任何外部资料就能判定其中一个是错的</p>
+  <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink-muted)"><b>来历：</b>项目的核心规则，也是第一条真正抓到东西的规则。首轮就命中阿里 9988.HK 两次派息全错、汇丰 0005.HK 最近一次派息错，隐含倍数均为 7.847，恰等于港币兑美元联系汇率，说明数据源用美元金额去扣减港币价格。两只中招的都是有美股 ADR 的港股。初版规则按受影响的每个交易日报警，阿里一个根因刷出 445 条，改为按除权日定位根因后降到 3 条。</p>
+</div>
+
+<div class="card">
+  <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+    <span class="mono" style="font-weight:600">DQ-CA-002</span>
+    <span style="font-weight:600">拆合股比例超出常理</span>
+    <span class="sev P0">P0</span>
+    <span class="pill">本轮无命中</span>
+    <span class="dim" style="margin-left:auto;font-size:12px">建于 2026-08-16</span>
+  </div>
+  <p style="color:var(--ink-2);margin:10px 0 0">拆股比例大于 100 或小于 0.01。这个量级的比例极其罕见，更可能是数据源填反了方向或单位错位</p>
+  <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink-muted)"><b>来历：</b>拆股比例填反是复权出错最隐蔽的原因，因为价格曲线看起来仍然连续，只是整段被缩放了。</p>
+</div>
+
+<div class="card">
+  <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+    <span class="mono" style="font-weight:600">DQ-CA-003</span>
+    <span style="font-weight:600">派息金额超过股价一成</span>
+    <span class="sev P1">P1</span>
+    <span class="pill">本轮无命中</span>
+    <span class="dim" style="margin-left:auto;font-size:12px">建于 2026-08-16</span>
+  </div>
+  <p style="color:var(--ink-2);margin:10px 0 0">单次现金派息超过除权日前收盘价的 10%。可能是特别股息，也可能是币种没换算或者金额单位错</p>
+  <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink-muted)"><b>来历：</b>高股息标的如中国石油会正常命中，需要人工确认是特别股息还是数据错。这类规则的价值不在于零误报，在于强制你每次都去看一眼。</p>
+</div>
+
+<div class="card">
+  <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+    <span class="mono" style="font-weight:600">DQ-CA-004</span>
+    <span style="font-weight:600">自算复权序列整体偏离</span>
+    <span class="sev P1">P1</span>
+    <span class="pill">命中 1 条</span>
+    <span class="dim" style="margin-left:auto;font-size:12px">建于 2026-08-16</span>
+  </div>
+  <p style="color:var(--ink-2);margin:10px 0 0">按公司行动自行推算的复权价与数据源整段偏离。根因通常已由 DQ-CA-001 指出，这条负责说明影响范围有多大</p>
+  <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink-muted)"><b>来历：</b>从 DQ-CA-001 拆出来的。根因和影响范围要分开报：根因一条，用于定位和修复；影响范围一条，用于判断这只标的的历史数据还能不能用。</p>
+</div>
+
+
+
+
+<h2>fundamental 基本面域</h2>
+
+<div class="card">
+  <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+    <span class="mono" style="font-weight:600">DQ-FUN-001</span>
+    <span style="font-weight:600">市值或股本缺失</span>
+    <span class="sev P1">P1</span>
+    <span class="pill">本轮无命中</span>
+    <span class="dim" style="margin-left:auto;font-size:12px">建于 2026-08-16</span>
+  </div>
+  <p style="color:var(--ink-2);margin:10px 0 0">非 ETF 标的缺少市值或总股本。这两个字段任何一只正常交易的股票都不该缺</p>
+  <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink-muted)"><b>来历：</b>预期 SDR 和次新股会命中。SKHY 是存托凭证结构、智谱和紫金黄金国际是次新股，免费数据源对这类标的的基本面覆盖通常最差。</p>
+</div>
+
+<div class="card">
+  <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+    <span class="mono" style="font-weight:600">DQ-FUN-002</span>
+    <span style="font-weight:600">盈利为正却没有市盈率</span>
+    <span class="sev P1">P1</span>
+    <span class="pill">本轮无命中</span>
+    <span class="dim" style="margin-left:auto;font-size:12px">建于 2026-08-16</span>
+  </div>
+  <p style="color:var(--ink-2);margin:10px 0 0">EPS 大于零但 PE 为空。EPS 为负导致 PE 为空是正常的，EPS 为正还没有 PE 就是真缺失</p>
+  <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink-muted)"><b>来历：</b>这条规则是为了把「无盈利所以没有 PE」和「有盈利但字段丢了」分开。优必选、智谱、OKLO 这类无盈利标的不该因为 PE 为空被告警。</p>
+</div>
+
+<div class="card">
+  <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+    <span class="mono" style="font-weight:600">DQ-FUN-003</span>
+    <span style="font-weight:600">估值指标极端值</span>
+    <span class="sev P2">P2</span>
+    <span class="pill">命中 1 条</span>
+    <span class="dim" style="margin-left:auto;font-size:12px">建于 2026-08-16</span>
+  </div>
+  <p style="color:var(--ink-2);margin:10px 0 0">PE 超过 1000 或 PB 超过 100。可能是真实的极端估值，也可能是分母接近零或单位错位</p>
+  <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink-muted)"><b>来历：</b>微利公司的 PE 天然会很大，所以定 P2。真正要防的是分母单位错位，比如把千元当成元。</p>
+</div>
+
+
+
+
+<h2>cross 跨市场域</h2>
+
+<div class="card">
+  <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+    <span class="mono" style="font-weight:600">DQ-CRS-001</span>
+    <span style="font-weight:600">跨市场折算价差超阈值</span>
+    <span class="sev P0">P0</span>
+    <span class="pill">本轮无命中</span>
+    <span class="dim" style="margin-left:auto;font-size:12px">建于 2026-08-16</span>
+  </div>
+  <p style="color:var(--ink-2);margin:10px 0 0">两地上市标的按存托比例和汇率折算后仍偏离超过各自设定的阈值。可能是比例错、汇率错、价格错，也可能是真实溢价</p>
+  <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink-muted)"><b>来历：</b>阈值按对子分别设定：双重主要上市如阿里、小鹏取 3%，ADR 溢价常态化的台积电取 25%，A+H 溢价属正常现象所以放到 60% 以上，监控的是溢价突变而非溢价本身。</p>
+</div>
+
+
+
+
+<h2>ops 作业域</h2>
+
+<div class="card">
+  <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+    <span class="mono" style="font-weight:600">DQ-OPS-001</span>
+    <span style="font-weight:600">采集作业未成功</span>
+    <span class="sev P0">P0</span>
+    <span class="pill">本轮无命中</span>
+    <span class="dim" style="margin-left:auto;font-size:12px">建于 2026-08-16</span>
+  </div>
+  <p style="color:var(--ink-2);margin:10px 0 0">最近一轮采集中有标的的某个数据集返回失败或为空。数据没拉到时其他规则会静默通过，这是最危险的情况</p>
+  <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink-muted)"><b>来历：</b>监控系统自己也需要被监控。静默失败比报错更危险，因为看板照常显示，只是数字停在了昨天。首轮跑完发现 20 只标的两年内无任何公司行动被判为 empty 而误报，已排除该组合。采集层只记录事实，判断什么算异常是规则层的事。</p>
+</div>
+
+
+
+
+<div class="note">
+  规则的价值不在于零误报。像「派息金额超过股价一成」这种，高股息标的会正常命中，
+  它的作用是强制你每次都去看一眼，确认这是特别股息而不是数据错。
+</div>
+
+
+
+<footer class="foot">
+  mdesk 自建港美股行情数据工作台　行情来源 yfinance，仅用于数据质量核对与个人自用，不构成任何投资建议。<br>
+  本轮共 35 只标的、16 条校验规则，未处理异常 93 条。
+</footer>
+</div>
+
+<script>
+document.querySelectorAll('.chartbox').forEach(function (box) {
+  var cfg = JSON.parse(box.dataset.chart);
+  var svg = box.querySelector('svg');
+  var cross = svg.querySelector('.cross');
+  var dots = svg.querySelectorAll('.hd');
+  var hit = svg.querySelector('.hit');
+  var tip = document.createElement('div');
+  tip.className = 'tip';
+  box.appendChild(tip);
+
+  function nearest(clientX) {
+    var r = svg.getBoundingClientRect();
+    var vx = (clientX - r.left) / r.width * cfg.width;
+    var best = 0, bd = Infinity;
+    for (var i = 0; i < cfg.px.length; i++) {
+      var d = Math.abs(cfg.px[i] - vx);
+      if (d < bd) { bd = d; best = i; }
+    }
+    return best;
+  }
+
+  function show(e) {
+    var i = nearest(e.clientX);
+    cross.setAttribute('x1', cfg.px[i]);
+    cross.setAttribute('x2', cfg.px[i]);
+    cross.setAttribute('opacity', '1');
+    var lines = '<b>' + cfg.x[i] + '</b>';
+    cfg.series.forEach(function (s, k) {
+      var dot = dots[k];
+      if (s.py[i] === null) { dot.setAttribute('opacity', '0'); return; }
+      dot.setAttribute('cx', cfg.px[i]);
+      dot.setAttribute('cy', s.py[i]);
+      dot.setAttribute('opacity', '1');
+      lines += '<span><i style="background:' + s.color + '"></i>' +
+               s.name + '<em>' + s.val[i] + '</em></span>';
+    });
+    tip.innerHTML = lines;
+    var r = svg.getBoundingClientRect();
+    var left = cfg.px[i] / cfg.width * r.width;
+    tip.style.left = Math.min(Math.max(left, 70), r.width - 70) + 'px';
+    tip.style.opacity = '1';
+  }
+
+  function hide() {
+    cross.setAttribute('opacity', '0');
+    dots.forEach(function (d) { d.setAttribute('opacity', '0'); });
+    tip.style.opacity = '0';
+  }
+
+  hit.addEventListener('mousemove', show);
+  hit.addEventListener('mouseleave', hide);
+  hit.addEventListener('touchmove', function (e) {
+    if (e.touches.length) { show(e.touches[0]); }
+  }, { passive: true });
+});
+</script>
+</body>
+</html>

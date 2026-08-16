@@ -1,0 +1,68 @@
+"""一条命令跑完整条链路。
+
+    python3 -m mdesk.pipeline              # 全量：采集 → 前瞻 → 复权 → 规则 → 快照 → 渲染
+    python3 -m mdesk.pipeline --render     # 只重渲染，不联网（改了模板或填了台账之后用）
+    python3 -m mdesk.pipeline --no-forward # 跳过前瞻事件采集，省掉披露易那段耗时
+
+按 SOP，这条命令由定时任务执行，不需要人工触发。人工的部分是看结果和填台账。
+"""
+
+import argparse
+import time
+
+from . import db, fetch, forward, render, rules, transform
+
+
+def run(do_fetch=True, do_forward=True, do_render=True) -> None:
+    t0 = time.time()
+    con = db.connect()
+    db.init_schema(con)
+    db.load_reference(con)
+    db.load_rules(con)
+    con.close()
+
+    if do_fetch:
+        print("\n[1/5] 采集行情与公司行动")
+        fetch.main()
+
+    if do_forward:
+        print("\n[2/5] 采集前瞻事件")
+        forward.main()
+
+    con = db.connect()
+    print("\n[3/5] 重算复权价")
+    n = transform.build_adj_price(con)
+    print(f"  {n} 行")
+
+    print("\n[4/5] 执行校验规则")
+    rules.run_all(con, verbose=True)
+    transform.build_snapshot(con)
+    con.close()
+
+    if do_render:
+        print("\n[5/5] 渲染站点")
+        render.render_site()
+
+    print(f"\n全链路完成，耗时 {time.time() - t0:.0f} 秒")
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser(description="mdesk 全链路")
+    ap.add_argument("--render", action="store_true", help="只重渲染，不联网")
+    ap.add_argument("--no-forward", action="store_true", help="跳过前瞻事件采集")
+    args = ap.parse_args()
+
+    if args.render:
+        con = db.connect()
+        db.load_rules(con)
+        transform.build_adj_price(con)
+        rules.run_all(con, verbose=False)
+        transform.build_snapshot(con)
+        con.close()
+        render.render_site()
+    else:
+        run(do_forward=not args.no_forward)
+
+
+if __name__ == "__main__":
+    main()

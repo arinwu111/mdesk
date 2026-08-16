@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>次新股 · mdesk</title>
+<link rel="stylesheet" href="static/style.css">
+<style>
+.chartbox { position: relative; }
+.chartbox .tip {
+  position: absolute; top: 6px; transform: translateX(-50%);
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 7px 10px; font-size: 12px; pointer-events: none; opacity: 0;
+  transition: opacity .1s; white-space: nowrap; box-shadow: 0 2px 10px rgba(0,0,0,.10);
+  color: var(--ink);
+}
+.chartbox .tip b { display: block; color: var(--ink-muted); font-weight: 500;
+  font-size: 11px; margin-bottom: 3px; }
+.chartbox .tip span { display: flex; align-items: center; gap: 6px; }
+.chartbox .tip i { width: 9px; height: 2px; border-radius: 1px; flex: none; }
+.chartbox .tip em { font-style: normal; margin-left: auto; padding-left: 14px;
+  font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">mdesk<span>港美股行情数据工作台</span></div>
+    <div class="stamp">数据截至 2026-08-14　生成于 2026-08-16 18:29</div>
+  </div>
+  <nav class="tabs">
+    <span class="group-label">日常</span>
+    <a href="index.html"       class="">自选股</a>
+    <a href="calendar.html"    class="">事件日历</a>
+    <a href="newlisting.html"  class="on">次新股</a>
+    <span class="sep"></span>
+    <span class="group-label">运营</span>
+    <a href="ops/index.html"      class="">异常清单</a>
+    <a href="ops/corpaction.html" class="">复权核对</a>
+    <a href="ops/rules.html"      class="">规则库</a>
+    <a href="ops/ledger.html"     class="">处理台账</a>
+    <a href="ops/report.html"     class="">运营报告</a>
+  </nav>
+</header>
+
+<div class="wrap">
+
+
+<h1>次新股</h1>
+<p class="lede">
+  上市时间短的标的，历史数据天然不足，估值指标常常为空，是数据质量问题最集中的一类。
+  这一页按数据起点排序，起点晚于采集窗口起点的，说明它在这段窗口内才开始有行情。
+</p>
+
+<div class="tiles">
+  <div class="tile"><div class="k">窗口内新增</div><div class="v">9</div>
+    <div class="sub">数据起点晚于 2024-08-14</div></div>
+  <div class="tile"><div class="k">上市不足一年</div><div class="v">4</div>
+    <div class="sub">按数据起点估算</div></div>
+  <div class="tile"><div class="k">估值字段缺失</div><div class="v">8</div>
+    <div class="sub">其中 PE 为空</div></div>
+  <div class="tile"><div class="k">最新一只</div><div class="v" style="font-size:18px">SK 海力士</div>
+    <div class="sub">起点 2026-07-10</div></div>
+</div>
+
+<h2>按数据起点排序</h2>
+<div class="scroll">
+<table>
+<thead><tr><th>数据起点</th><th>代码</th><th>名称</th><th>市场</th><th>行业</th>
+  <th class="num">交易日数</th><th class="num">最新价</th><th class="num">PE(TTM)</th>
+  <th class="num">区间涨跌</th><th>数据质量</th></tr></thead>
+<tbody>
+
+<tr>
+  <td class="mono">2026-07-10</td>
+  <td class="mono dim">US SKHY</td>
+  <td class="name"><a href="stock/SKHY.html">SK 海力士</a></td>
+  <td class="dim">美股</td>
+  <td class="dim">存储半导体</td>
+  <td class="num">26</td>
+  <td class="num">166.330</td>
+  <td class="num dim">22.3</td>
+  <td class="num down">-1.00%</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2026-04-02</td>
+  <td class="mono dim">US DRAM</td>
+  <td class="name"><a href="stock/DRAM.html">存储主题 ETF</a></td>
+  <td class="dim">美股</td>
+  <td class="dim">ETF</td>
+  <td class="num">93</td>
+  <td class="num">57.320</td>
+  <td class="num dim">26.2</td>
+  <td class="num up">+106.48%</td>
+  <td><span class="badge ok"><span class="dot"></span>正常</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2026-01-08</td>
+  <td class="mono dim">HK 02513</td>
+  <td class="name"><a href="stock/2513-HK.html">智谱</a></td>
+  <td class="dim">港股</td>
+  <td class="dim">人工智能</td>
+  <td class="num">147</td>
+  <td class="num">1,270.000</td>
+  <td class="num dim">—</td>
+  <td class="num up">+865.78%</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2025-09-30</td>
+  <td class="mono dim">HK 02259</td>
+  <td class="name"><a href="stock/2259-HK.html">紫金黄金国际</a></td>
+  <td class="dim">港股</td>
+  <td class="dim">有色金属</td>
+  <td class="num">213</td>
+  <td class="num">127.500</td>
+  <td class="num dim">19.8</td>
+  <td class="num up">+5.72%</td>
+  <td><span class="badge ok"><span class="dot"></span>正常</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2025-06-05</td>
+  <td class="mono dim">US CRCL</td>
+  <td class="name"><a href="stock/CRCL.html">Circle</a></td>
+  <td class="dim">美股</td>
+  <td class="dim">加密金融</td>
+  <td class="num">300</td>
+  <td class="num">71.600</td>
+  <td class="num dim">14.3</td>
+  <td class="num down">-13.97%</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2025-05-23</td>
+  <td class="mono dim">HK 01276</td>
+  <td class="name"><a href="stock/1276-HK.html">恒瑞医药</a></td>
+  <td class="dim">港股</td>
+  <td class="dim">医药</td>
+  <td class="num">304</td>
+  <td class="num">52.800</td>
+  <td class="num dim">37.2</td>
+  <td class="num down">-4.26%</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2025-02-13</td>
+  <td class="mono dim">US SNDK</td>
+  <td class="name"><a href="stock/SNDK.html">闪迪</a></td>
+  <td class="dim">美股</td>
+  <td class="dim">存储半导体</td>
+  <td class="num">377</td>
+  <td class="num">1,641.110</td>
+  <td class="num dim">22.3</td>
+  <td class="num up">+4458.64%</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2024-10-21</td>
+  <td class="mono dim">US NBIS</td>
+  <td class="name"><a href="stock/NBIS.html">Nebius</a></td>
+  <td class="dim">美股</td>
+  <td class="dim">云计算</td>
+  <td class="num">455</td>
+  <td class="num">277.680</td>
+  <td class="num dim">—</td>
+  <td class="num up">+1288.40%</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2024-10-02</td>
+  <td class="mono dim">HK 00300</td>
+  <td class="name"><a href="stock/0300-HK.html">美的集团</a></td>
+  <td class="dim">港股</td>
+  <td class="dim">家电</td>
+  <td class="num">459</td>
+  <td class="num">95.900</td>
+  <td class="num dim">14.2</td>
+  <td class="num up">+2.79%</td>
+  <td><span class="badge ok"><span class="dot"></span>正常</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2024-08-15</td>
+  <td class="mono dim">US NVDA</td>
+  <td class="name"><a href="stock/NVDA.html">英伟达</a></td>
+  <td class="dim">美股</td>
+  <td class="dim">半导体</td>
+  <td class="num">501</td>
+  <td class="num">225.160</td>
+  <td class="num dim">34.5</td>
+  <td class="num up">+83.27%</td>
+  <td><span class="badge ok"><span class="dot"></span>正常</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2024-08-15</td>
+  <td class="mono dim">US GOOGL</td>
+  <td class="name"><a href="stock/GOOGL.html">谷歌-A</a></td>
+  <td class="dim">美股</td>
+  <td class="dim">互联网</td>
+  <td class="num">501</td>
+  <td class="num">345.900</td>
+  <td class="num dim">17.4</td>
+  <td class="num up">+114.45%</td>
+  <td><span class="badge ok"><span class="dot"></span>正常</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2024-08-15</td>
+  <td class="mono dim">US GE</td>
+  <td class="name"><a href="stock/GE.html">GE Aerospace</a></td>
+  <td class="dim">美股</td>
+  <td class="dim">工业</td>
+  <td class="num">501</td>
+  <td class="num">368.380</td>
+  <td class="num dim">43.5</td>
+  <td class="num up">+116.77%</td>
+  <td><span class="badge ok"><span class="dot"></span>正常</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2024-08-15</td>
+  <td class="mono dim">US HSBC</td>
+  <td class="name"><a href="stock/HSBC.html">汇丰控股</a></td>
+  <td class="dim">美股</td>
+  <td class="dim">银行</td>
+  <td class="num">501</td>
+  <td class="num">103.790</td>
+  <td class="num dim">14.8</td>
+  <td class="num up">+142.33%</td>
+  <td><span class="badge ok"><span class="dot"></span>正常</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2024-08-15</td>
+  <td class="mono dim">US OKLO</td>
+  <td class="name"><a href="stock/OKLO.html">Oklo</a></td>
+  <td class="dim">美股</td>
+  <td class="dim">核能</td>
+  <td class="num">501</td>
+  <td class="num">44.380</td>
+  <td class="num dim">—</td>
+  <td class="num up">+494.11%</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2024-08-15</td>
+  <td class="mono dim">US TSLA</td>
+  <td class="name"><a href="stock/TSLA.html">特斯拉</a></td>
+  <td class="dim">美股</td>
+  <td class="dim">汽车</td>
+  <td class="num">501</td>
+  <td class="num">342.270</td>
+  <td class="num dim">311.2</td>
+  <td class="num up">+59.83%</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2024-08-15</td>
+  <td class="mono dim">US DIS</td>
+  <td class="name"><a href="stock/DIS.html">迪士尼</a></td>
+  <td class="dim">美股</td>
+  <td class="dim">传媒娱乐</td>
+  <td class="num">501</td>
+  <td class="num">106.850</td>
+  <td class="num dim">22.0</td>
+  <td class="num up">+20.34%</td>
+  <td><span class="badge ok"><span class="dot"></span>正常</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2024-08-15</td>
+  <td class="mono dim">US SOXX</td>
+  <td class="name"><a href="stock/SOXX.html">iShares 半导体 ETF</a></td>
+  <td class="dim">美股</td>
+  <td class="dim">ETF</td>
+  <td class="num">501</td>
+  <td class="num">550.420</td>
+  <td class="num dim">44.2</td>
+  <td class="num up">+137.54%</td>
+  <td><span class="badge ok"><span class="dot"></span>正常</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2024-08-15</td>
+  <td class="mono dim">US LITE</td>
+  <td class="name"><a href="stock/LITE.html">Lumentum</a></td>
+  <td class="dim">美股</td>
+  <td class="dim">光通信</td>
+  <td class="num">501</td>
+  <td class="num">926.140</td>
+  <td class="num dim">—</td>
+  <td class="num up">+1672.18%</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2024-08-15</td>
+  <td class="mono dim">US AMD</td>
+  <td class="name"><a href="stock/AMD.html">AMD</a></td>
+  <td class="dim">美股</td>
+  <td class="dim">半导体</td>
+  <td class="num">501</td>
+  <td class="num">514.390</td>
+  <td class="num dim">131.6</td>
+  <td class="num up">+249.07%</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2024-08-15</td>
+  <td class="mono dim">US IONQ</td>
+  <td class="name"><a href="stock/IONQ.html">IonQ</a></td>
+  <td class="dim">美股</td>
+  <td class="dim">量子计算</td>
+  <td class="num">501</td>
+  <td class="num">46.260</td>
+  <td class="num dim">—</td>
+  <td class="num up">+523.45%</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2024-08-15</td>
+  <td class="mono dim">US CELH</td>
+  <td class="name"><a href="stock/CELH.html">Celsius</a></td>
+  <td class="dim">美股</td>
+  <td class="dim">饮料消费</td>
+  <td class="num">501</td>
+  <td class="num">29.090</td>
+  <td class="num dim">126.5</td>
+  <td class="num down">-30.06%</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2024-08-15</td>
+  <td class="mono dim">US PDD</td>
+  <td class="name"><a href="stock/PDD.html">拼多多</a></td>
+  <td class="dim">美股</td>
+  <td class="dim">电商</td>
+  <td class="num">501</td>
+  <td class="num">84.790</td>
+  <td class="num dim">8.9</td>
+  <td class="num down">-41.56%</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2024-08-15</td>
+  <td class="mono dim">US AAPL</td>
+  <td class="name"><a href="stock/AAPL.html">苹果</a></td>
+  <td class="dim">美股</td>
+  <td class="dim">消费电子</td>
+  <td class="num">501</td>
+  <td class="num">305.930</td>
+  <td class="num dim">35.1</td>
+  <td class="num up">+36.14%</td>
+  <td><span class="badge ok"><span class="dot"></span>正常</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2024-08-15</td>
+  <td class="mono dim">US ASML</td>
+  <td class="name"><a href="stock/ASML.html">阿斯麦</a></td>
+  <td class="dim">美股</td>
+  <td class="dim">半导体设备</td>
+  <td class="num">501</td>
+  <td class="num">1,844.080</td>
+  <td class="num dim">62.9</td>
+  <td class="num up">+98.66%</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2024-08-15</td>
+  <td class="mono dim">US TSM</td>
+  <td class="name"><a href="stock/TSM.html">台积电</a></td>
+  <td class="dim">美股</td>
+  <td class="dim">半导体</td>
+  <td class="num">501</td>
+  <td class="num">426.350</td>
+  <td class="num dim">32.2</td>
+  <td class="num up">+145.09%</td>
+  <td><span class="badge ok"><span class="dot"></span>正常</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2024-08-15</td>
+  <td class="mono dim">US EL</td>
+  <td class="name"><a href="stock/EL.html">雅诗兰黛</a></td>
+  <td class="dim">美股</td>
+  <td class="dim">美妆消费</td>
+  <td class="num">501</td>
+  <td class="num">86.100</td>
+  <td class="num dim">—</td>
+  <td class="num down">-9.50%</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2024-08-15</td>
+  <td class="mono dim">US HOOD</td>
+  <td class="name"><a href="stock/HOOD.html">Robinhood</a></td>
+  <td class="dim">美股</td>
+  <td class="dim">金融科技</td>
+  <td class="num">501</td>
+  <td class="num">95.560</td>
+  <td class="num dim">42.3</td>
+  <td class="num up">+388.80%</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2024-08-14</td>
+  <td class="mono dim">HK 00700</td>
+  <td class="name"><a href="stock/0700-HK.html">腾讯控股</a></td>
+  <td class="dim">港股</td>
+  <td class="dim">互联网</td>
+  <td class="num">491</td>
+  <td class="num">440.000</td>
+  <td class="num dim">14.9</td>
+  <td class="num up">+17.71%</td>
+  <td><span class="badge ok"><span class="dot"></span>正常</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2024-08-14</td>
+  <td class="mono dim">HK 09988</td>
+  <td class="name"><a href="stock/9988-HK.html">阿里巴巴-W</a></td>
+  <td class="dim">港股</td>
+  <td class="dim">电商</td>
+  <td class="num">491</td>
+  <td class="num">119.900</td>
+  <td class="num dim">18.7</td>
+  <td class="num up">+53.13%</td>
+  <td><span class="badge explained"><span class="dot"></span>已解释</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2024-08-14</td>
+  <td class="mono dim">HK 09868</td>
+  <td class="name"><a href="stock/9868-HK.html">小鹏汽车-W</a></td>
+  <td class="dim">港股</td>
+  <td class="dim">汽车</td>
+  <td class="num">491</td>
+  <td class="num">45.520</td>
+  <td class="num dim">—</td>
+  <td class="num up">+71.77%</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2024-08-14</td>
+  <td class="mono dim">HK 00857</td>
+  <td class="name"><a href="stock/0857-HK.html">中国石油股份</a></td>
+  <td class="dim">港股</td>
+  <td class="dim">能源</td>
+  <td class="num">491</td>
+  <td class="num">9.455</td>
+  <td class="num dim">9.4</td>
+  <td class="num up">+40.70%</td>
+  <td><span class="badge ok"><span class="dot"></span>正常</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2024-08-14</td>
+  <td class="mono dim">HK 00981</td>
+  <td class="name"><a href="stock/0981-HK.html">中芯国际</a></td>
+  <td class="dim">港股</td>
+  <td class="dim">半导体</td>
+  <td class="num">491</td>
+  <td class="num">70.800</td>
+  <td class="num dim">99.7</td>
+  <td class="num up">+319.93%</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2024-08-14</td>
+  <td class="mono dim">HK 09992</td>
+  <td class="name"><a href="stock/9992-HK.html">泡泡玛特</a></td>
+  <td class="dim">港股</td>
+  <td class="dim">潮玩消费</td>
+  <td class="num">491</td>
+  <td class="num">154.100</td>
+  <td class="num dim">13.8</td>
+  <td class="num up">+290.62%</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2024-08-14</td>
+  <td class="mono dim">HK 01347</td>
+  <td class="name"><a href="stock/1347-HK.html">华虹半导体</a></td>
+  <td class="dim">港股</td>
+  <td class="dim">半导体</td>
+  <td class="num">491</td>
+  <td class="num">130.200</td>
+  <td class="num dim">520.8</td>
+  <td class="num up">+609.92%</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr>
+  <td class="mono">2024-08-14</td>
+  <td class="mono dim">HK 09880</td>
+  <td class="name"><a href="stock/9880-HK.html">优必选</a></td>
+  <td class="dim">港股</td>
+  <td class="dim">机器人</td>
+  <td class="num">491</td>
+  <td class="num">90.850</td>
+  <td class="num dim">—</td>
+  <td class="num up">+5.33%</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+</tr>
+
+</tbody>
+</table>
+</div>
+
+<div class="note gap">
+  <b>本版缺口</b>：真正的新股检查要在上市首日盘前完成，需要港交所新上市公告和 SEC 的 S-1、424B4 定价文件，
+  免费行情源都不提供。当前只能从行情数据起点反推上市时间，且无法区分「新上市」和「数据源覆盖起点晚」。
+  首日字段完整性检查（有无开盘价、前收盘是否应为空、总股本是否已录入）也要等公告源接进来才能做。
+</div>
+
+
+
+<footer class="foot">
+  mdesk 自建港美股行情数据工作台　行情来源 yfinance，仅用于数据质量核对与个人自用，不构成任何投资建议。<br>
+  本轮共 35 只标的、16 条校验规则，未处理异常 93 条。
+</footer>
+</div>
+
+<script>
+document.querySelectorAll('.chartbox').forEach(function (box) {
+  var cfg = JSON.parse(box.dataset.chart);
+  var svg = box.querySelector('svg');
+  var cross = svg.querySelector('.cross');
+  var dots = svg.querySelectorAll('.hd');
+  var hit = svg.querySelector('.hit');
+  var tip = document.createElement('div');
+  tip.className = 'tip';
+  box.appendChild(tip);
+
+  function nearest(clientX) {
+    var r = svg.getBoundingClientRect();
+    var vx = (clientX - r.left) / r.width * cfg.width;
+    var best = 0, bd = Infinity;
+    for (var i = 0; i < cfg.px.length; i++) {
+      var d = Math.abs(cfg.px[i] - vx);
+      if (d < bd) { bd = d; best = i; }
+    }
+    return best;
+  }
+
+  function show(e) {
+    var i = nearest(e.clientX);
+    cross.setAttribute('x1', cfg.px[i]);
+    cross.setAttribute('x2', cfg.px[i]);
+    cross.setAttribute('opacity', '1');
+    var lines = '<b>' + cfg.x[i] + '</b>';
+    cfg.series.forEach(function (s, k) {
+      var dot = dots[k];
+      if (s.py[i] === null) { dot.setAttribute('opacity', '0'); return; }
+      dot.setAttribute('cx', cfg.px[i]);
+      dot.setAttribute('cy', s.py[i]);
+      dot.setAttribute('opacity', '1');
+      lines += '<span><i style="background:' + s.color + '"></i>' +
+               s.name + '<em>' + s.val[i] + '</em></span>';
+    });
+    tip.innerHTML = lines;
+    var r = svg.getBoundingClientRect();
+    var left = cfg.px[i] / cfg.width * r.width;
+    tip.style.left = Math.min(Math.max(left, 70), r.width - 70) + 'px';
+    tip.style.opacity = '1';
+  }
+
+  function hide() {
+    cross.setAttribute('opacity', '0');
+    dots.forEach(function (d) { d.setAttribute('opacity', '0'); });
+    tip.style.opacity = '0';
+  }
+
+  hit.addEventListener('mousemove', show);
+  hit.addEventListener('mouseleave', hide);
+  hit.addEventListener('touchmove', function (e) {
+    if (e.touches.length) { show(e.touches[0]); }
+  }, { passive: true });
+});
+</script>
+</body>
+</html>

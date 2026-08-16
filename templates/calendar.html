@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block body %}
+
+<h1>事件日历</h1>
+<p class="lede">
+  持仓相关事件漏掉是会真金白银出问题的。上半页是还没发生的，下半页是已经发生的。
+  前瞻数据来自三个源：Nasdaq 公开日历给美股的除息与拆股，yfinance 给港美股的下一次财报日，
+  港交所披露易给港股公告原文。
+</p>
+
+<div class="tiles">
+  <div class="tile"><div class="k">未来 30 天事件</div><div class="v">{{ fwd.n_30 }}</div>
+    <div class="sub">财报 {{ fwd.n_earn }} · 除息 {{ fwd.n_div }} · 拆股 {{ fwd.n_split }}</div></div>
+  <div class="tile"><div class="k">最近一件</div><div class="v" style="font-size:18px">{{ fwd.next_date }}</div>
+    <div class="sub">{{ fwd.next_name }}　{{ fwd.next_desc }}</div></div>
+  <div class="tile"><div class="k">港股公告</div><div class="v">{{ fwd.n_hk }}</div>
+    <div class="sub">近 60 天，{{ fwd.n_hk_key }} 条涉及分派或股本</div></div>
+  <div class="tile"><div class="k">已发生公司行动</div><div class="v">{{ stats.total }}</div>
+    <div class="sub">近两年，{{ stats.symbols }} 只标的</div></div>
+</div>
+
+<h2>未来事件</h2>
+{% if upcoming %}
+<div class="scroll">
+<table>
+<thead><tr><th>日期</th><th class="num">还有</th><th>代码</th><th>名称</th><th>类型</th><th>说明</th><th>来源</th></tr></thead>
+<tbody>
+{% for e in upcoming %}
+<tr>
+  <td class="mono">{{ e.event_date }}</td>
+  <td class="num {{ 'up' if e.days <= 3 }}">{{ e.days_fmt }}</td>
+  <td class="mono dim">{{ e.display_code }}</td>
+  <td class="name"><a href="stock/{{ e.slug }}.html">{{ e.name }}</a></td>
+  <td>{{ e.type_label }}</td>
+  <td class="wide">{{ e.title }}</td>
+  <td class="dim">{{ e.source }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% else %}
+<p class="dim">未来 90 天内暂无已知事件。</p>
+{% endif %}
+
+<h2>港股公告　近 60 天</h2>
+<p class="lede" style="margin-bottom:12px">
+  披露易只提供公告标题和 PDF 原文，除净日藏在正文里，需要人工打开确认。
+  下表的类型是按标题关键词自动归类的粗筛，只用于把值得点开的公告挑出来，不作为事实依据。
+</p>
+<div class="scroll">
+<table>
+<thead><tr><th>公告日</th><th>代码</th><th>名称</th><th>粗筛类型</th><th>标题</th><th>原文</th></tr></thead>
+<tbody>
+{% for a in hk_notices %}
+<tr>
+  <td class="mono">{{ a.event_date }}</td>
+  <td class="mono dim">{{ a.display_code }}</td>
+  <td class="name"><a href="stock/{{ a.slug }}.html">{{ a.name }}</a></td>
+  <td>{{ a.type_label }}</td>
+  <td class="wide">{{ a.title }}</td>
+  <td>{% if a.url %}<a href="{{ a.url }}" target="_blank" rel="noopener">PDF</a>{% else %}—{% endif %}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+<h2>已发生的公司行动　近 12 个月</h2>
+<div class="scroll">
+<table>
+<thead><tr><th>除权日</th><th>代码</th><th>名称</th><th>类型</th>
+  <th class="num">每股金额</th><th class="num">比例</th><th class="num">占前收盘</th><th>数据质量</th></tr></thead>
+<tbody>
+{% for a in recent %}
+<tr>
+  <td class="mono">{{ a.ex_date }}</td>
+  <td class="mono dim">{{ a.display_code }}</td>
+  <td class="name"><a href="stock/{{ a.slug }}.html">{{ a.name }}</a></td>
+  <td>{{ a.type_label }}</td>
+  <td class="num">{{ a.amount_fmt }}</td>
+  <td class="num">{{ a.ratio_fmt }}</td>
+  <td class="num dim">{{ a.pct_fmt }}</td>
+  <td>{% if a.flagged %}<span class="badge open"><span class="dot"></span>复权存疑</span>
+      {% else %}<span class="badge ok"><span class="dot"></span>已核对</span>{% endif %}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+<h2>更早的记录</h2>
+<div class="scroll">
+<table>
+<thead><tr><th>除权日</th><th>代码</th><th>名称</th><th>类型</th>
+  <th class="num">每股金额</th><th class="num">比例</th><th class="num">占前收盘</th></tr></thead>
+<tbody>
+{% for a in older %}
+<tr>
+  <td class="mono">{{ a.ex_date }}</td>
+  <td class="mono dim">{{ a.display_code }}</td>
+  <td class="name"><a href="stock/{{ a.slug }}.html">{{ a.name }}</a></td>
+  <td>{{ a.type_label }}</td>
+  <td class="num">{{ a.amount_fmt }}</td>
+  <td class="num">{{ a.ratio_fmt }}</td>
+  <td class="num dim">{{ a.pct_fmt }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+<div class="note gap">
+  <b>本版缺口</b>：港股拿不到结构化的前瞻除净日。Nasdaq 的日历接口只覆盖美股，
+  港交所披露易给的是 PDF 公告原文，除净日在正文里，本版不做 PDF 解析。
+  所以港股的除息提醒目前依赖人工打开公告确认，美股是全自动的。
+  下一版考虑接入港交所每日的除净股份报表来补上这段。
+</div>
+
+{% endblock %}

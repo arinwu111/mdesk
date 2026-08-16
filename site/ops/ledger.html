@@ -1,0 +1,1318 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>处理台账 · mdesk</title>
+<link rel="stylesheet" href="../static/style.css">
+<style>
+.chartbox { position: relative; }
+.chartbox .tip {
+  position: absolute; top: 6px; transform: translateX(-50%);
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 7px 10px; font-size: 12px; pointer-events: none; opacity: 0;
+  transition: opacity .1s; white-space: nowrap; box-shadow: 0 2px 10px rgba(0,0,0,.10);
+  color: var(--ink);
+}
+.chartbox .tip b { display: block; color: var(--ink-muted); font-weight: 500;
+  font-size: 11px; margin-bottom: 3px; }
+.chartbox .tip span { display: flex; align-items: center; gap: 6px; }
+.chartbox .tip i { width: 9px; height: 2px; border-radius: 1px; flex: none; }
+.chartbox .tip em { font-style: normal; margin-left: auto; padding-left: 14px;
+  font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">mdesk<span>港美股行情数据工作台</span></div>
+    <div class="stamp">数据截至 2026-08-14　生成于 2026-08-16 18:29</div>
+  </div>
+  <nav class="tabs">
+    <span class="group-label">日常</span>
+    <a href="../index.html"       class="">自选股</a>
+    <a href="../calendar.html"    class="">事件日历</a>
+    <a href="../newlisting.html"  class="">次新股</a>
+    <span class="sep"></span>
+    <span class="group-label">运营</span>
+    <a href="../ops/index.html"      class="">异常清单</a>
+    <a href="../ops/corpaction.html" class="">复权核对</a>
+    <a href="../ops/rules.html"      class="">规则库</a>
+    <a href="../ops/ledger.html"     class="on">处理台账</a>
+    <a href="../ops/report.html"     class="">运营报告</a>
+  </nav>
+</header>
+
+<div class="wrap">
+
+
+<h1>处理台账</h1>
+<p class="lede">
+  每条异常的人工判断记录都留在这里。系统只负责发现，判断原因和决定怎么修是人做的事。
+  攒上三个月，这张表就是一份没法临时编出来的工作记录。
+</p>
+
+<div class="tiles">
+  <div class="tile"><div class="k">累计异常</div><div class="v">98</div>
+    <div class="sub">去重后</div></div>
+  <div class="tile"><div class="k">待查</div><div class="v">93</div>
+    <div class="sub">未填写处理意见</div></div>
+  <div class="tile"><div class="k">已解释</div><div class="v">4</div>
+    <div class="sub">原因查明，数字可用</div></div>
+  <div class="tile"><div class="k">已修复</div><div class="v">0</div>
+    <div class="sub">已做数据修正</div></div>
+  <div class="tile"><div class="k">已忽略</div><div class="v">1</div>
+    <div class="sub">确认为正常现象</div></div>
+</div>
+
+<h2>如何填写</h2>
+<div class="card">
+<p style="margin-top:0">台账目前通过一条命令填写，处理记录写进库里，重跑采集和规则都不会覆盖：</p>
+<pre style="background:var(--plane);border:1px solid var(--border);border-radius:8px;padding:12px 14px;overflow-x:auto;font-size:12.5px;margin:10px 0"><code>python3 -m mdesk.handle DQ-CA-001 9988.HK 2025-06-11 \
+    --status explained \
+    --note "数据源用美元派息金额扣减港币价格，自算复权价为准"</code></pre>
+<p style="margin-bottom:0">status 可填 explained（原因已查明、数字可用）、fixed（已修正数据）、
+ignored（确认为正常现象）。填了 explained 之后，日常视图里该标的的角标会从红变黄。</p>
+</div>
+
+<h2>全部记录</h2>
+<div class="scroll">
+<table>
+<thead><tr><th>业务日</th><th>规则</th><th>级别</th><th>标的</th><th>说明</th>
+  <th>状态</th><th>处理记录</th><th>处理时间</th></tr></thead>
+<tbody>
+
+<tr>
+  <td class="mono">2026-08-13</td>
+  <td class="mono dim">DQ-CA-001</td>
+  <td><span class="sev P0">P0</span></td>
+  <td class="name">汇丰控股</td>
+  <td class="wide">数据源自身不自洽：上报每股派息 0.7847 HKD，但其复权价隐含派息仅 0.100006，相差 7.847 倍</td>
+  <td><span class="badge explained"><span class="dot"></span>已解释</span></td>
+  <td class="dim wide">同一根因。但汇丰仅最近一次出错,更早八次正确,疑为新派息入库临时状态,2026-08-30 复检</td>
+  <td class="mono dim">2026-08-16 18:28</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-06-10</td>
+  <td class="mono dim">DQ-CA-001</td>
+  <td><span class="sev P0">P0</span></td>
+  <td class="name"><a href="../stock/9988-HK.html">阿里巴巴-W</a>
+      </td>
+  <td class="wide">数据源自身不自洽：上报每股派息 1.029919 HKD，但其复权价隐含派息仅 0.131256，相差 7.847 倍</td>
+  <td><span class="badge explained"><span class="dot"></span>已解释</span></td>
+  <td class="dim wide">同 2025-06-11,同一根因,倍数同为 7.847</td>
+  <td class="mono dim">2026-08-16 18:28</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-06-11</td>
+  <td class="mono dim">DQ-CA-001</td>
+  <td><span class="sev P0">P0</span></td>
+  <td class="name"><a href="../stock/9988-HK.html">阿里巴巴-W</a>
+      </td>
+  <td class="wide">数据源自身不自洽：上报每股派息 1.96175 HKD，但其复权价隐含派息仅 0.25，相差 7.847 倍</td>
+  <td><span class="badge explained"><span class="dot"></span>已解释</span></td>
+  <td class="dim wide">数据源用美元派息金额(0.25 USD)扣减港币价格,应扣 1.96 HKD。复权价一律以自算 self_adj 为准</td>
+  <td class="mono dim">2026-08-16 18:28</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-08-14</td>
+  <td class="mono dim">DQ-CA-004</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/9988-HK.html">阿里巴巴-W</a>
+      </td>
+  <td class="wide">全历史 491 个交易日中有 445 日复权价与数据源偏离，最大 2.201%，历史涨跌幅计算会受影响</td>
+  <td><span class="badge explained"><span class="dot"></span>已解释</span></td>
+  <td class="dim wide">DQ-CA-001 的影响范围。445 日复权价偏低最多 2.201%,历史涨跌幅一律改用 self_adj 计算</td>
+  <td class="mono dim">2026-08-16 18:29</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-08-12</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/NBIS.html">Nebius</a>
+      </td>
+  <td class="wide">较前收盘 34.14%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-07-30</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/NBIS.html">Nebius</a>
+      </td>
+  <td class="wide">较前收盘 27.13%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-07-30</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/SNDK.html">闪迪</a>
+      </td>
+  <td class="wide">较前收盘 25.99%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-07-21</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/2513-HK.html">智谱</a>
+      </td>
+  <td class="wide">较前收盘 36.89%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-07-17</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/2513-HK.html">智谱</a>
+      </td>
+  <td class="wide">较前收盘 -28.49%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-07-14</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/SKHY.html">SK 海力士</a>
+      </td>
+  <td class="wide">较前收盘 27.29%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-06-25</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/SNDK.html">闪迪</a>
+      </td>
+  <td class="wide">较前收盘 21.97%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-06-18</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/2513-HK.html">智谱</a>
+      </td>
+  <td class="wide">较前收盘 26.14%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-06-15</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/2513-HK.html">智谱</a>
+      </td>
+  <td class="wide">较前收盘 32.82%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-05-22</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/2513-HK.html">智谱</a>
+      </td>
+  <td class="wide">较前收盘 26.93%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-05-13</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/2513-HK.html">智谱</a>
+      </td>
+  <td class="wide">较前收盘 36.9%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-04-15</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/IONQ.html">IonQ</a>
+      </td>
+  <td class="wide">较前收盘 20.95%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-04-14</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/IONQ.html">IonQ</a>
+      </td>
+  <td class="wide">较前收盘 20.16%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-04-01</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/2513-HK.html">智谱</a>
+      </td>
+  <td class="wide">较前收盘 31.94%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-03-25</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/9992-HK.html">泡泡玛特</a>
+      </td>
+  <td class="wide">较前收盘 -22.51%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-03-24</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/CRCL.html">Circle</a>
+      </td>
+  <td class="wide">较前收盘 -20.11%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-02-26</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/IONQ.html">IonQ</a>
+      </td>
+  <td class="wide">较前收盘 21.7%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-02-25</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/CRCL.html">Circle</a>
+      </td>
+  <td class="wide">较前收盘 35.47%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-02-23</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/2513-HK.html">智谱</a>
+      </td>
+  <td class="wide">较前收盘 -22.76%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-02-20</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/2513-HK.html">智谱</a>
+      </td>
+  <td class="wide">较前收盘 44.28%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-02-13</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/2513-HK.html">智谱</a>
+      </td>
+  <td class="wide">较前收盘 20.65%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-02-12</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/2513-HK.html">智谱</a>
+      </td>
+  <td class="wide">较前收盘 28.68%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-02-09</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/2513-HK.html">智谱</a>
+      </td>
+  <td class="wide">较前收盘 36.22%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-01-12</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/2513-HK.html">智谱</a>
+      </td>
+  <td class="wide">较前收盘 31.4%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-01-09</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/2513-HK.html">智谱</a>
+      </td>
+  <td class="wide">较前收盘 20.61%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-01-06</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/SNDK.html">闪迪</a>
+      </td>
+  <td class="wide">较前收盘 27.56%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-11-20</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/SNDK.html">闪迪</a>
+      </td>
+  <td class="wide">较前收盘 -20.33%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-11-06</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/CELH.html">Celsius</a>
+      </td>
+  <td class="wide">较前收盘 -24.8%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-11-05</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/LITE.html">Lumentum</a>
+      </td>
+  <td class="wide">较前收盘 23.57%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-10-06</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/AMD.html">AMD</a>
+      </td>
+  <td class="wide">较前收盘 23.71%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-09-19</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/OKLO.html">Oklo</a>
+      </td>
+  <td class="wide">较前收盘 28.83%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-09-09</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/NBIS.html">Nebius</a>
+      </td>
+  <td class="wide">较前收盘 49.42%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-07-28</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/1276-HK.html">恒瑞医药</a>
+      </td>
+  <td class="wide">较前收盘 24.54%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-06-20</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/CRCL.html">Circle</a>
+      </td>
+  <td class="wide">较前收盘 20.39%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-06-18</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/CRCL.html">Circle</a>
+      </td>
+  <td class="wide">较前收盘 33.82%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-06-13</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/CRCL.html">Circle</a>
+      </td>
+  <td class="wide">较前收盘 25.36%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-06-11</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/OKLO.html">Oklo</a>
+      </td>
+  <td class="wide">较前收盘 29.48%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-06-06</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/CRCL.html">Circle</a>
+      </td>
+  <td class="wide">较前收盘 29.4%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-05-23</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/OKLO.html">Oklo</a>
+      </td>
+  <td class="wide">较前收盘 23.04%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-05-22</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/IONQ.html">IonQ</a>
+      </td>
+  <td class="wide">较前收盘 36.52%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-04-09</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/HOOD.html">Robinhood</a>
+      </td>
+  <td class="wide">较前收盘 23.53%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-04-09</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/IONQ.html">IonQ</a>
+      </td>
+  <td class="wide">较前收盘 23.92%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-04-09</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/AMD.html">AMD</a>
+      </td>
+  <td class="wide">较前收盘 23.82%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-04-09</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/TSLA.html">特斯拉</a>
+      </td>
+  <td class="wide">较前收盘 22.69%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-04-07</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/9868-HK.html">小鹏汽车-W</a>
+      </td>
+  <td class="wide">较前收盘 -20.29%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-04-07</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/9992-HK.html">泡泡玛特</a>
+      </td>
+  <td class="wide">较前收盘 -21.96%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-04-07</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/9880-HK.html">优必选</a>
+      </td>
+  <td class="wide">较前收盘 -29.0%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-04-04</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/SNDK.html">闪迪</a>
+      </td>
+  <td class="wide">较前收盘 -21.3%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-04-03</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/LITE.html">Lumentum</a>
+      </td>
+  <td class="wide">较前收盘 -20.01%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-02-21</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/CELH.html">Celsius</a>
+      </td>
+  <td class="wide">较前收盘 27.77%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-02-19</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/1347-HK.html">华虹半导体</a>
+      </td>
+  <td class="wide">较前收盘 22.95%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-02-18</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/SNDK.html">闪迪</a>
+      </td>
+  <td class="wide">较前收盘 28.65%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-01-27</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/LITE.html">Lumentum</a>
+      </td>
+  <td class="wide">较前收盘 -22.46%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-01-27</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/OKLO.html">Oklo</a>
+      </td>
+  <td class="wide">较前收盘 -25.61%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-01-27</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/NBIS.html">Nebius</a>
+      </td>
+  <td class="wide">较前收盘 -37.44%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-01-24</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/9880-HK.html">优必选</a>
+      </td>
+  <td class="wide">较前收盘 26.12%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-01-15</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/IONQ.html">IonQ</a>
+      </td>
+  <td class="wide">较前收盘 33.48%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-01-08</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/IONQ.html">IonQ</a>
+      </td>
+  <td class="wide">较前收盘 -39.0%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-01-03</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/OKLO.html">Oklo</a>
+      </td>
+  <td class="wide">较前收盘 24.71%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2024-12-30</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/9880-HK.html">优必选</a>
+      </td>
+  <td class="wide">较前收盘 -31.6%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2024-12-16</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/IONQ.html">IonQ</a>
+      </td>
+  <td class="wide">较前收盘 23.59%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2024-11-21</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/OKLO.html">Oklo</a>
+      </td>
+  <td class="wide">较前收盘 20.43%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2024-11-15</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/OKLO.html">Oklo</a>
+      </td>
+  <td class="wide">较前收盘 -24.62%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2024-11-07</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/IONQ.html">IonQ</a>
+      </td>
+  <td class="wide">较前收盘 34.41%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2024-11-07</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/OKLO.html">Oklo</a>
+      </td>
+  <td class="wide">较前收盘 22.28%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2024-10-31</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/EL.html">雅诗兰黛</a>
+      </td>
+  <td class="wide">较前收盘 -20.9%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2024-10-28</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/OKLO.html">Oklo</a>
+      </td>
+  <td class="wide">较前收盘 28.21%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2024-10-28</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/NBIS.html">Nebius</a>
+      </td>
+  <td class="wide">较前收盘 21.36%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2024-10-24</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/TSLA.html">特斯拉</a>
+      </td>
+  <td class="wide">较前收盘 21.92%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2024-10-22</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/9880-HK.html">优必选</a>
+      </td>
+  <td class="wide">较前收盘 20.07%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2024-10-21</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/OKLO.html">Oklo</a>
+      </td>
+  <td class="wide">较前收盘 22.38%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2024-10-16</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/OKLO.html">Oklo</a>
+      </td>
+  <td class="wide">较前收盘 41.97%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2024-10-08</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/1347-HK.html">华虹半导体</a>
+      </td>
+  <td class="wide">较前收盘 -23.2%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2024-10-08</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name">中芯国际 A</td>
+  <td class="wide">较前收盘 20.0%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2024-10-07</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/0981-HK.html">中芯国际</a>
+      </td>
+  <td class="wide">较前收盘 21.76%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2024-10-04</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/1347-HK.html">华虹半导体</a>
+      </td>
+  <td class="wide">较前收盘 29.63%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2024-10-04</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/0981-HK.html">中芯国际</a>
+      </td>
+  <td class="wide">较前收盘 29.31%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2024-09-30</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name">中芯国际 A</td>
+  <td class="wide">较前收盘 20.0%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2024-09-27</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/IONQ.html">IonQ</a>
+      </td>
+  <td class="wide">较前收盘 20.47%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2024-09-20</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/OKLO.html">Oklo</a>
+      </td>
+  <td class="wide">较前收盘 27.23%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2024-08-26</td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="name"><a href="../stock/PDD.html">拼多多</a>
+      </td>
+  <td class="wide">较前收盘 -28.51%，当日无公司行动记录可解释</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-08-16</td>
+  <td class="mono dim">DQ-FUN-003</td>
+  <td><span class="sev P2">P2</span></td>
+  <td class="name"><a href="../stock/ASML.html">阿斯麦</a>
+      </td>
+  <td class="wide">估值超出常规区间 PE=62.9 PB=1563.2：阿斯麦</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-02-24</td>
+  <td class="mono dim">DQ-PRC-004</td>
+  <td><span class="sev P2">P2</span></td>
+  <td class="name">紫金矿业 A</td>
+  <td class="wide">与上一交易日 2026-02-13 间隔 11 个自然日</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-02-24</td>
+  <td class="mono dim">DQ-PRC-004</td>
+  <td><span class="sev P2">P2</span></td>
+  <td class="name">恒瑞医药 A</td>
+  <td class="wide">与上一交易日 2026-02-13 间隔 11 个自然日</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-02-24</td>
+  <td class="mono dim">DQ-PRC-004</td>
+  <td><span class="sev P2">P2</span></td>
+  <td class="name">美的集团 A</td>
+  <td class="wide">与上一交易日 2026-02-13 间隔 11 个自然日</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-02-24</td>
+  <td class="mono dim">DQ-PRC-004</td>
+  <td><span class="sev P2">P2</span></td>
+  <td class="name">中芯国际 A</td>
+  <td class="wide">与上一交易日 2026-02-13 间隔 11 个自然日</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-02-23</td>
+  <td class="mono dim">DQ-PRC-004</td>
+  <td><span class="sev P2">P2</span></td>
+  <td class="name">台积电</td>
+  <td class="wide">与上一交易日 2026-02-11 间隔 12 个自然日</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2026-02-16</td>
+  <td class="mono dim">DQ-PRC-005</td>
+  <td><span class="sev P2">P2</span></td>
+  <td class="name">HK</td>
+  <td class="wide">HK 市场当日 13 只标的中有 13 只成交量为 0，数据源成交量整体缺失，当日成交量不可用</td>
+  <td><span class="badge ok"><span class="dot"></span>已忽略</span></td>
+  <td class="dim wide">香港半日市(农历新年前一日),港交所只有早市,数据源不返回成交量。属市场规则非数据错误</td>
+  <td class="mono dim">2026-08-16 18:28</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-12-31</td>
+  <td class="mono dim">DQ-PRC-005</td>
+  <td><span class="sev P2">P2</span></td>
+  <td class="name">HK</td>
+  <td class="wide">HK 市场当日 12 只标的中有 11 只成交量为 0，数据源成交量整体缺失，当日成交量不可用</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-12-24</td>
+  <td class="mono dim">DQ-PRC-005</td>
+  <td><span class="sev P2">P2</span></td>
+  <td class="name">HK</td>
+  <td class="wide">HK 市场当日 12 只标的中有 12 只成交量为 0，数据源成交量整体缺失，当日成交量不可用</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-02-03</td>
+  <td class="mono dim">DQ-PRC-004</td>
+  <td><span class="sev P2">P2</span></td>
+  <td class="name">台积电</td>
+  <td class="wide">与上一交易日 2025-01-22 间隔 12 个自然日</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2025-01-28</td>
+  <td class="mono dim">DQ-PRC-005</td>
+  <td><span class="sev P2">P2</span></td>
+  <td class="name">HK</td>
+  <td class="wide">HK 市场当日 10 只标的中有 10 只成交量为 0，数据源成交量整体缺失，当日成交量不可用</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2024-12-31</td>
+  <td class="mono dim">DQ-PRC-005</td>
+  <td><span class="sev P2">P2</span></td>
+  <td class="name">HK</td>
+  <td class="wide">HK 市场当日 10 只标的中有 10 只成交量为 0，数据源成交量整体缺失，当日成交量不可用</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+<tr>
+  <td class="mono">2024-12-24</td>
+  <td class="mono dim">DQ-PRC-005</td>
+  <td><span class="sev P2">P2</span></td>
+  <td class="name">HK</td>
+  <td class="wide">HK 市场当日 10 只标的中有 10 只成交量为 0，数据源成交量整体缺失，当日成交量不可用</td>
+  <td><span class="badge open"><span class="dot"></span>待查</span></td>
+  <td class="dim wide">—</td>
+  <td class="mono dim">—</td>
+</tr>
+
+</tbody>
+</table>
+</div>
+
+
+
+
+<footer class="foot">
+  mdesk 自建港美股行情数据工作台　行情来源 yfinance，仅用于数据质量核对与个人自用，不构成任何投资建议。<br>
+  本轮共 35 只标的、16 条校验规则，未处理异常 93 条。
+</footer>
+</div>
+
+<script>
+document.querySelectorAll('.chartbox').forEach(function (box) {
+  var cfg = JSON.parse(box.dataset.chart);
+  var svg = box.querySelector('svg');
+  var cross = svg.querySelector('.cross');
+  var dots = svg.querySelectorAll('.hd');
+  var hit = svg.querySelector('.hit');
+  var tip = document.createElement('div');
+  tip.className = 'tip';
+  box.appendChild(tip);
+
+  function nearest(clientX) {
+    var r = svg.getBoundingClientRect();
+    var vx = (clientX - r.left) / r.width * cfg.width;
+    var best = 0, bd = Infinity;
+    for (var i = 0; i < cfg.px.length; i++) {
+      var d = Math.abs(cfg.px[i] - vx);
+      if (d < bd) { bd = d; best = i; }
+    }
+    return best;
+  }
+
+  function show(e) {
+    var i = nearest(e.clientX);
+    cross.setAttribute('x1', cfg.px[i]);
+    cross.setAttribute('x2', cfg.px[i]);
+    cross.setAttribute('opacity', '1');
+    var lines = '<b>' + cfg.x[i] + '</b>';
+    cfg.series.forEach(function (s, k) {
+      var dot = dots[k];
+      if (s.py[i] === null) { dot.setAttribute('opacity', '0'); return; }
+      dot.setAttribute('cx', cfg.px[i]);
+      dot.setAttribute('cy', s.py[i]);
+      dot.setAttribute('opacity', '1');
+      lines += '<span><i style="background:' + s.color + '"></i>' +
+               s.name + '<em>' + s.val[i] + '</em></span>';
+    });
+    tip.innerHTML = lines;
+    var r = svg.getBoundingClientRect();
+    var left = cfg.px[i] / cfg.width * r.width;
+    tip.style.left = Math.min(Math.max(left, 70), r.width - 70) + 'px';
+    tip.style.opacity = '1';
+  }
+
+  function hide() {
+    cross.setAttribute('opacity', '0');
+    dots.forEach(function (d) { d.setAttribute('opacity', '0'); });
+    tip.style.opacity = '0';
+  }
+
+  hit.addEventListener('mousemove', show);
+  hit.addEventListener('mouseleave', hide);
+  hit.addEventListener('touchmove', function (e) {
+    if (e.touches.length) { show(e.touches[0]); }
+  }, { passive: true });
+});
+</script>
+</body>
+</html>

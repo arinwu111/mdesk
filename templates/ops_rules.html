@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block body %}
+
+<h1>规则库</h1>
+<p class="lede">
+  规则是数据不是代码。每条规则以一段 SQL 存在库里，加一条规则等于插一行，不需要改程序。
+  每条都带一段来历说明，记录它为什么存在、从哪次问题里长出来的。
+</p>
+
+<div class="tiles">
+  <div class="tile"><div class="k">规则总数</div><div class="v">{{ stats.total }}</div>
+    <div class="sub">全部启用</div></div>
+  <div class="tile"><div class="k">本轮有命中</div><div class="v">{{ stats.hit }}</div>
+    <div class="sub">其余维度当前干净</div></div>
+  <div class="tile"><div class="k">覆盖域</div><div class="v">{{ stats.domains }}</div>
+    <div class="sub">{{ stats.domain_list }}</div></div>
+  <div class="tile"><div class="k">P0 规则</div><div class="v">{{ stats.p0 }}</div>
+    <div class="sub">命中即当场处理</div></div>
+</div>
+
+{% for domain, label in domain_labels %}
+{% if by_domain[domain] %}
+<h2>{{ label }}</h2>
+{% for r in by_domain[domain] %}
+<div class="card">
+  <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+    <span class="mono" style="font-weight:600">{{ r.rule_id }}</span>
+    <span style="font-weight:600">{{ r.name }}</span>
+    <span class="sev {{ r.severity }}">{{ r.severity }}</span>
+    <span class="pill">{{ r.hit_label }}</span>
+    <span class="dim" style="margin-left:auto;font-size:12px">建于 {{ r.created_at }}</span>
+  </div>
+  <p style="color:var(--ink-2);margin:10px 0 0">{{ r.description }}</p>
+  <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink-muted)"><b>来历：</b>{{ r.note }}</p>
+</div>
+{% endfor %}
+{% endif %}
+{% endfor %}
+
+<div class="note">
+  规则的价值不在于零误报。像「派息金额超过股价一成」这种，高股息标的会正常命中，
+  它的作用是强制你每次都去看一眼，确认这是特别股息而不是数据错。
+</div>
+
+{% endblock %}
