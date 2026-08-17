@@ -1,7 +1,9 @@
 """渲染静态站。页面只读 mart 层和 dq 层，不碰 raw。"""
 
+import math
 import shutil
-from datetime import datetime, date
+import statistics
+from datetime import datetime, date, timedelta
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from markupsafe import Markup
@@ -29,7 +31,8 @@ SEV_LABEL = {"P0": "当场处理", "P1": "记台账排期", "P2": "归档观察"
 DOMAIN_LABELS = [
     ("ref", "ref 主数据域"), ("price", "price 行情域"),
     ("corp_action", "corp_action 公司行动域"), ("fundamental", "fundamental 基本面域"),
-    ("cross", "cross 跨市场域"), ("ops", "ops 作业域"),
+    ("cross", "cross 跨市场域"), ("source", "source 跨源比对域"),
+    ("ops", "ops 作业域"),
 ]
 
 
@@ -64,7 +67,7 @@ def direction(v):
 # ----------------------------------------------------------------------
 
 def build_meta(con) -> dict:
-    data_date = con.execute("SELECT max(trade_date) FROM raw_price_daily").fetchone()[0]
+    data_date = con.execute("SELECT max(trade_date) FROM price_primary").fetchone()[0]
     return {
         "data_date": data_date,
         "built_at": datetime.now().strftime("%Y-%m-%d %H:%M"),
@@ -78,14 +81,49 @@ def build_meta(con) -> dict:
     }
 
 
+BADGE_RANK = {"open": 2, "explained": 1, "ok": 0}
+
+# 每只标的的单日跳空告警线 = 自身日波动率 × 6，与 DQ-PRC-002 的判据一致
+SIGMA_K = 6
+
+
+def _threshold(vol_ann):
+    """把年化波动率折回单日告警线，页面上要显示的就是这个数。"""
+    if not vol_ann:
+        return None
+    return max(vol_ann / math.sqrt(252) * SIGMA_K, 5.0)
+
+
+def _volatility(con) -> dict:
+    """近 120 个交易日的年化波动率。同时也是 DQ-PRC-002 的阈值依据。"""
+    rows = con.execute(
+        """
+        WITH d AS (
+            SELECT symbol, trade_date,
+                   close / lag(close) OVER (PARTITION BY symbol ORDER BY trade_date) - 1 AS ret
+            FROM price_primary
+            WHERE source = 'yfinance' AND close > 0
+        ),
+        recent AS (
+            SELECT symbol, ret FROM d WHERE ret IS NOT NULL
+            QUALIFY row_number() OVER (PARTITION BY symbol ORDER BY trade_date DESC) <= 120
+        )
+        SELECT symbol, stddev_samp(ret) * sqrt(252) * 100 FROM recent
+        GROUP BY 1 HAVING count(*) >= 30
+        """
+    ).fetchall()
+    return dict(rows)
+
+
 def page_index(con) -> dict:
     sparks = {}
     for sym, in con.execute(
             "SELECT DISTINCT symbol FROM mart_watchlist_snapshot").fetchall():
         vals = con.execute(
-            "SELECT close FROM raw_price_daily WHERE symbol = ? "
+            "SELECT close FROM price_primary WHERE symbol = ?  "
             "ORDER BY trade_date DESC LIMIT 60", [sym]).fetchall()
         sparks[sym] = charts.sparkline([v[0] for v in reversed(vals)])
+    vols = _volatility(con)
 
     rows = []
     for r in con.execute(
@@ -97,13 +135,28 @@ def page_index(con) -> dict:
     ).fetchall():
         (symbol, code, name, market, sector, _td, close, _pc, chg, _vol,
          cur, mcap, pe, _pb, badge, summary, is_case) = r
+        vol = vols.get(symbol)
+        thr = _threshold(vol)
+        # 角标为「正常」时也要说清楚判据，否则读者看到智谱涨 20% 却显示正常会以为出错
+        if badge == "ok" and thr:
+            tip = (f"今日 {chg:+.2f}%，未触及该标的告警线 ±{thr:.1f}%"
+                   f"（= 其自身日波动率的 {SIGMA_K} 倍）" if chg is not None
+                   else f"该标的告警线 ±{thr:.1f}%，今日无异常")
+        else:
+            tip = summary
         rows.append({
+            "threshold": thr, "threshold_fmt": f"±{thr:.1f}%" if thr else "—",
             "symbol": symbol, "slug": slug(symbol), "display_code": code, "name": name,
-            "market": market, "sector": sector, "is_case": is_case,
-            "close_fmt": num(close, 3), "change_fmt": pct(chg), "dir": direction(chg),
-            "spark": sparks.get(symbol, ""), "mcap_fmt": money(mcap),
-            "pe_fmt": num(pe, 1), "badge": badge, "badge_label": BADGE_LABEL[badge],
-            "dq_summary": summary,
+            "market": market, "market_label": MARKET_LABEL.get(market, market),
+            "sector": sector, "is_case": is_case,
+            "close": close, "close_fmt": num(close, 3),
+            "change": chg, "change_fmt": pct(chg), "dir": direction(chg),
+            "spark": sparks.get(symbol, ""),
+            "mcap": mcap, "mcap_fmt": money(mcap),
+            "pe": pe, "pe_fmt": num(pe, 1),
+            "vol": vol, "vol_fmt": f"{vol:.1f}%" if vol else "—",
+            "badge": badge, "badge_label": BADGE_LABEL[badge],
+            "badge_rank": BADGE_RANK.get(badge, 0), "dq_summary": tip,
         })
 
     counts = dict(con.execute(
@@ -112,7 +165,87 @@ def page_index(con) -> dict:
     badge_counts = {"ok": 0, "explained": 0, "open": 0}
     badge_counts.update(dict(con.execute(
         "SELECT dq_badge, count(*) FROM mart_watchlist_snapshot GROUP BY 1").fetchall()))
-    return {"rows": rows, "counts": counts, "badge_counts": badge_counts}
+    n_sectors = con.execute(
+        "SELECT count(DISTINCT sector) FROM ref_watchlist WHERE NOT is_reference").fetchone()[0]
+
+    # 说明文字里的例子直接取自真实数据，不写死，换了自选股也不会说错
+    with_thr = sorted((r for r in rows if r["threshold"]), key=lambda r: r["threshold"])
+    eg = {"high_thr": "—", "low_thr": "—",
+          "high_name": "高波动标的", "low_name": "低波动标的"}
+    if with_thr:
+        hi_r, lo_r = with_thr[-1], with_thr[0]
+        eg = {"high_thr": f"{hi_r['threshold']:.1f}%", "high_name": hi_r["name"],
+              "low_thr": f"{lo_r['threshold']:.1f}%", "low_name": lo_r["name"]}
+
+    return {"rows": rows, "counts": counts, "badge_counts": badge_counts,
+            "n_sectors": n_sectors, "eg": eg}
+
+
+def page_home(con, meta) -> dict:
+    """总览首页。只回答一个问题：现在有没有需要动手的事。"""
+    today = datetime.now().date()
+    hour = datetime.now().hour
+    greeting = ("早上好。" if hour < 11 else "下午好。" if hour < 18 else "晚上好。")
+
+    todo = _results(con, "WHERE r.status = 'open' AND r.severity IN ('P0','P1')", limit=8)
+
+    soon = []
+    for sym, code, name, ed, etype, title in con.execute(
+        """
+        SELECT e.symbol, w.display_code, w.name, e.event_date, e.event_type, e.title
+        FROM events_calendar e JOIN ref_watchlist w ON w.symbol = e.symbol
+        WHERE e.event_date >= ? AND e.event_date <= ? AND e.source <> 'hkexnews'
+        ORDER BY e.event_date LIMIT 12
+        """, [today, today + timedelta(days=14)]
+    ).fetchall():
+        d = (ed - today).days
+        soon.append({
+            "slug": slug(sym), "name": name, "event_date": ed, "days": d,
+            "days_fmt": "今天" if d == 0 else f"{d} 天",
+            "type_label": EVENT_LABEL.get(etype, etype), "title": title,
+        })
+
+    markets = []
+    for mk, label in (("HK", "港股"), ("US", "美股")):
+        rs = [r for r in con.execute(
+            """
+            SELECT symbol, name, sector, change_pct, trade_date
+            FROM mart_watchlist_snapshot WHERE market = ? AND change_pct IS NOT NULL
+            ORDER BY change_pct DESC
+            """, [mk]).fetchall()]
+        if not rs:
+            continue
+        def fmt(r):
+            return {"slug": slug(r[0]), "name": r[1], "sector": r[2],
+                    "change_fmt": pct(r[3]), "dir": direction(r[3])}
+        top, bottom = rs[:4], rs[-4:] if len(rs) > 8 else []
+        markets.append({
+            "label": label, "n": len(rs), "trade_date": rs[0][4],
+            "n_up": sum(1 for r in rs if r[3] > 0),
+            "n_down": sum(1 for r in rs if r[3] < 0),
+            "top": [fmt(r) for r in top], "bottom": [fmt(r) for r in bottom],
+            "n_mid": max(len(rs) - len(top) - len(bottom), 0),
+        })
+
+    fail = con.execute(
+        "SELECT count(*) FROM raw_fetch_log WHERE run_id = (SELECT max(run_id) "
+        "FROM raw_fetch_log) AND status = 'error'").fetchone()[0]
+    stale = (today - meta["data_date"]).days if meta["data_date"] else 99
+
+    return {"home": {
+        "greeting": greeting,
+        "p0": con.execute("SELECT count(*) FROM dq_results WHERE status = 'open' "
+                          "AND severity = 'P0'").fetchone()[0],
+        "p1": con.execute("SELECT count(*) FROM dq_results WHERE status = 'open' "
+                          "AND severity = 'P1'").fetchone()[0],
+        "n_ok": con.execute("SELECT count(*) FROM mart_watchlist_snapshot "
+                            "WHERE dq_badge <> 'open'").fetchone()[0],
+        "n_soon": sum(1 for e in soon if e["days"] <= 3),
+        "todo": todo, "soon": soon, "markets": markets,
+        "fetch_label": "正常" if fail == 0 else f"{fail} 项失败",
+        "fetch_sub": (f"数据已 {stale} 天未更新" if stale > 4
+                      else "最近一轮全部成功" if fail == 0 else "见异常清单 DQ-OPS-001"),
+    }}
 
 
 def _actions_for(con, symbol):
@@ -122,7 +255,7 @@ def _actions_for(con, symbol):
         "FROM events_corporate_action WHERE symbol = ? ORDER BY ex_date DESC", [symbol]
     ).fetchall():
         prev = con.execute(
-            "SELECT close FROM raw_price_daily WHERE symbol = ? AND trade_date < ? "
+            "SELECT close FROM price_primary WHERE symbol = ? AND trade_date < ? "
             "ORDER BY trade_date DESC LIMIT 1", [symbol, ex_date]).fetchone()
         prev_close = prev[0] if prev else None
         p = (amount / prev_close * 100) if (amount and prev_close) else None
@@ -135,18 +268,39 @@ def _actions_for(con, symbol):
     return out
 
 
-def page_stock(con, symbol) -> dict:
-    (code, name, market, sector, itype, is_case, case_note) = con.execute(
-        "SELECT display_code, name, market, sector, instrument_type, is_case, case_note "
-        "FROM ref_watchlist WHERE symbol = ?", [symbol]).fetchone()
+def page_stock(con, symbol, vols_all=None) -> dict:
+    vols_all = vols_all or {}
+    (code, name, market, sector, itype, is_case, case_note, is_ref) = con.execute(
+        "SELECT display_code, name, market, sector, instrument_type, is_case, case_note, "
+        "is_reference FROM ref_watchlist WHERE symbol = ?", [symbol]).fetchone()
     snap = con.execute(
         "SELECT trade_date, close, prev_close, change_pct, currency, market_cap, pe_ttm, "
         "dq_badge FROM mart_watchlist_snapshot WHERE symbol = ?", [symbol]).fetchone()
+    if snap is None:
+        # 对照标的不进自选股快照，但复权核对页会链接过来，所以直接从原始行情兜底
+        snap = con.execute(
+            """
+            SELECT p.trade_date, p.close,
+                   lag(p.close) OVER (ORDER BY p.trade_date), NULL,
+                   p.currency, f.market_cap, f.pe_ttm, 'ok'
+            FROM price_primary p
+            LEFT JOIN raw_fundamental f ON f.symbol = p.symbol
+            WHERE p.symbol = ?
+            QUALIFY row_number() OVER (ORDER BY p.trade_date DESC) = 1
+            """, [symbol]).fetchone()
     trade_date, close, prev_close, chg, cur, mcap, pe, badge = snap or (None,) * 8
+    if chg is None and close and prev_close:
+        chg = (close / prev_close - 1) * 100
 
     series_rows = con.execute(
-        "SELECT trade_date, close, self_adj, src_adj, diff_pct FROM mart_adj_price "
-        "WHERE symbol = ? ORDER BY trade_date", [symbol]).fetchall()
+        """
+        SELECT m.trade_date, m.close, m.self_adj, m.src_adj, m.diff_pct, p.volume
+        FROM mart_adj_price m
+        LEFT JOIN price_primary p
+               ON p.symbol = m.symbol AND p.trade_date = m.trade_date
+             
+        WHERE m.symbol = ? ORDER BY m.trade_date
+        """, [symbol]).fetchall()
     x = [str(r[0])[2:7] for r in series_rows]
     has_diff = any(r[4] is not None and abs(r[4]) > 0.5 for r in series_rows)
     if has_diff:
@@ -178,11 +332,111 @@ def page_stock(con, symbol) -> dict:
     else:
         pe_note = "字段缺失，已告警"
 
+    # ---- 区间统计 ----
+    closes = [(r[0], r[1]) for r in series_rows]
+    stats = []
+    for label, days in (("近 1 月", 21), ("近 3 月", 63), ("近 1 年", 252), ("全区间", len(closes))):
+        if len(closes) > days >= 1:
+            base = closes[-days - 1][1] if len(closes) > days else closes[0][1]
+        elif closes:
+            base = closes[0][1]
+        else:
+            continue
+        last = closes[-1][1]
+        r = (last / base - 1) * 100 if base else None
+        stats.append({"label": label, "value": pct(r), "dir": direction(r)})
+
+    rets = [closes[i][1] / closes[i - 1][1] - 1
+            for i in range(1, len(closes)) if closes[i - 1][1]]
+    recent = rets[-120:]
+    vol_ann = (statistics.stdev(recent) * math.sqrt(252) * 100
+               if len(recent) >= 30 else None)
+    peak, mdd = None, 0.0
+    for _d, c in closes:
+        peak = c if peak is None or c > peak else peak
+        if peak:
+            mdd = min(mdd, c / peak - 1)
+    hi = max((c for _d, c in closes), default=None)
+    lo = min((c for _d, c in closes), default=None)
+
+    # ---- 关键指标 ----
+    last = con.execute(
+        """
+        SELECT open, high, low, close, volume FROM price_primary
+        WHERE symbol = ? 
+        QUALIFY row_number() OVER (ORDER BY trade_date DESC) = 1
+        """, [symbol]).fetchone()
+    fund = con.execute(
+        """
+        SELECT shares_outstanding, pb, ps_ttm, dividend_yield, eps_ttm
+        FROM raw_fundamental WHERE symbol = ?
+        QUALIFY row_number() OVER (ORDER BY snapshot_date DESC) = 1
+        """, [symbol]).fetchone() or (None,) * 5
+    shares, pb, ps, dy, _eps = fund
+
+    cl = [c for _d, c in closes]
+    vols_hist = [r[5] for r in series_rows if r[5]]
+
+    def ma(n):
+        return sum(cl[-n:]) / n if len(cl) >= n else None
+
+    def dev(n):
+        m = ma(n)
+        return (cl[-1] / m - 1) * 100 if m and cl else None
+
+    w52 = cl[-252:] if len(cl) >= 252 else cl
+    hi52, lo52 = (max(w52), min(w52)) if w52 else (None, None)
+    avg_vol5 = (sum(vols_hist[-6:-1]) / 5) if len(vols_hist) >= 6 else None
+    o, h, lo_, c, v = last or (None,) * 5
+
+    turnover = (v / shares * 100) if (v and shares) else None
+    ind = [
+        {"k": "换手率", "v": f"{turnover:.2f}%" if turnover else "—",
+         "n": "成交量 ÷ 总股本"},
+        {"k": "量比", "v": f"{v / avg_vol5:.2f}" if (v and avg_vol5) else "—",
+         "n": "今日量 ÷ 前 5 日均量"},
+        {"k": "振幅", "v": f"{(h - lo_) / prev_close * 100:.2f}%"
+                          if (h and lo_ and prev_close) else "—", "n": "(最高−最低) ÷ 前收"},
+        {"k": "成交额", "v": f"{charts._human(c * v)} {cur or ''}" if (c and v) else "—",
+         "n": "收盘价 × 成交量，估算值"},
+        {"k": "52 周最高", "v": num(hi52, 3), "n": f"距今 {(c / hi52 - 1) * 100:+.1f}%"
+                                                  if (c and hi52) else ""},
+        {"k": "52 周最低", "v": num(lo52, 3), "n": f"距今 {(c / lo52 - 1) * 100:+.1f}%"
+                                                  if (c and lo52) else ""},
+        {"k": "MA5", "v": num(ma(5), 3), "n": f"乖离 {dev(5):+.2f}%" if dev(5) else ""},
+        {"k": "MA20", "v": num(ma(20), 3), "n": f"乖离 {dev(20):+.2f}%" if dev(20) else ""},
+        {"k": "MA60", "v": num(ma(60), 3), "n": f"乖离 {dev(60):+.2f}%" if dev(60) else ""},
+        {"k": "市净率 PB", "v": num(pb, 2), "n": "数据源提供"},
+        {"k": "市销率 PS", "v": num(ps, 2), "n": "TTM"},
+        {"k": "股息率", "v": f"{dy:.2f}%" if dy else "—", "n": "数据源提供"},
+        {"k": "总股本", "v": charts._human(shares) if shares else "—", "n": "股"},
+    ]
+    # A+H 与双重上市标的的总股本口径会把另一地的股份算进来，换手率因此失真
+    ah = con.execute(
+        "SELECT count(*) FROM ref_cross_listing WHERE symbol_a = ? OR symbol_b = ?",
+        [symbol, symbol]).fetchone()[0]
+
+    # ---- 同行业对比 ----
+    peers = []
+    for psym, pname, pchg, pbadge in con.execute(
+        """
+        SELECT symbol, name, change_pct, dq_badge FROM mart_watchlist_snapshot
+        WHERE sector = ? ORDER BY change_pct DESC NULLS LAST
+        """, [sector]
+    ).fetchall():
+        peers.append({
+            "slug": slug(psym), "name": pname, "change_fmt": pct(pchg),
+            "dir": direction(pchg), "is_self": psym == symbol,
+            "badge": pbadge, "badge_label": BADGE_LABEL.get(pbadge, ""),
+            "vol_fmt": (f"{vols_all[psym]:.1f}%" if vols_all.get(psym) else "—"),
+        })
+
     return {"s": {
         "symbol": symbol, "display_code": code, "name": name, "sector": sector,
         "market_label": MARKET_LABEL.get(market, market),
         "type_label": TYPE_LABEL.get(itype, itype),
-        "case_note": case_note if is_case else "",
+        "case_note": case_note if (is_case or is_ref) else "",
+        "is_reference": is_ref,
         "trade_date": trade_date, "currency": cur or "",
         "close_fmt": num(close, 3), "prev_fmt": num(prev_close, 3),
         "change_fmt": pct(chg), "dir": direction(chg),
@@ -191,7 +445,15 @@ def page_stock(con, symbol) -> dict:
         "open_count": sum(1 for i in issues if i["status_label"] == "待查"),
         "two_series": has_diff, "n_points": len(series_rows),
         "chart": charts.line_chart(x, series),
+        "vol_chart": charts.volume_chart(x, [r[5] for r in series_rows]),
         "actions": _actions_for(con, symbol), "issues": issues,
+        "stats": stats,
+        "vol_ann": f"{vol_ann:.1f}%" if vol_ann else "—",
+        "threshold": f"{vol_ann / math.sqrt(252) * 6:.1f}%" if vol_ann else "—",
+        "mdd": f"{mdd * 100:.1f}%" if mdd else "—",
+        "hi_fmt": num(hi, 3), "lo_fmt": num(lo, 3),
+        "peers": peers, "n_peers": len(peers),
+        "indicators": ind, "is_cross_listed": ah > 0,
     }}
 
 
@@ -200,7 +462,7 @@ WITH p AS (
     SELECT symbol, trade_date, close, adj_close, adj_close / close AS ratio,
            lag(close) OVER (PARTITION BY symbol ORDER BY trade_date) AS prev_close,
            lag(adj_close / close) OVER (PARTITION BY symbol ORDER BY trade_date) AS prev_ratio
-    FROM raw_price_daily WHERE close > 0 AND adj_close > 0
+    FROM price_primary WHERE close > 0 AND adj_close > 0
 )
 SELECT ca.symbol, w.display_code, w.name, p.trade_date AS ex_date,
        ca.amount, ca.currency, p.prev_close,
@@ -293,7 +555,7 @@ def page_calendar(con) -> dict:
         key = (sym, ex_date)
         if key not in prev_map:
             r = con.execute(
-                "SELECT close FROM raw_price_daily WHERE symbol = ? AND trade_date < ? "
+                "SELECT close FROM price_primary WHERE symbol = ? AND trade_date < ? "
                 "ORDER BY trade_date DESC LIMIT 1", [sym, ex_date]).fetchone()
             prev_map[key] = r[0] if r else None
         prev_close = prev_map[key]
@@ -307,7 +569,7 @@ def page_calendar(con) -> dict:
             "flagged": key in flagged,
         })
 
-    latest = con.execute("SELECT max(trade_date) FROM raw_price_daily").fetchone()[0]
+    latest = con.execute("SELECT max(trade_date) FROM price_primary").fetchone()[0]
     cutoff = date(latest.year - 1, latest.month, latest.day)
     recent = [r for r in all_rows if r["ex_date"] >= cutoff]
     older = [r for r in all_rows if r["ex_date"] < cutoff]
@@ -379,12 +641,12 @@ def page_calendar(con) -> dict:
 
 
 def page_newlisting(con) -> dict:
-    latest = con.execute("SELECT max(trade_date) FROM raw_price_daily").fetchone()[0]
+    latest = con.execute("SELECT max(trade_date) FROM price_primary").fetchone()[0]
     # 各市场交易日历不同，窗口起点必须按市场分别取，否则会把日历差当成新上市
     market_start = dict(con.execute(
         """
         SELECT w.market, min(p.trade_date)
-        FROM raw_price_daily p JOIN ref_watchlist w ON w.symbol = p.symbol
+        FROM price_primary p JOIN ref_watchlist w ON w.symbol = p.symbol
         GROUP BY 1
         """
     ).fetchall())
@@ -395,13 +657,13 @@ def page_newlisting(con) -> dict:
         "WHERE NOT is_reference"
     ).fetchall():
         r = con.execute(
-            "SELECT min(trade_date), max(trade_date), count(*) FROM raw_price_daily "
+            "SELECT min(trade_date), max(trade_date), count(*) FROM price_primary "
             "WHERE symbol = ?", [sym]).fetchone()
         if not r or not r[0]:
             continue
         start, _end, n = r
         first = con.execute(
-            "SELECT close FROM raw_price_daily WHERE symbol = ? ORDER BY trade_date LIMIT 1",
+            "SELECT close FROM price_primary WHERE symbol = ? ORDER BY trade_date LIMIT 1",
             [sym]).fetchone()[0]
         snap = con.execute(
             "SELECT close, pe_ttm, dq_badge FROM mart_watchlist_snapshot WHERE symbol = ?",
@@ -524,7 +786,7 @@ def page_ledger(con) -> dict:
 
 
 def page_report(con, meta) -> dict:
-    n_price = con.execute("SELECT count(*) FROM raw_price_daily").fetchone()[0]
+    n_price = con.execute("SELECT count(*) FROM price_primary").fetchone()[0]
     n_actions = con.execute("SELECT count(*) FROM events_corporate_action").fetchone()[0]
     sev = dict(con.execute("SELECT severity, count(*) FROM dq_results GROUP BY 1").fetchall())
     n_issues = sum(sev.values())
@@ -555,7 +817,7 @@ def page_report(con, meta) -> dict:
             "SELECT rule_id, name, severity, note FROM dq_rules WHERE enabled ORDER BY rule_id"
         ).fetchall()
     ]
-    latest = con.execute("SELECT min(trade_date), max(trade_date) FROM raw_price_daily").fetchone()
+    latest = con.execute("SELECT min(trade_date), max(trade_date) FROM price_primary").fetchone()
 
     return {
         "period": f"{latest[0]} 至 {latest[1]}（首期，覆盖全部采集窗口）",
@@ -619,7 +881,8 @@ def render_site() -> None:
     # 样式和脚本直接进 <style> / <script>，不能被 HTML 转义
     base = {"meta": meta,
             "hover_css": Markup(charts.HOVER_CSS),
-            "hover_js": Markup(charts.HOVER_JS)}
+            "hover_js": Markup(charts.HOVER_JS),
+            "table_js": Markup(charts.TABLE_JS)}
 
     site = config.SITE_DIR
     if site.exists():
@@ -634,12 +897,14 @@ def render_site() -> None:
                                          **base, **ctx),
             encoding="utf-8")
 
-    write("index.html", "index.html", "index", "",
+    write("home.html", "index.html", "home", "",
+          {"title": "总览", **page_home(con, meta)})
+    write("index.html", "watchlist.html", "index", "",
           {"title": "自选股", **page_index(con)})
     write("calendar.html", "calendar.html", "calendar", "",
           {"title": "事件日历", **page_calendar(con)})
-    write("newlisting.html", "newlisting.html", "newlisting", "",
-          {"title": "次新股", **page_newlisting(con)})
+    write("newlisting.html", "ops/coverage.html", "newlisting", "../",
+          {"title": "数据覆盖", **page_newlisting(con)})
 
     write("ops_index.html", "ops/index.html", "ops", "../",
           {"title": "异常清单", **page_ops_index(con)})
@@ -652,10 +917,11 @@ def render_site() -> None:
     write("ops_report.html", "ops/report.html", "report", "../",
           {"title": "运营报告", **page_report(con, meta)})
 
-    symbols = [s for s, in con.execute(
-        "SELECT symbol FROM ref_watchlist WHERE NOT is_reference").fetchall()]
+    # 对照标的也生成页面：复权核对页会链接到 BABA、汇丰港股这些，它们正是关键发现的对照组
+    symbols = [s for s, in con.execute("SELECT symbol FROM ref_watchlist").fetchall()]
+    vols_all = _volatility(con)
     for sym in symbols:
-        ctx = page_stock(con, sym)
+        ctx = page_stock(con, sym, vols_all)
         write("stock.html", f"stock/{slug(sym)}.html", "index", "../",
               {"title": ctx["s"]["name"], **ctx})
 

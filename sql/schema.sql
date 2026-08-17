@@ -89,6 +89,13 @@ CREATE TABLE IF NOT EXISTS raw_fetch_log (
     fetched_at  TIMESTAMP
 );
 
+-- 主源视图。接入第二数据源之后，raw_price_daily 里同一 (symbol, trade_date)
+-- 会有多行。任何按 symbol 分区的窗口函数若不限定来源，lag() 取到的「前一日」
+-- 其实是同一天另一个源的价格，涨跌幅会被算成接近零，真实跳空被静默吃掉。
+-- 所有分析类查询一律走这个视图，只有跨源比对规则才直接读 raw_price_daily。
+CREATE OR REPLACE VIEW price_primary AS
+SELECT * FROM raw_price_daily WHERE source = 'yfinance';
+
 ------------------------------------------------------------
 -- events 事件层：整个系统的枢纽
 -- 对运营视图它是"异常的解释"，对日常视图它是"我要知道的事"

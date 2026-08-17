@@ -1,11 +1,17 @@
 {% extends "base.html" %}
 {% block body %}
 
-<h1>次新股</h1>
+<h1>数据覆盖</h1>
 <p class="lede">
-  上市时间短的标的，历史数据天然不足，估值指标常常为空，是数据质量问题最集中的一类。
-  这一页按数据起点排序，起点晚于采集窗口起点的，说明它在这段窗口内才开始有行情。
+  每只标的的行情历史有多长、够不够用来做判断。数据起点晚的标的，历史样本不足、
+  估值字段常常为空，是数据质量问题最集中的一类，也是波动率类规则不适用的那一批。
 </p>
+<div class="note">
+  <b>这一页原本叫「次新股」，放在日常视图里，是排错了。</b>
+  它回答的不是「哪些新股值得关注」，而是「哪些标的的数据不够长、结论不能全信」，
+  属于运营视角而不是看盘视角。真正的次新股页面需要交易所的新股公告与首日数据，
+  那部分数据尚未接入，见页面底部的缺口说明。
+</div>
 
 <div class="tiles">
   <div class="tile"><div class="k">窗口内新增</div><div class="v">{{ stats.n_new }}</div>
@@ -29,7 +35,7 @@
 <tr>
   <td class="mono">{{ r.start }}</td>
   <td class="mono dim">{{ r.display_code }}</td>
-  <td class="name"><a href="stock/{{ r.slug }}.html">{{ r.name }}</a></td>
+  <td class="name"><a href="{{ root }}stock/{{ r.slug }}.html">{{ r.name }}</a></td>
   <td class="dim">{{ r.market }}</td>
   <td class="dim">{{ r.sector }}</td>
   <td class="num">{{ r.n_days }}</td>

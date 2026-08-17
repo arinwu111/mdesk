@@ -1,10 +1,13 @@
 {% extends "base.html" %}
 {% block body %}
 
-<h1>{{ s.name }} <span class="dim mono" style="font-weight:400">{{ s.display_code }}</span></h1>
+<h1>{{ s.name }} <span class="dim mono" style="font-weight:400">{{ s.display_code }}</span>
+    {% if s.is_reference %}<span class="pill">对照标的</span>{% endif %}</h1>
 <p class="lede">
   {{ s.sector }}　{{ s.market_label }}　{{ s.type_label }}
-  {%- if s.case_note %}<br>案例价值：{{ s.case_note }}{% endif %}
+  {%- if s.is_reference %}<br>
+  这只标的不在自选股名单里，只作为跨市场校验的对照组采集。{{ s.case_note }}
+  {%- elif s.case_note %}<br>案例价值：{{ s.case_note }}{% endif %}
 </p>
 
 <div class="tiles">
@@ -30,14 +33,81 @@
 </div>
 {% endif %}
 {{ s.chart }}
+{{ s.vol_chart }}
 <figcaption>
+  上图为复权价，下图为成交量，共用同一条时间轴，共 {{ s.n_points }} 个交易日。
   {% if s.two_series %}
-  两条线本应完全重合。这只标的的自算复权价与数据源给的对不上，差异原因见下方公司行动，
-  以及运营视图的<a href="../ops/corpaction.html">复权核对</a>页。
+  两条价格线本应完全重合，这只标的的自算复权价与数据源给的对不上，
+  差异原因见下方公司行动，以及运营视图的<a href="../ops/corpaction.html">复权核对</a>页。
   {% else %}
-  自算复权价与数据源完全一致，图上只有一条线。近 {{ s.n_points }} 个交易日。
+  自算复权价与数据源完全一致，所以价格图上只有一条线。
   {% endif %}
 </figcaption>
+
+<h2>关键指标</h2>
+<div class="indgrid">
+{% for i in s.indicators %}
+<div class="ind">
+  <div class="k">{{ i.k }}</div>
+  <div class="v">{{ i.v }}</div>
+  <div class="n">{{ i.n }}</div>
+</div>
+{% endfor %}
+</div>
+<figcaption>
+  换手率用<b>总股本</b>近似，不是流通股本，免费数据源不提供精确的流通股本。
+  {% if s.is_cross_listed %}
+  <b>这只标的是两地上市，总股本包含另一市场的股份，所以它的换手率会明显偏低，仅供横向比较趋势，不要看绝对值。</b>
+  {% endif %}
+  成交额由收盘价乘成交量估算，港股数据源不直接提供成交额。
+  盘口、逐笔、资金流向、Beta 需要付费行情源或指数数据，本版未覆盖。
+</figcaption>
+
+<h2>区间统计</h2>
+<div class="scroll">
+<table>
+<thead><tr>
+  {% for st in s.stats %}<th class="num">{{ st.label }}</th>{% endfor %}
+  <th class="num">年化波动</th><th class="num">最大回撤</th>
+  <th class="num">区间最高</th><th class="num">区间最低</th><th class="num">告警阈值</th>
+</tr></thead>
+<tbody><tr>
+  {% for st in s.stats %}<td class="num {{ st.dir }}">{{ st.value }}</td>{% endfor %}
+  <td class="num">{{ s.vol_ann }}</td>
+  <td class="num down">{{ s.mdd }}</td>
+  <td class="num dim">{{ s.hi_fmt }}</td>
+  <td class="num dim">{{ s.lo_fmt }}</td>
+  <td class="num"><b>{{ s.threshold }}</b></td>
+</tr></tbody>
+</table>
+</div>
+<figcaption>
+  告警阈值是这只标的自己的单日跳空告警线，等于它近 120 日日波动率的 6 倍。
+  单日涨跌超过这个数且当天没有公司行动可解释，就会命中 DQ-PRC-002 进入异常清单。
+  每只标的的线都不一样，所以高波动标的不会因为正常波动被反复告警。
+</figcaption>
+
+<h2>同行业对比　{{ s.sector }}</h2>
+{% if s.n_peers > 1 %}
+<div class="scroll">
+<table>
+<thead><tr><th>标的</th><th class="num">最新涨跌</th><th class="num">年化波动</th><th>数据质量</th></tr></thead>
+<tbody>
+{% for p in s.peers %}
+<tr {% if p.is_self %}style="background:var(--wash)"{% endif %}>
+  <td class="name">{% if p.is_self %}<b>{{ p.name }}</b><span class="pill">本页</span>
+      {% else %}<a href="{{ p.slug }}.html">{{ p.name }}</a>{% endif %}</td>
+  <td class="num {{ p.dir }}">{{ p.change_fmt }}</td>
+  <td class="num dim">{{ p.vol_fmt }}</td>
+  <td><span class="badge {{ p.badge }}"><span class="dot"></span>{{ p.badge_label }}</span></td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% else %}
+<p class="dim">自选股里这个行业只有这一只标的，没有可比对象。</p>
+{% endif %}
 
 <h2>公司行动</h2>
 {% if s.actions %}

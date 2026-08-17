@@ -28,17 +28,18 @@
 <header class="top">
   <div class="top-inner">
     <div class="brand">mdesk<span>港美股行情数据工作台</span></div>
-    <div class="stamp">数据截至 2026-08-14　生成于 2026-08-17 00:43</div>
+    <div class="stamp">数据截至 2026-08-14　生成于 2026-08-17 15:04</div>
   </div>
   <nav class="tabs">
     <span class="group-label">日常</span>
-    <a href="../index.html"       class="">自选股</a>
+    <a href="../index.html"       class="">总览</a>
+    <a href="../watchlist.html"   class="">自选股</a>
     <a href="../calendar.html"    class="">事件日历</a>
-    <a href="../newlisting.html"  class="">次新股</a>
     <span class="sep"></span>
     <span class="group-label">运营</span>
     <a href="../ops/index.html"      class="">异常清单</a>
     <a href="../ops/corpaction.html" class="">复权核对</a>
+    <a href="../ops/coverage.html"   class="">数据覆盖</a>
     <a href="../ops/rules.html"      class="on">规则库</a>
     <a href="../ops/ledger.html"     class="">处理台账</a>
     <a href="../ops/report.html"     class="">运营报告</a>
@@ -55,13 +56,13 @@
 </p>
 
 <div class="tiles">
-  <div class="tile"><div class="k">规则总数</div><div class="v">16</div>
+  <div class="tile"><div class="k">规则总数</div><div class="v">21</div>
     <div class="sub">全部启用</div></div>
-  <div class="tile"><div class="k">本轮有命中</div><div class="v">6</div>
+  <div class="tile"><div class="k">本轮有命中</div><div class="v">7</div>
     <div class="sub">其余维度当前干净</div></div>
-  <div class="tile"><div class="k">覆盖域</div><div class="v">6</div>
-    <div class="sub">ref · price · corp_action · fundamental · cross · ops</div></div>
-  <div class="tile"><div class="k">P0 规则</div><div class="v">6</div>
+  <div class="tile"><div class="k">覆盖域</div><div class="v">7</div>
+    <div class="sub">ref · price · corp_action · fundamental · cross · source · ops</div></div>
+  <div class="tile"><div class="k">P0 规则</div><div class="v">7</div>
     <div class="sub">命中即当场处理</div></div>
 </div>
 
@@ -107,7 +108,7 @@
     <span class="dim" style="margin-left:auto;font-size:12px">建于 2026-08-16</span>
   </div>
   <p style="color:var(--ink-2);margin:10px 0 0">最高价低于最低价，或开盘收盘价落在最高最低区间之外。这类错误一定是数据问题，不可能是真实行情</p>
-  <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink-muted)"><b>来历：</b>最基础的自洽性检查，零误报。任何数据源只要命中这条就说明清洗环节有问题。</p>
+  <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink-muted)"><b>来历：</b>最基础的自洽性检查。这条规则刻意扫描全部数据源而不只是主源，因为它是判断一个新接入的源干不干净最快的办法。接入 akshare 后立刻命中 2 条：腾讯 C=445.39999 比 L=445.4 小、阿里 C=130.60001 比 H=130.6 大，差值都在一亿分之一量级，是浮点存储误差不是数据错误。零容忍地比较浮点数必然伪报，因此加入 1e-6 的相对容忍带。真正的 OHLC 越界差值至少在分位上，不会被这个容忍带掩盖。</p>
 </div>
 
 <div class="card">
@@ -115,11 +116,11 @@
     <span class="mono" style="font-weight:600">DQ-PRC-002</span>
     <span style="font-weight:600">无公司行动的异常跳空</span>
     <span class="sev P1">P1</span>
-    <span class="pill">命中 81 条</span>
-    <span class="dim" style="margin-left:auto;font-size:12px">建于 2026-08-16</span>
+    <span class="pill">命中 25 条</span>
+    <span class="dim" style="margin-left:auto;font-size:12px">建于 2026-08-17</span>
   </div>
-  <p style="color:var(--ink-2);margin:10px 0 0">单日涨跌幅绝对值超过 20%，且当日没有任何公司行动记录。真跳空要能解释，解释不了就是漏了除权除息</p>
-  <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink-muted)"><b>来历：</b>首版阈值对全部标的统一取 20%。预期对 IONQ、OKLO 这类高波动标的会大量误报，届时需按标的历史波动率分层，这条规则的迭代过程本身就是要记录的东西。</p>
+  <p style="color:var(--ink-2);margin:10px 0 0">单日涨跌幅超过该标的自身近 120 日波动率的 6 倍，且当日无任何公司行动记录。阈值按标的自身波动率分层，不用统一百分比</p>
+  <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink-muted)"><b>来历：</b>首版对全部标的统一取 20% 固定阈值，跑出 81 条命中，其中智谱 14 条、OKLO 12 条、IONQ 10 条，三只高波动标的占了 44%，全是正常波动。而中国石油这类日波动率仅 1.5% 的标的，涨 20% 早就是重大事件，固定阈值对它又太松。改为按标的自身近 120 日滚动标准差的 6 倍分层：高波动标的阈值自动放宽，低波动标的自动收紧。另加 5% 绝对下限，避免极低波动标的的 6σ 落进日常波动区间。历史不足 60 个交易日的次新股不参与本规则，样本量不够算不出可信的波动率。</p>
 </div>
 
 <div class="card">
@@ -252,6 +253,18 @@
   <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink-muted)"><b>来历：</b>微利公司的 PE 天然会很大，所以定 P2。真正要防的是分母单位错位，比如把千元当成元。</p>
 </div>
 
+<div class="card">
+  <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+    <span class="mono" style="font-weight:600">DQ-FUN-004</span>
+    <span style="font-weight:600">净资产为负或市销率异常</span>
+    <span class="sev P1">P1</span>
+    <span class="pill">命中 3 条</span>
+    <span class="dim" style="margin-left:auto;font-size:12px">建于 2026-08-17</span>
+  </div>
+  <p style="color:var(--ink-2);margin:10px 0 0">市净率为负说明账面净资产为负，市销率畸高说明营收极小或口径有误。两者都可能是真实情况，但都必须人工确认一次而不是默认接受</p>
+  <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink-muted)"><b>来历：</b>建个股页的关键指标面板时发现智谱 PB 为 -54.32、PS 为 816，现有规则一条都没命中——DQ-FUN-003 只查了 PE 和 PB 的上限，没查负值，等于默认接受了净资产为负这种情况。负 PB 对刚上市的科技公司可能是可转换优先股会计处理的正常结果，也可能是真的资不抵债，两种情况的含义天差地别，必须人工确认一次。这条规则是「先做界面、再发现规则漏洞」的例子。</p>
+</div>
+
 
 
 
@@ -267,6 +280,59 @@
   </div>
   <p style="color:var(--ink-2);margin:10px 0 0">两地上市标的按存托比例和汇率折算后仍偏离超过各自设定的阈值。可能是比例错、汇率错、价格错，也可能是真实溢价</p>
   <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink-muted)"><b>来历：</b>阈值按对子分别设定：双重主要上市如阿里、小鹏取 3%，ADR 溢价常态化的台积电取 25%，A+H 溢价属正常现象所以放到 60% 以上，监控的是溢价突变而非溢价本身。</p>
+</div>
+
+
+
+
+<h2>source 跨源比对域</h2>
+
+<div class="card">
+  <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+    <span class="mono" style="font-weight:600">DQ-SRC-001</span>
+    <span style="font-weight:600">两源收盘价不一致</span>
+    <span class="sev P0">P0</span>
+    <span class="pill">本轮无命中</span>
+    <span class="dim" style="margin-left:auto;font-size:12px">建于 2026-08-17</span>
+  </div>
+  <p style="color:var(--ink-2);margin:10px 0 0">同一标的同一交易日，主源与副源给出的收盘价偏离超过 0.5%。两个独立数据源不该对同一个已收盘的事实有分歧，有分歧就至少有一方错了</p>
+  <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink-muted)"><b>来历：</b>跨源域的第一条规则，也是这个域存在的理由。阈值取 0.5% 而不是 0，因为两源的收盘价小数位精度和港股半日市收盘口径可能有细微差别，留出容忍带才能让真正的分歧浮出来。</p>
+</div>
+
+<div class="card">
+  <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+    <span class="mono" style="font-weight:600">DQ-SRC-002</span>
+    <span style="font-weight:600">两源成交量差异过大</span>
+    <span class="sev P1">P1</span>
+    <span class="pill">本轮无命中</span>
+    <span class="dim" style="margin-left:auto;font-size:12px">建于 2026-08-17</span>
+  </div>
+  <p style="color:var(--ink-2);margin:10px 0 0">同一交易日两源成交量相差超过 20%。成交量口径分歧常见于是否计入暗盘、盘后交易与大宗交易</p>
+  <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink-muted)"><b>来历：</b>成交量比收盘价更容易有口径差异，所以定 P1 而不是 P0。真正要抓的是某一源系统性地少算或多算，而不是个别日期的零星出入。</p>
+</div>
+
+<div class="card">
+  <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+    <span class="mono" style="font-weight:600">DQ-SRC-003</span>
+    <span style="font-weight:600">交易日在两源间不一致</span>
+    <span class="sev P1">P1</span>
+    <span class="pill">本轮无命中</span>
+    <span class="dim" style="margin-left:auto;font-size:12px">建于 2026-08-17</span>
+  </div>
+  <p style="color:var(--ink-2);margin:10px 0 0">某个交易日只有一个源有数据。可能是一方漏采，也可能是对停牌日、半日市的处理口径不同</p>
+  <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink-muted)"><b>来历：</b>只在两源重叠的日期区间内比对。副源只回溯 120 天，不限定区间的话会把副源尚未覆盖的历史全部报成缺失，那是噪声不是问题。</p>
+</div>
+
+<div class="card">
+  <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+    <span class="mono" style="font-weight:600">DQ-SRC-004</span>
+    <span style="font-weight:600">标的未被副源覆盖</span>
+    <span class="sev P2">P2</span>
+    <span class="pill">本轮无命中</span>
+    <span class="dim" style="margin-left:auto;font-size:12px">建于 2026-08-17</span>
+  </div>
+  <p style="color:var(--ink-2);margin:10px 0 0">自选股中的标的在副源完全查不到。不影响当前数据可用性，但这些标的失去了跨源校验能力</p>
+  <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink-muted)"><b>来历：</b>定 P2 是因为它不代表数据错，只代表这只标的的校验强度比别的低。首轮东财链路失败导致 8 只港股未覆盖，改用新浪链路后归零。</p>
 </div>
 
 
@@ -298,7 +364,7 @@
 
 <footer class="foot">
   mdesk 自建港美股行情数据工作台　行情来源 yfinance，仅用于数据质量核对与个人自用，不构成任何投资建议。<br>
-  本轮共 35 只标的、16 条校验规则，未处理异常 93 条。
+  本轮共 35 只标的、21 条校验规则，未处理异常 40 条。
 </footer>
 </div>
 
@@ -358,6 +424,89 @@ document.querySelectorAll('.chartbox').forEach(function (box) {
     if (e.touches.length) { show(e.touches[0]); }
   }, { passive: true });
 });
+</script>
+<script>
+(function () {
+  var table = document.getElementById('wl');
+  if (!table) return;
+  var tbody = table.tBodies[0];
+  var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr:not(.grouprow)'));
+  var groupBy = 'market', sortCol = null, sortDir = 1;
+
+  function cellValue(tr, i, kind) {
+    var td = tr.cells[i];
+    if (kind === 'num') {
+      var raw = td.getAttribute('data-v');
+      if (raw === null || raw === '') return null;
+      var n = parseFloat(raw);
+      return isNaN(n) ? null : n;
+    }
+    return (td.textContent || '').trim();
+  }
+
+  function render() {
+    var ordered = rows.slice();
+    if (sortCol !== null) {
+      var kind = table.tHead.rows[0].cells[sortCol].getAttribute('data-sort');
+      ordered.sort(function (a, b) {
+        var x = cellValue(a, sortCol, kind), y = cellValue(b, sortCol, kind);
+        // 空值恒排在后面，不参与升降序
+        if (x === null && y === null) return 0;
+        if (x === null) return 1;
+        if (y === null) return -1;
+        if (kind === 'num') return (x - y) * sortDir;
+        return x.localeCompare(y, 'zh') * sortDir;
+      });
+    }
+    tbody.innerHTML = '';
+    if (groupBy === 'none') {
+      ordered.forEach(function (r) { tbody.appendChild(r); });
+      return;
+    }
+    var seen = [], buckets = {};
+    ordered.forEach(function (r) {
+      var k = r.dataset[groupBy] || '未分类';
+      if (!buckets[k]) { buckets[k] = []; seen.push(k); }
+      buckets[k].push(r);
+    });
+    var ncols = table.tHead.rows[0].cells.length;
+    seen.forEach(function (k) {
+      var tr = document.createElement('tr');
+      tr.className = 'grouprow';
+      var td = document.createElement('td');
+      td.colSpan = ncols;
+      td.innerHTML = k + '<span>' + buckets[k].length + ' 只</span>';
+      tr.appendChild(td);
+      tbody.appendChild(tr);
+      buckets[k].forEach(function (r) { tbody.appendChild(r); });
+    });
+  }
+
+  table.tHead.rows[0].querySelectorAll('th[data-sort]').forEach(function (th, _i) {
+    th.addEventListener('click', function () {
+      var idx = Array.prototype.indexOf.call(th.parentNode.cells, th);
+      sortDir = (sortCol === idx) ? -sortDir : -1;   // 首次点击默认降序
+      sortCol = idx;
+      table.tHead.rows[0].querySelectorAll('th').forEach(function (o) {
+        o.removeAttribute('aria-sort');
+      });
+      th.setAttribute('aria-sort', sortDir === 1 ? 'ascending' : 'descending');
+      render();
+    });
+  });
+
+  document.querySelectorAll('.toolbar button[data-group]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      groupBy = b.dataset.group;
+      document.querySelectorAll('.toolbar button[data-group]').forEach(function (o) {
+        o.setAttribute('aria-pressed', String(o === b));
+      });
+      render();
+    });
+  });
+
+  render();
+})();
 </script>
 </body>
 </html>

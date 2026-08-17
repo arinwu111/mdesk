@@ -13,45 +13,71 @@
   <div class="tile"><div class="k">监控标的</div><div class="v">{{ meta.n_symbols }}</div>
     <div class="sub">港股 {{ counts.HK }} · 美股 {{ counts.US }}</div></div>
   <div class="tile"><div class="k">数据可信</div><div class="v">{{ badge_counts.ok }}</div>
-    <div class="sub">当前无任何异常命中</div></div>
+    <div class="sub">当前无异常命中</div></div>
+  <div class="tile"><div class="k">已解释</div><div class="v">{{ badge_counts.explained }}</div>
+    <div class="sub">原因查明，数字可用</div></div>
   <div class="tile"><div class="k">待查异常</div><div class="v">{{ badge_counts.open }}</div>
     <div class="sub">标的数，非异常条数</div></div>
-  <div class="tile"><div class="k">未处理 P0</div><div class="v">{{ meta.n_p0 }}</div>
-    <div class="sub">SOP 要求当场处理</div></div>
+  <div class="tile"><div class="k">行业</div><div class="v">{{ n_sectors }}</div>
+    <div class="sub">覆盖行业数</div></div>
 </div>
 
-{% for market, label in [('HK', '港股'), ('US', '美股')] %}
-<h2>{{ label }}</h2>
+<div class="toolbar">
+  <span class="lbl">分组</span>
+  <button type="button" data-group="market" aria-pressed="true">按市场</button>
+  <button type="button" data-group="sector" aria-pressed="false">按行业</button>
+  <button type="button" data-group="none"   aria-pressed="false">不分组</button>
+  <span class="lbl" style="margin-left:16px">点击表头可排序</span>
+</div>
+
 <div class="scroll">
-<table>
+<table class="sortable" id="wl">
 <thead><tr>
-  <th>代码</th><th>名称</th><th>行业</th><th class="num">最新价</th><th class="num">涨跌幅</th>
-  <th>近 60 日</th><th class="num">市值</th><th class="num">PE(TTM)</th><th>数据质量</th>
+  <th data-sort="text">代码</th>
+  <th data-sort="text">名称</th>
+  <th data-sort="text">市场</th>
+  <th data-sort="text">行业</th>
+  <th data-sort="num" class="num">最新价</th>
+  <th data-sort="num" class="num">涨跌幅</th>
+  <th>近 60 日</th>
+  <th data-sort="num" class="num">市值</th>
+  <th data-sort="num" class="num">PE(TTM)</th>
+  <th data-sort="num" class="num">年化波动</th>
+  <th data-sort="num" class="num">告警线</th>
+  <th data-sort="num">数据质量</th>
 </tr></thead>
 <tbody>
-{% for r in rows if r.market == market %}
-<tr>
+{% for r in rows %}
+<tr data-market="{{ r.market_label }}" data-sector="{{ r.sector }}">
   <td class="mono dim">{{ r.display_code }}</td>
   <td class="name"><a href="stock/{{ r.slug }}.html">{{ r.name }}</a>
       {% if r.is_case %}<span class="pill">案例</span>{% endif %}</td>
+  <td class="dim">{{ r.market_label }}</td>
   <td class="dim">{{ r.sector }}</td>
-  <td class="num">{{ r.close_fmt }}</td>
-  <td class="num {{ r.dir }}">{{ r.change_fmt }}</td>
+  <td class="num" data-v="{{ r.close or '' }}">{{ r.close_fmt }}</td>
+  <td class="num {{ r.dir }}" data-v="{{ r.change or '' }}">{{ r.change_fmt }}</td>
   <td>{{ r.spark }}</td>
-  <td class="num dim">{{ r.mcap_fmt }}</td>
-  <td class="num dim">{{ r.pe_fmt }}</td>
-  <td><span class="badge {{ r.badge }}" title="{{ r.dq_summary }}">
+  <td class="num dim" data-v="{{ r.mcap or '' }}">{{ r.mcap_fmt }}</td>
+  <td class="num dim" data-v="{{ r.pe or '' }}">{{ r.pe_fmt }}</td>
+  <td class="num dim" data-v="{{ r.vol or '' }}">{{ r.vol_fmt }}</td>
+  <td class="num dim" data-v="{{ r.threshold or '' }}">{{ r.threshold_fmt }}</td>
+  <td data-v="{{ r.badge_rank }}"><span class="badge {{ r.badge }}" title="{{ r.dq_summary }}">
       <span class="dot"></span>{{ r.badge_label }}</span></td>
 </tr>
 {% endfor %}
 </tbody>
 </table>
 </div>
-{% endfor %}
 
-<div class="note gap">
-  角标目前只有灰红两色。黄色代表「异常已查明原因、数字可继续使用」，需要人工在处理台账里填写判断后才会出现，
-  这一步按 SOP 属于每日盘后动线，不由系统自动产生。
+<div class="note">
+  <b>为什么有的标的涨跌很大却显示「正常」。</b>
+  这个系统不用统一的百分比判断异常，每只标的的告警线是<b>它自己的波动率算出来的</b>。
+  年化波动取近 120 个交易日日收益率标准差乘以 252 的平方根，
+  告警线取其折回单日后的 6 倍（下限 5%）。
+  所以{{ eg.high_name }}的线是 ±{{ eg.high_thr }}，{{ eg.low_name }}的线是 ±{{ eg.low_thr }}。
+  同样是单日涨 20%，前者属于日常波动，后者是必须查清的重大异动。
+  单日涨跌越过各自的线且当天无公司行动可解释，才会命中规则 DQ-PRC-002 进入异常清单。
+  把鼠标停在角标上能看到该行的具体判据。
 </div>
 
 {% endblock %}

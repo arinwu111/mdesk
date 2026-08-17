@@ -20,7 +20,7 @@ SELECT w.symbol,
        CURRENT_DATE AS biz_date,
        '数据源无任何行情返回，代码可能无效、已退市或不在覆盖范围：' || w.name AS detail
 FROM ref_watchlist w
-LEFT JOIN (SELECT DISTINCT symbol FROM raw_price_daily) p ON p.symbol = w.symbol
+LEFT JOIN (SELECT DISTINCT symbol FROM price_primary) p ON p.symbol = w.symbol
 WHERE p.symbol IS NULL
 $rule$,
 'P0', true, DATE '2026-08-16',
@@ -60,38 +60,69 @@ SELECT symbol,
        'OHLC 越界 O=' || round(open, 3)::VARCHAR ||
        ' H=' || round(high, 3)::VARCHAR ||
        ' L=' || round(low, 3)::VARCHAR ||
-       ' C=' || round(close, 3)::VARCHAR AS detail
+       ' C=' || round(close, 3)::VARCHAR || '（来源 ' || source || '）' AS detail
 FROM raw_price_daily
-WHERE high < low
-   OR close > high OR close < low
-   OR open  > high OR open  < low
+-- 相对容忍带 1e-6。不加的话浮点存储误差会造成伪报，见下方来历说明
+WHERE high < low  * (1 - 1e-6)
+   OR close > high * (1 + 1e-6) OR close < low  * (1 - 1e-6)
+   OR open  > high * (1 + 1e-6) OR open  < low  * (1 - 1e-6)
 $rule$,
 'P0', true, DATE '2026-08-16',
-'最基础的自洽性检查，零误报。任何数据源只要命中这条就说明清洗环节有问题。'
+'最基础的自洽性检查。这条规则刻意扫描全部数据源而不只是主源，因为它是判断一个新接入的源'
+'干不干净最快的办法。接入 akshare 后立刻命中 2 条：腾讯 C=445.39999 比 L=445.4 小、'
+'阿里 C=130.60001 比 H=130.6 大，差值都在一亿分之一量级，是浮点存储误差不是数据错误。'
+'零容忍地比较浮点数必然伪报，因此加入 1e-6 的相对容忍带。'
+'真正的 OHLC 越界差值至少在分位上，不会被这个容忍带掩盖。'
 );
 
 INSERT OR REPLACE INTO dq_rules VALUES (
 'DQ-PRC-002', 'price', '无公司行动的异常跳空',
-'单日涨跌幅绝对值超过 20%，且当日没有任何公司行动记录。真跳空要能解释，解释不了就是漏了除权除息',
+'单日涨跌幅超过该标的自身近 120 日波动率的 6 倍，且当日无任何公司行动记录。'
+'阈值按标的自身波动率分层，不用统一百分比',
 $rule$
 WITH d AS (
     SELECT symbol, trade_date, close,
            lag(close) OVER (PARTITION BY symbol ORDER BY trade_date) AS prev_close
-    FROM raw_price_daily
+    FROM price_primary
+    WHERE source = 'yfinance' AND close > 0
+),
+r AS (
+    SELECT symbol, trade_date, close, prev_close,
+           close / prev_close - 1 AS ret,
+           -- 用命中日之前的 120 个交易日算波动率，不含当日，避免异常值抬高自己的阈值
+           stddev_samp(close / prev_close - 1) OVER (
+               PARTITION BY symbol ORDER BY trade_date
+               ROWS BETWEEN 120 PRECEDING AND 1 PRECEDING
+           ) AS sigma,
+           count(*) OVER (
+               PARTITION BY symbol ORDER BY trade_date
+               ROWS BETWEEN 120 PRECEDING AND 1 PRECEDING
+           ) AS n_hist
+    FROM d
+    WHERE prev_close IS NOT NULL AND prev_close > 0
 )
-SELECT d.symbol,
-       d.trade_date AS biz_date,
-       '较前收盘 ' || round((d.close / d.prev_close - 1) * 100, 2)::VARCHAR ||
-       '%，当日无公司行动记录可解释' AS detail
-FROM d
+SELECT r.symbol,
+       r.trade_date AS biz_date,
+       '较前收盘 ' || round(r.ret * 100, 2)::VARCHAR ||
+       '%，达该标的近 ' || r.n_hist::VARCHAR || ' 日波动率(' ||
+       round(r.sigma * 100, 2)::VARCHAR || '%)的 ' ||
+       round(abs(r.ret) / r.sigma, 1)::VARCHAR ||
+       ' 倍，当日无公司行动记录可解释' AS detail
+FROM r
 LEFT JOIN events_corporate_action ca
-       ON ca.symbol = d.symbol AND ca.ex_date = d.trade_date
-WHERE d.prev_close IS NOT NULL AND d.prev_close > 0
-  AND abs(d.close / d.prev_close - 1) > 0.20
+       ON ca.symbol = r.symbol AND ca.ex_date = r.trade_date
+WHERE r.sigma > 0
+  AND r.n_hist >= 60          -- 历史不足 60 日的次新股不参与，样本太少算不准
+  AND abs(r.ret) > 6 * r.sigma
+  AND abs(r.ret) > 0.05       -- 低波动标的的绝对下限，防止 6σ 落到 1% 以内刷屏
   AND ca.action_id IS NULL
 $rule$,
-'P1', true, DATE '2026-08-16',
-'首版阈值对全部标的统一取 20%。预期对 IONQ、OKLO 这类高波动标的会大量误报，届时需按标的历史波动率分层，这条规则的迭代过程本身就是要记录的东西。'
+'P1', true, DATE '2026-08-17',
+'首版对全部标的统一取 20% 固定阈值，跑出 81 条命中，其中智谱 14 条、OKLO 12 条、IONQ 10 条，'
+'三只高波动标的占了 44%，全是正常波动。而中国石油这类日波动率仅 1.5% 的标的，涨 20% 早就是重大事件，'
+'固定阈值对它又太松。改为按标的自身近 120 日滚动标准差的 6 倍分层：高波动标的阈值自动放宽，'
+'低波动标的自动收紧。另加 5% 绝对下限，避免极低波动标的的 6σ 落进日常波动区间。'
+'历史不足 60 个交易日的次新股不参与本规则，样本量不够算不出可信的波动率。'
 );
 
 INSERT OR REPLACE INTO dq_rules VALUES (
@@ -101,7 +132,7 @@ $rule$
 WITH d AS (
     SELECT p.symbol, w.market, p.trade_date, p.close, p.volume,
            lag(p.close) OVER (PARTITION BY p.symbol ORDER BY p.trade_date) AS prev_close
-    FROM raw_price_daily p
+    FROM price_primary p
     JOIN ref_watchlist w ON w.symbol = p.symbol
 ),
 flagged AS (
@@ -136,7 +167,7 @@ INSERT OR REPLACE INTO dq_rules VALUES (
 $rule$
 WITH d AS (
     SELECT p.symbol, w.market, p.trade_date, p.volume
-    FROM raw_price_daily p
+    FROM price_primary p
     JOIN ref_watchlist w ON w.symbol = p.symbol
 ),
 agg AS (
@@ -163,7 +194,7 @@ $rule$
 WITH d AS (
     SELECT symbol, trade_date,
            lag(trade_date) OVER (PARTITION BY symbol ORDER BY trade_date) AS prev_date
-    FROM raw_price_daily
+    FROM price_primary
 )
 SELECT symbol,
        trade_date AS biz_date,
@@ -190,7 +221,7 @@ WITH p AS (
            adj_close / close AS ratio,
            lag(close) OVER (PARTITION BY symbol ORDER BY trade_date) AS prev_close,
            lag(adj_close / close) OVER (PARTITION BY symbol ORDER BY trade_date) AS prev_ratio
-    FROM raw_price_daily
+    FROM price_primary
     WHERE close > 0 AND adj_close IS NOT NULL AND adj_close > 0
 ),
 implied AS (
@@ -256,7 +287,7 @@ INSERT OR REPLACE INTO dq_rules VALUES (
 $rule$
 WITH prev AS (
     SELECT ca.action_id, ca.symbol, ca.ex_date, ca.amount, ca.currency,
-           (SELECT p.close FROM raw_price_daily p
+           (SELECT p.close FROM price_primary p
              WHERE p.symbol = ca.symbol AND p.trade_date < ca.ex_date
              ORDER BY p.trade_date DESC LIMIT 1) AS prev_close
     FROM events_corporate_action ca
@@ -334,6 +365,30 @@ $rule$,
 '微利公司的 PE 天然会很大，所以定 P2。真正要防的是分母单位错位，比如把千元当成元。'
 );
 
+INSERT OR REPLACE INTO dq_rules VALUES (
+'DQ-FUN-004', 'fundamental', '净资产为负或市销率异常',
+'市净率为负说明账面净资产为负，市销率畸高说明营收极小或口径有误。'
+'两者都可能是真实情况，但都必须人工确认一次而不是默认接受',
+$rule$
+SELECT f.symbol,
+       f.snapshot_date AS biz_date,
+       CASE WHEN f.pb < 0
+            THEN '市净率为负 (' || round(f.pb, 2)::VARCHAR || ')，账面净资产为负：' || w.name
+            ELSE '市销率高达 ' || round(f.ps_ttm, 1)::VARCHAR || '，营收极小或口径存疑：' || w.name
+       END AS detail
+FROM raw_fundamental f
+JOIN ref_watchlist w ON w.symbol = f.symbol
+WHERE f.snapshot_date = (SELECT max(snapshot_date) FROM raw_fundamental)
+  AND w.instrument_type <> 'etf'
+  AND (f.pb < 0 OR f.ps_ttm > 100)
+$rule$,
+'P1', true, DATE '2026-08-17',
+'建个股页的关键指标面板时发现智谱 PB 为 -54.32、PS 为 816，现有规则一条都没命中——'
+'DQ-FUN-003 只查了 PE 和 PB 的上限，没查负值，等于默认接受了净资产为负这种情况。'
+'负 PB 对刚上市的科技公司可能是可转换优先股会计处理的正常结果，也可能是真的资不抵债，'
+'两种情况的含义天差地别，必须人工确认一次。这条规则是「先做界面、再发现规则漏洞」的例子。'
+);
+
 ------------------------------------------------------------
 -- cross 域：跨市场校验
 -- 同一家公司在两地上市，折算后价格应当收敛。不收敛就是有一边错了
@@ -345,7 +400,7 @@ INSERT OR REPLACE INTO dq_rules VALUES (
 $rule$
 WITH last_px AS (
     SELECT symbol, trade_date, close
-    FROM raw_price_daily
+    FROM price_primary
     QUALIFY row_number() OVER (PARTITION BY symbol ORDER BY trade_date DESC) = 1
 ),
 last_fx AS (
@@ -375,6 +430,112 @@ WHERE dev IS NOT NULL
 $rule$,
 'P0', true, DATE '2026-08-16',
 '阈值按对子分别设定：双重主要上市如阿里、小鹏取 3%，ADR 溢价常态化的台积电取 25%，A+H 溢价属正常现象所以放到 60% 以上，监控的是溢价突变而非溢价本身。'
+);
+
+------------------------------------------------------------
+-- source 域：跨源比对
+--
+-- 前面所有域查的都是「内部自洽」——数据源自己跟自己有没有矛盾。
+-- 但如果一个源给出的值看起来完全合理、内部也自洽，只是数值本身就是错的，
+-- 单源永远查不出来。这个域的存在就是为了补这个盲区。
+-- 主源 yfinance，副源 akshare（港股走新浪，美股走新浪），两条链路互相独立。
+------------------------------------------------------------
+
+INSERT OR REPLACE INTO dq_rules VALUES (
+'DQ-SRC-001', 'source', '两源收盘价不一致',
+'同一标的同一交易日，主源与副源给出的收盘价偏离超过 0.5%。'
+'两个独立数据源不该对同一个已收盘的事实有分歧，有分歧就至少有一方错了',
+$rule$
+SELECT a.symbol,
+       a.trade_date AS biz_date,
+       '收盘价两源不一致：yfinance ' || round(a.close, 4)::VARCHAR ||
+       ' vs akshare ' || round(b.close, 4)::VARCHAR ||
+       '，偏离 ' || round((a.close / b.close - 1) * 100, 3)::VARCHAR || '%' AS detail
+FROM raw_price_daily a
+JOIN raw_price_daily b
+  ON b.symbol = a.symbol AND b.trade_date = a.trade_date AND b.source = 'akshare'
+WHERE a.source = 'yfinance'
+  AND a.close > 0 AND b.close > 0
+  AND abs(a.close / b.close - 1) > 0.005
+$rule$,
+'P0', true, DATE '2026-08-17',
+'跨源域的第一条规则，也是这个域存在的理由。阈值取 0.5% 而不是 0，'
+'因为两源的收盘价小数位精度和港股半日市收盘口径可能有细微差别，'
+'留出容忍带才能让真正的分歧浮出来。'
+);
+
+INSERT OR REPLACE INTO dq_rules VALUES (
+'DQ-SRC-002', 'source', '两源成交量差异过大',
+'同一交易日两源成交量相差超过 20%。成交量口径分歧常见于是否计入暗盘、盘后交易与大宗交易',
+$rule$
+SELECT a.symbol,
+       a.trade_date AS biz_date,
+       '成交量两源差异：yfinance ' || a.volume::VARCHAR ||
+       ' vs akshare ' || b.volume::VARCHAR ||
+       '，相差 ' || round((a.volume::DOUBLE / b.volume - 1) * 100, 1)::VARCHAR || '%' AS detail
+FROM raw_price_daily a
+JOIN raw_price_daily b
+  ON b.symbol = a.symbol AND b.trade_date = a.trade_date AND b.source = 'akshare'
+WHERE a.source = 'yfinance'
+  AND coalesce(a.volume, 0) > 0 AND coalesce(b.volume, 0) > 0
+  AND abs(a.volume::DOUBLE / b.volume - 1) > 0.20
+$rule$,
+'P1', true, DATE '2026-08-17',
+'成交量比收盘价更容易有口径差异，所以定 P1 而不是 P0。'
+'真正要抓的是某一源系统性地少算或多算，而不是个别日期的零星出入。'
+);
+
+INSERT OR REPLACE INTO dq_rules VALUES (
+'DQ-SRC-003', 'source', '交易日在两源间不一致',
+'某个交易日只有一个源有数据。可能是一方漏采，也可能是对停牌日、半日市的处理口径不同',
+$rule$
+WITH span AS (
+    -- 只比对两源都有覆盖的重叠区间，否则副源回溯窗口较短会全量误报
+    SELECT symbol,
+           greatest(min(trade_date) FILTER (WHERE source = 'yfinance'),
+                    min(trade_date) FILTER (WHERE source = 'akshare')) AS lo,
+           least(max(trade_date) FILTER (WHERE source = 'yfinance'),
+                 max(trade_date) FILTER (WHERE source = 'akshare')) AS hi
+    FROM raw_price_daily
+    GROUP BY symbol
+    HAVING count(*) FILTER (WHERE source = 'akshare') > 0
+),
+d AS (
+    SELECT p.symbol, p.trade_date,
+           count(*) FILTER (WHERE p.source = 'yfinance') AS n_yf,
+           count(*) FILTER (WHERE p.source = 'akshare')  AS n_ak
+    FROM raw_price_daily p
+    JOIN span s ON s.symbol = p.symbol
+               AND p.trade_date BETWEEN s.lo AND s.hi
+    GROUP BY 1, 2
+)
+SELECT symbol,
+       trade_date AS biz_date,
+       CASE WHEN n_ak = 0 THEN '该交易日仅 yfinance 有数据，akshare 缺失'
+            ELSE '该交易日仅 akshare 有数据，yfinance 缺失' END AS detail
+FROM d
+WHERE n_yf = 0 OR n_ak = 0
+$rule$,
+'P1', true, DATE '2026-08-17',
+'只在两源重叠的日期区间内比对。副源只回溯 120 天，不限定区间的话'
+'会把副源尚未覆盖的历史全部报成缺失，那是噪声不是问题。'
+);
+
+INSERT OR REPLACE INTO dq_rules VALUES (
+'DQ-SRC-004', 'source', '标的未被副源覆盖',
+'自选股中的标的在副源完全查不到。不影响当前数据可用性，但这些标的失去了跨源校验能力',
+$rule$
+SELECT w.symbol,
+       CURRENT_DATE AS biz_date,
+       w.name || ' 在副源 akshare 无任何数据，该标的无法进行跨源校验' AS detail
+FROM ref_watchlist w
+LEFT JOIN (SELECT DISTINCT symbol FROM raw_price_daily WHERE source = 'akshare') a
+       ON a.symbol = w.symbol
+WHERE NOT w.is_reference AND a.symbol IS NULL
+$rule$,
+'P2', true, DATE '2026-08-17',
+'定 P2 是因为它不代表数据错，只代表这只标的的校验强度比别的低。'
+'首轮东财链路失败导致 8 只港股未覆盖，改用新浪链路后归零。'
 );
 
 ------------------------------------------------------------

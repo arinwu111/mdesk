@@ -151,6 +151,43 @@ def line_chart(x_labels, series, height: int = 300, width: int = 880,
     return Markup(f'<div class="chartbox" data-chart="{attr}">' + "".join(parts) + "</div>")
 
 
+def volume_chart(x_labels, volumes, width: int = 880, height: int = 96) -> str:
+    """成交量柱。与上方价格图共用同一条时间轴，所以左右留白必须和 line_chart 一致。"""
+    vals = [v for v in volumes if v]
+    if not vals or len(x_labels) < 2:
+        return Markup('<p class="dim">无成交量数据</p>')
+
+    left, right, top, bottom = 56, 14, 8, 18
+    hi = max(vals)
+    n = len(x_labels)
+    plot_w = width - left - right
+    bar_w = max(plot_w / n * 0.72, 0.7)
+
+    parts = [f'<svg viewBox="0 0 {width} {height}" width="{width}" height="{height}" '
+             f'role="img" aria-label="成交量">']
+    base_y = height - bottom
+    for i, v in enumerate(volumes):
+        if not v:
+            continue
+        x = left + plot_w * (i / (n - 1)) - bar_w / 2
+        h = max((v / hi) * (base_y - top), 0.6)
+        parts.append(f'<rect x="{x:.2f}" y="{base_y - h:.2f}" width="{bar_w:.2f}" '
+                     f'height="{h:.2f}" fill="var(--series-1)" opacity="0.5"/>')
+    parts.append(f'<line x1="{left}" y1="{base_y}" x2="{width - right}" y2="{base_y}" '
+                 f'stroke="var(--axis)" stroke-width="1"/>')
+    parts.append(f'<text x="{left - 9}" y="{top + 9}" text-anchor="end" font-size="11" '
+                 f'fill="var(--ink-muted)">{_human(hi)}</text>')
+    parts.append("</svg>")
+    return Markup("".join(parts))
+
+
+def _human(v: float) -> str:
+    for unit, div in (("亿", 1e8), ("万", 1e4)):
+        if abs(v) >= div:
+            return f"{v / div:.1f}{unit}"
+    return f"{v:.0f}"
+
+
 def bar_chart(rows, width: int = 880, row_h: int = 26, label_w: int = 210) -> str:
     """横向条形图。rows 为 [(label, value, tooltip)]，单一量纲，按值排序由调用方决定。"""
     rows = [r for r in rows if r[1] is not None]
@@ -247,6 +284,92 @@ document.querySelectorAll('.chartbox').forEach(function (box) {
     if (e.touches.length) { show(e.touches[0]); }
   }, { passive: true });
 });
+"""
+
+# 表格排序与分组。纯前端，不依赖任何库。
+# 数值列排序读单元格的 data-v，避免被「3.97 万亿」这类格式化文本干扰。
+TABLE_JS = """
+(function () {
+  var table = document.getElementById('wl');
+  if (!table) return;
+  var tbody = table.tBodies[0];
+  var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr:not(.grouprow)'));
+  var groupBy = 'market', sortCol = null, sortDir = 1;
+
+  function cellValue(tr, i, kind) {
+    var td = tr.cells[i];
+    if (kind === 'num') {
+      var raw = td.getAttribute('data-v');
+      if (raw === null || raw === '') return null;
+      var n = parseFloat(raw);
+      return isNaN(n) ? null : n;
+    }
+    return (td.textContent || '').trim();
+  }
+
+  function render() {
+    var ordered = rows.slice();
+    if (sortCol !== null) {
+      var kind = table.tHead.rows[0].cells[sortCol].getAttribute('data-sort');
+      ordered.sort(function (a, b) {
+        var x = cellValue(a, sortCol, kind), y = cellValue(b, sortCol, kind);
+        // 空值恒排在后面，不参与升降序
+        if (x === null && y === null) return 0;
+        if (x === null) return 1;
+        if (y === null) return -1;
+        if (kind === 'num') return (x - y) * sortDir;
+        return x.localeCompare(y, 'zh') * sortDir;
+      });
+    }
+    tbody.innerHTML = '';
+    if (groupBy === 'none') {
+      ordered.forEach(function (r) { tbody.appendChild(r); });
+      return;
+    }
+    var seen = [], buckets = {};
+    ordered.forEach(function (r) {
+      var k = r.dataset[groupBy] || '未分类';
+      if (!buckets[k]) { buckets[k] = []; seen.push(k); }
+      buckets[k].push(r);
+    });
+    var ncols = table.tHead.rows[0].cells.length;
+    seen.forEach(function (k) {
+      var tr = document.createElement('tr');
+      tr.className = 'grouprow';
+      var td = document.createElement('td');
+      td.colSpan = ncols;
+      td.innerHTML = k + '<span>' + buckets[k].length + ' 只</span>';
+      tr.appendChild(td);
+      tbody.appendChild(tr);
+      buckets[k].forEach(function (r) { tbody.appendChild(r); });
+    });
+  }
+
+  table.tHead.rows[0].querySelectorAll('th[data-sort]').forEach(function (th, _i) {
+    th.addEventListener('click', function () {
+      var idx = Array.prototype.indexOf.call(th.parentNode.cells, th);
+      sortDir = (sortCol === idx) ? -sortDir : -1;   // 首次点击默认降序
+      sortCol = idx;
+      table.tHead.rows[0].querySelectorAll('th').forEach(function (o) {
+        o.removeAttribute('aria-sort');
+      });
+      th.setAttribute('aria-sort', sortDir === 1 ? 'ascending' : 'descending');
+      render();
+    });
+  });
+
+  document.querySelectorAll('.toolbar button[data-group]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      groupBy = b.dataset.group;
+      document.querySelectorAll('.toolbar button[data-group]').forEach(function (o) {
+        o.setAttribute('aria-pressed', String(o === b));
+      });
+      render();
+    });
+  });
+
+  render();
+})();
 """
 
 HOVER_CSS = """

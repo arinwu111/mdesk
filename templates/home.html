@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block body %}
+
+<h1>今天该看什么</h1>
+<p class="lede">
+  {{ home.greeting }}　数据截至 {{ meta.data_date }}。
+  这一页只回答一个问题：现在有没有需要你动手的事。没有的话直接去
+  <a href="watchlist.html">自选股</a> 看盘。
+</p>
+
+<div class="tiles">
+  <div class="tile"><div class="k">需当场处理</div>
+    <div class="v {{ 'up' if home.p0 else '' }}">{{ home.p0 }}</div>
+    <div class="sub">P0 异常</div></div>
+  <div class="tile"><div class="k">待排期</div><div class="v">{{ home.p1 }}</div>
+    <div class="sub">P1 异常</div></div>
+  <div class="tile"><div class="k">三日内事件</div>
+    <div class="v {{ 'up' if home.n_soon else '' }}">{{ home.n_soon }}</div>
+    <div class="sub">财报、除息、拆股</div></div>
+  <div class="tile"><div class="k">数据可信标的</div><div class="v">{{ home.n_ok }}/{{ meta.n_symbols }}</div>
+    <div class="sub">无未解释异常</div></div>
+  <div class="tile"><div class="k">采集状态</div>
+    <div class="v" style="font-size:19px">{{ home.fetch_label }}</div>
+    <div class="sub">{{ home.fetch_sub }}</div></div>
+</div>
+
+<h2>一、盘前确认</h2>
+{% if home.todo %}
+<div class="scroll">
+<table>
+<thead><tr><th>级别</th><th>规则</th><th>标的</th><th>说明</th><th>业务日</th></tr></thead>
+<tbody>
+{% for t in home.todo %}
+<tr>
+  <td><span class="sev {{ t.severity }}">{{ t.severity }}</span></td>
+  <td class="mono dim">{{ t.rule_id }}</td>
+  <td class="name">{% if t.slug %}<a href="stock/{{ t.slug }}.html">{{ t.name }}</a>
+      {% else %}{{ t.name }}{% endif %}</td>
+  <td class="wide">{{ t.detail }}</td>
+  <td class="mono dim">{{ t.biz_date }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+<p class="dim" style="margin-top:10px">
+  完整清单见 <a href="ops/index.html">异常清单</a>，处理方式见
+  <a href="ops/ledger.html">处理台账</a>。
+</p>
+{% else %}
+<div class="card"><p style="margin:0">
+  没有待处理的异常。全部 {{ meta.n_rules }} 条规则本轮的命中都已解释或归档。
+</p></div>
+{% endif %}
+
+<h2>二、临近事件</h2>
+{% if home.soon %}
+<div class="scroll">
+<table>
+<thead><tr><th class="num">还有</th><th>日期</th><th>标的</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+{% for e in home.soon %}
+<tr>
+  <td class="num {{ 'up' if e.days <= 3 }}"><b>{{ e.days_fmt }}</b></td>
+  <td class="mono dim">{{ e.event_date }}</td>
+  <td class="name"><a href="stock/{{ e.slug }}.html">{{ e.name }}</a></td>
+  <td>{{ e.type_label }}</td>
+  <td class="wide dim">{{ e.title }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+<p class="dim" style="margin-top:10px">完整日历见 <a href="calendar.html">事件日历</a>。</p>
+{% else %}
+<div class="card"><p style="margin:0">未来 14 天内没有已知事件。</p></div>
+{% endif %}
+
+<h2>三、昨日市场</h2>
+<div class="cols2">
+{% for m in home.markets %}
+<div class="card">
+  <div style="display:flex;align-items:baseline;gap:10px">
+    <span style="font-weight:620">{{ m.label }}</span>
+    <span class="dim" style="font-size:12px">{{ m.trade_date }}　{{ m.n }} 只</span>
+    <span style="margin-left:auto" class="mono">
+      <span class="up">{{ m.n_up }} 涨</span>　<span class="down">{{ m.n_down }} 跌</span>
+    </span>
+  </div>
+  <div style="margin-top:12px">
+    {% for r in m.top %}
+    <div class="rankrow">
+      <a href="stock/{{ r.slug }}.html">{{ r.name }}</a>
+      <span class="dim">{{ r.sector }}</span>
+      <span class="num {{ r.dir }}">{{ r.change_fmt }}</span>
+    </div>
+    {% endfor %}
+    <div class="rankgap">中间 {{ m.n_mid }} 只省略</div>
+    {% for r in m.bottom %}
+    <div class="rankrow">
+      <a href="stock/{{ r.slug }}.html">{{ r.name }}</a>
+      <span class="dim">{{ r.sector }}</span>
+      <span class="num {{ r.dir }}">{{ r.change_fmt }}</span>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endfor %}
+</div>
+
+<div class="note">
+  涨跌幅取自最近一个交易日的收盘价。港美股交易日不同步，两边的日期可能不一样，
+  上面每一栏都标了各自的日期。
+</div>
+
+{% endblock %}

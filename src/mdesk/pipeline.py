@@ -10,7 +10,7 @@
 import argparse
 import time
 
-from . import db, fetch, forward, render, rules, transform
+from . import db, fetch, fetch_akshare, forward, render, rules, transform
 
 
 def run(do_fetch=True, do_forward=True, do_render=True) -> None:
@@ -22,25 +22,32 @@ def run(do_fetch=True, do_forward=True, do_render=True) -> None:
     con.close()
 
     if do_fetch:
-        print("\n[1/5] 采集行情与公司行动")
+        print("\n[1/6] 采集主源行情与公司行动　yfinance")
         fetch.main()
 
+        print("\n[2/6] 采集副源行情　akshare")
+        try:
+            fetch_akshare.main()
+        except Exception as exc:
+            # 副源挂了不该拖垮整条链路，跨源规则会自己发现覆盖缺口
+            print(f"  副源采集异常，跨源校验本轮降级：{type(exc).__name__}: {exc}")
+
     if do_forward:
-        print("\n[2/5] 采集前瞻事件")
+        print("\n[3/6] 采集前瞻事件")
         forward.main()
 
     con = db.connect()
-    print("\n[3/5] 重算复权价")
+    print("\n[4/6] 重算复权价")
     n = transform.build_adj_price(con)
     print(f"  {n} 行")
 
-    print("\n[4/5] 执行校验规则")
+    print("\n[5/6] 执行校验规则")
     rules.run_all(con, verbose=True)
     transform.build_snapshot(con)
     con.close()
 
     if do_render:
-        print("\n[5/5] 渲染站点")
+        print("\n[6/6] 渲染站点")
         render.render_site()
 
     print(f"\n全链路完成，耗时 {time.time() - t0:.0f} 秒")

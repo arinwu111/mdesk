@@ -28,17 +28,18 @@
 <header class="top">
   <div class="top-inner">
     <div class="brand">mdesk<span>港美股行情数据工作台</span></div>
-    <div class="stamp">数据截至 2026-08-14　生成于 2026-08-17 00:43</div>
+    <div class="stamp">数据截至 2026-08-14　生成于 2026-08-17 15:04</div>
   </div>
   <nav class="tabs">
     <span class="group-label">日常</span>
-    <a href="index.html"       class="">自选股</a>
+    <a href="index.html"       class="">总览</a>
+    <a href="watchlist.html"   class="">自选股</a>
     <a href="calendar.html"    class="on">事件日历</a>
-    <a href="newlisting.html"  class="">次新股</a>
     <span class="sep"></span>
     <span class="group-label">运营</span>
     <a href="ops/index.html"      class="">异常清单</a>
     <a href="ops/corpaction.html" class="">复权核对</a>
+    <a href="ops/coverage.html"   class="">数据覆盖</a>
     <a href="ops/rules.html"      class="">规则库</a>
     <a href="ops/ledger.html"     class="">处理台账</a>
     <a href="ops/report.html"     class="">运营报告</a>
@@ -2094,7 +2095,7 @@
 
 <footer class="foot">
   mdesk 自建港美股行情数据工作台　行情来源 yfinance，仅用于数据质量核对与个人自用，不构成任何投资建议。<br>
-  本轮共 35 只标的、16 条校验规则，未处理异常 93 条。
+  本轮共 35 只标的、21 条校验规则，未处理异常 40 条。
 </footer>
 </div>
 
@@ -2154,6 +2155,89 @@ document.querySelectorAll('.chartbox').forEach(function (box) {
     if (e.touches.length) { show(e.touches[0]); }
   }, { passive: true });
 });
+</script>
+<script>
+(function () {
+  var table = document.getElementById('wl');
+  if (!table) return;
+  var tbody = table.tBodies[0];
+  var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr:not(.grouprow)'));
+  var groupBy = 'market', sortCol = null, sortDir = 1;
+
+  function cellValue(tr, i, kind) {
+    var td = tr.cells[i];
+    if (kind === 'num') {
+      var raw = td.getAttribute('data-v');
+      if (raw === null || raw === '') return null;
+      var n = parseFloat(raw);
+      return isNaN(n) ? null : n;
+    }
+    return (td.textContent || '').trim();
+  }
+
+  function render() {
+    var ordered = rows.slice();
+    if (sortCol !== null) {
+      var kind = table.tHead.rows[0].cells[sortCol].getAttribute('data-sort');
+      ordered.sort(function (a, b) {
+        var x = cellValue(a, sortCol, kind), y = cellValue(b, sortCol, kind);
+        // 空值恒排在后面，不参与升降序
+        if (x === null && y === null) return 0;
+        if (x === null) return 1;
+        if (y === null) return -1;
+        if (kind === 'num') return (x - y) * sortDir;
+        return x.localeCompare(y, 'zh') * sortDir;
+      });
+    }
+    tbody.innerHTML = '';
+    if (groupBy === 'none') {
+      ordered.forEach(function (r) { tbody.appendChild(r); });
+      return;
+    }
+    var seen = [], buckets = {};
+    ordered.forEach(function (r) {
+      var k = r.dataset[groupBy] || '未分类';
+      if (!buckets[k]) { buckets[k] = []; seen.push(k); }
+      buckets[k].push(r);
+    });
+    var ncols = table.tHead.rows[0].cells.length;
+    seen.forEach(function (k) {
+      var tr = document.createElement('tr');
+      tr.className = 'grouprow';
+      var td = document.createElement('td');
+      td.colSpan = ncols;
+      td.innerHTML = k + '<span>' + buckets[k].length + ' 只</span>';
+      tr.appendChild(td);
+      tbody.appendChild(tr);
+      buckets[k].forEach(function (r) { tbody.appendChild(r); });
+    });
+  }
+
+  table.tHead.rows[0].querySelectorAll('th[data-sort]').forEach(function (th, _i) {
+    th.addEventListener('click', function () {
+      var idx = Array.prototype.indexOf.call(th.parentNode.cells, th);
+      sortDir = (sortCol === idx) ? -sortDir : -1;   // 首次点击默认降序
+      sortCol = idx;
+      table.tHead.rows[0].querySelectorAll('th').forEach(function (o) {
+        o.removeAttribute('aria-sort');
+      });
+      th.setAttribute('aria-sort', sortDir === 1 ? 'ascending' : 'descending');
+      render();
+    });
+  });
+
+  document.querySelectorAll('.toolbar button[data-group]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      groupBy = b.dataset.group;
+      document.querySelectorAll('.toolbar button[data-group]').forEach(function (o) {
+        o.setAttribute('aria-pressed', String(o === b));
+      });
+      render();
+    });
+  });
+
+  render();
+})();
 </script>
 </body>
 </html>

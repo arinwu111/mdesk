@@ -17,13 +17,14 @@
   </div>
   <nav class="tabs">
     <span class="group-label">日常</span>
-    <a href="{{ root }}index.html"       class="{{ 'on' if page == 'index' }}">自选股</a>
+    <a href="{{ root }}index.html"       class="{{ 'on' if page == 'home' }}">总览</a>
+    <a href="{{ root }}watchlist.html"   class="{{ 'on' if page == 'index' }}">自选股</a>
     <a href="{{ root }}calendar.html"    class="{{ 'on' if page == 'calendar' }}">事件日历</a>
-    <a href="{{ root }}newlisting.html"  class="{{ 'on' if page == 'newlisting' }}">次新股</a>
     <span class="sep"></span>
     <span class="group-label">运营</span>
     <a href="{{ root }}ops/index.html"      class="{{ 'on' if page == 'ops' }}">异常清单</a>
     <a href="{{ root }}ops/corpaction.html" class="{{ 'on' if page == 'corpaction' }}">复权核对</a>
+    <a href="{{ root }}ops/coverage.html"   class="{{ 'on' if page == 'newlisting' }}">数据覆盖</a>
     <a href="{{ root }}ops/rules.html"      class="{{ 'on' if page == 'rules' }}">规则库</a>
     <a href="{{ root }}ops/ledger.html"     class="{{ 'on' if page == 'ledger' }}">处理台账</a>
     <a href="{{ root }}ops/report.html"     class="{{ 'on' if page == 'report' }}">运营报告</a>
@@ -40,5 +41,6 @@
 </div>
 
 <script>{{ hover_js }}</script>
+<script>{{ table_js }}</script>
 </body>
 </html>

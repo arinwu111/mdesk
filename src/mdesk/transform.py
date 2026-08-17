@@ -17,7 +17,7 @@ def build_adj_price(con) -> int:
     prices = con.execute(
         """
         SELECT symbol, trade_date, close, adj_close
-        FROM raw_price_daily
+        FROM price_primary
         WHERE close IS NOT NULL AND close > 0
         ORDER BY symbol, trade_date
         """
@@ -78,7 +78,7 @@ def build_snapshot(con) -> int:
         WITH px AS (
             SELECT symbol, trade_date, close, volume, currency,
                    lag(close) OVER (PARTITION BY symbol ORDER BY trade_date) AS prev_close
-            FROM raw_price_daily
+            FROM price_primary
             QUALIFY row_number() OVER (PARTITION BY symbol ORDER BY trade_date DESC) = 1
         ),
         fun AS (
