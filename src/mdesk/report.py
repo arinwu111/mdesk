@@ -40,8 +40,13 @@ def _overall(con) -> dict:
         """
     ).fetchone()
     n, n_open, n_ex, n_fix, n_ig, avg_hrs = r
+    # resolved 是系统自动关闭的，计入已关闭，但不进误报率的分母：
+    # 它没有经过人工判断，用它算不出规则准不准
+    n_res = con.execute(
+        "SELECT count(*) FROM dq_results WHERE status = 'resolved'").fetchone()[0]
     return {"n_hits": n, "n_open": n_open, "n_explained": n_ex, "n_fixed": n_fix,
-            "n_ignored": n_ig, "n_closed": n_ex + n_fix + n_ig,
+            "n_ignored": n_ig, "n_resolved": n_res,
+            "n_closed": n_ex + n_fix + n_ig + n_res,
             "avg_close_hrs": avg_hrs}
 
 

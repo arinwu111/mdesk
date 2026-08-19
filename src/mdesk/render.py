@@ -22,8 +22,10 @@ EVENT_LABEL = {
     "earnings": "财报", "ex_dividend": "除息", "split": "拆股", "rights": "供股配售",
     "announcement": "一般公告", "halt": "停牌", "other": "其他",
 }
-STATUS_LABEL = {"open": "待查", "explained": "已解释", "fixed": "已修复", "ignored": "已忽略"}
-STATUS_BADGE = {"open": "open", "explained": "explained", "fixed": "ok", "ignored": "ok"}
+STATUS_LABEL = {"open": "待查", "explained": "已解释", "fixed": "已修复",
+                "ignored": "已忽略", "resolved": "已自动关闭"}
+STATUS_BADGE = {"open": "open", "explained": "explained", "fixed": "ok",
+                "ignored": "ok", "resolved": "ok"}
 BADGE_LABEL = {"ok": "正常", "explained": "已解释", "open": "待查"}
 MARKET_LABEL = {"HK": "港股", "US": "美股", "CN": "A 股", "TW": "台股"}
 TYPE_LABEL = {"stock": "普通股", "etf": "交易所交易基金", "adr": "美国存托凭证", "sdr": "存托凭证"}

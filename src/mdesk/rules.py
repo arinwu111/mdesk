@@ -22,6 +22,7 @@ def run_all(con, verbose: bool = True) -> dict:
 
     now = datetime.now()
     stats, broken = {}, []
+    executed = []          # 本轮成功执行过的规则，只有这些才允许自动关闭旧命中
 
     for rule_id, name, sql_expr, severity in rules:
         try:
@@ -31,6 +32,7 @@ def run_all(con, verbose: bool = True) -> dict:
             broken.append((rule_id, name, f"{type(exc).__name__}: {exc}"))
             stats[rule_id] = -1
             continue
+        executed.append(rule_id)
 
         for row in hits:
             if len(row) != 3:
@@ -55,7 +57,34 @@ def run_all(con, verbose: bool = True) -> dict:
         else:
             stats[rule_id] = len(hits)
 
+    # 条件已消失的旧命中自动关闭。
+    #
+    # 起因：DQ-SYS-001 在数据过期时命中 2 条，管道补齐数据后规则不再命中，
+    # 但那 2 行仍是 open，总览页顶部的过期红条继续显示，
+    # 页面写着「数据不可信」而数据其实已经是新的。
+    # 时效性这类瞬时规则，条件消失就等于问题已解决，必须自己关掉。
+    #
+    # 两条保护：
+    # 一、只对本轮成功执行过的规则生效。规则报错时返回空结果，
+    #     若不加这个限制，一条写错的 SQL 会把它名下所有历史命中一次性关掉。
+    # 二、只动 open，不碰人工填过的 explained / fixed / ignored，台账永远优先于机器。
+    resolved = 0
+    if executed:
+        ph = ",".join("?" * len(executed))
+        resolved = con.execute(
+            f"SELECT count(*) FROM dq_results WHERE status = 'open' "
+            f"AND rule_id IN ({ph}) AND last_seen < ?", executed + [now]).fetchone()[0]
+        if resolved:
+            con.execute(
+                f"UPDATE dq_results SET status = 'resolved', handled_at = ?, "
+                f"handling_note = coalesce(handling_note, "
+                f"'规则条件已消失，本轮未再命中，系统自动关闭') "
+                f"WHERE status = 'open' AND rule_id IN ({ph}) AND last_seen < ?",
+                [now] + executed + [now])
+
     if verbose:
+        if resolved:
+            print(f"  {resolved} 条旧命中的条件已消失，已自动关闭")
         print(f"规则执行完毕，共 {len(rules)} 条")
         for rule_id, name, _, sev in rules:
             n = stats.get(rule_id, 0)
