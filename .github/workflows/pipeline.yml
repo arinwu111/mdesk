@@ -1,0 +1,73 @@
+# 每日采集与发布。
+#
+# 这个 workflow 在 2026-08-19 才补上。在此之前仓库里只有 pages.yml，
+# 它的触发器是 push，作用是把已经构建好的 site/ 发布出去，全程不跑采集。
+# 结果是数据只在本地手动跑完并提交后才更新，站点数据在 2026-08-14 停了两个交易日。
+#
+# 设计上的三个要点：
+# 1. healthcheck 决定 job 是否变红，但不阻止发布。数据过期时页面照常更新，
+#    因为 DQ-SYS-001 的红条会出现在总览页最顶部，页面自己会说明数据不可信。
+#    只发布不报警才是静默失败，只报警不发布则让人看不到问题现场。
+# 2. data/*.duckdb 不进仓库，CI 每次从零建库。人工写的处理台账靠
+#    data/ledger.csv 持久化，管道跑完会把它贴回 dq_results。
+# 3. 提交 site/ 会触发 pages.yml，发布由那个 workflow 完成，两者不重复实现。
+
+name: Daily data pipeline
+
+on:
+  schedule:
+    # 22:30 UTC = 次日 06:30 香港时间。此时港股当日 08:00 UTC 已收盘，
+    # 美股当日 20:00 UTC（夏令时）或 21:00 UTC（冬令时）也已收盘，一次跑齐两地。
+    # 只在周一到周五触发，周末两地都不开市，跑了也拿不到新交易日。
+    - cron: '30 22 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pipeline
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: 安装依赖
+        run: pip install -r requirements.txt
+
+      - name: 跑全链路
+        run: PYTHONPATH=src python3 -m mdesk.pipeline
+
+      - name: 健康检查
+        id: health
+        continue-on-error: true
+        run: PYTHONPATH=src python3 -m mdesk.healthcheck
+
+      - name: 提交站点与台账
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site data/ledger.csv
+          if git diff --cached --quiet; then
+            echo "站点无变化，跳过提交"
+          else
+            DATA_DATE=$(PYTHONPATH=src python3 -c "from mdesk import db; c=db.connect(read_only=True); print(c.execute('SELECT max(trade_date) FROM price_primary').fetchone()[0]); c.close()")
+            git commit -m "自动更新：行情数据截至 ${DATA_DATE}"
+            git push
+          fi
+
+      - name: 健康检查未通过则让本次运行变红
+        if: steps.health.outcome != 'success'
+        run: |
+          echo "::error::健康检查未通过。站点已发布，但数据不可信，总览页顶部会有 DQ-SYS-001 红条。"
+          echo "常见原因：数据源当日无返回、采集链路连续失败、两地同时休市以外的时效性异常。"
+          exit 1

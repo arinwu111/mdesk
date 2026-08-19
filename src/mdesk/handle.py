@@ -10,7 +10,7 @@ import argparse
 import getpass
 from datetime import datetime
 
-from . import db
+from . import db, ledger
 
 VALID = ("open", "explained", "fixed", "ignored")
 
@@ -55,7 +55,10 @@ def main() -> None:
     print(f"  异常内容　{detail}")
     print(f"  状态　　　{old_status} → {args.status}")
     print(f"  处理记录　{args.note}")
-    print("\n下次运行 python3 -m mdesk.pipeline --render 后，页面上的角标会随之更新。")
+    n = ledger.export_ledger(con)
+    print(f"\n已同步到 data/ledger.csv（{n} 条），这份文件要提交进仓库，"
+          f"否则 CI 重建数据库后判断记录会丢失。")
+    print("下次运行 python3 -m mdesk.pipeline --render 后，页面上的角标会随之更新。")
     con.close()
 
 

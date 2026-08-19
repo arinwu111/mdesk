@@ -28,7 +28,7 @@
 <header class="top">
   <div class="top-inner">
     <div class="brand">mdesk<span>港美股行情数据工作台</span></div>
-    <div class="stamp">数据截至 2026-08-14　生成于 2026-08-17 15:04</div>
+    <div class="stamp">数据截至 2026-08-14　生成于 2026-08-19 01:40</div>
   </div>
   <nav class="tabs">
     <span class="group-label">日常</span>
@@ -50,26 +50,47 @@
 
 
 <h1>今天该看什么</h1>
+
+
+<div class="blocker">
+  <div class="bl-head">数据已过期，本页其余结论暂不可信</div>
+  
+  <div class="bl-row"><span class="sev P0">P0</span>
+    <span class="mono dim">DQ-SYS-001</span>
+    <span>US 最新交易日停在 2026-08-14，已落后 2 个工作日；采集链路最后一次成功运行是 2026-08-17，已停 1 个工作日。本页其余全部结论均基于过期数据，在恢复采集前不可采信</span></div>
+  
+  <div class="bl-row"><span class="sev P0">P0</span>
+    <span class="mono dim">DQ-SYS-001</span>
+    <span>HK 最新交易日停在 2026-08-14，已落后 2 个工作日；采集链路最后一次成功运行是 2026-08-17，已停 1 个工作日。本页其余全部结论均基于过期数据，在恢复采集前不可采信</span></div>
+  
+  <div class="bl-foot">
+    先恢复采集再看下面的内容。排查顺序：Actions 里 Daily data pipeline 最近一次运行是否变红 →
+    <a href="ops/index.html">异常清单</a>里 DQ-OPS-001 有无采集失败记录 → 本地跑
+    <span class="mono">python3 -m mdesk.healthcheck</span> 看具体哪一项不健康。
+  </div>
+</div>
+
+
 <p class="lede">
-  下午好。　数据截至 2026-08-14。
+  早上好。　数据截至 2026-08-14。
   这一页只回答一个问题：现在有没有需要你动手的事。没有的话直接去
   <a href="watchlist.html">自选股</a> 看盘。
 </p>
 
 <div class="tiles">
   <div class="tile"><div class="k">需当场处理</div>
-    <div class="v ">0</div>
+    <div class="v up">2</div>
     <div class="sub">P0 异常</div></div>
   <div class="tile"><div class="k">待排期</div><div class="v">28</div>
     <div class="sub">P1 异常</div></div>
   <div class="tile"><div class="k">三日内事件</div>
-    <div class="v up">4</div>
+    <div class="v up">3</div>
     <div class="sub">财报、除息、拆股</div></div>
   <div class="tile"><div class="k">数据可信标的</div><div class="v">18/35</div>
     <div class="sub">无未解释异常</div></div>
   <div class="tile"><div class="k">采集状态</div>
-    <div class="v" style="font-size:19px">正常</div>
-    <div class="sub">最近一轮全部成功</div></div>
+    <div class="v" style="font-size:19px">过期</div>
+    <div class="sub">最新交易日落后 2 个工作日</div></div>
 </div>
 
 <h2>一、盘前确认</h2>
@@ -149,6 +170,183 @@
   <td class="mono dim">2025-11-13</td>
 </tr>
 
+<tr>
+  <td><span class="sev P1">P1</span></td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td class="name"><a href="stock/CELH.html">Celsius</a>
+      </td>
+  <td class="wide">较前收盘 -24.8%，达该标的近 120 日波动率(2.88%)的 8.6 倍，当日无公司行动记录可解释</td>
+  <td class="mono dim">2025-11-06</td>
+</tr>
+
+<tr>
+  <td><span class="sev P1">P1</span></td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td class="name"><a href="stock/LITE.html">Lumentum</a>
+      </td>
+  <td class="wide">较前收盘 23.57%，达该标的近 120 日波动率(3.14%)的 7.5 倍，当日无公司行动记录可解释</td>
+  <td class="mono dim">2025-11-05</td>
+</tr>
+
+<tr>
+  <td><span class="sev P1">P1</span></td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td class="name"><a href="stock/AMD.html">AMD</a>
+      </td>
+  <td class="wide">较前收盘 23.71%，达该标的近 120 日波动率(2.67%)的 8.9 倍，当日无公司行动记录可解释</td>
+  <td class="mono dim">2025-10-06</td>
+</tr>
+
+<tr>
+  <td><span class="sev P1">P1</span></td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td class="name"><a href="stock/NBIS.html">Nebius</a>
+      </td>
+  <td class="wide">较前收盘 49.42%，达该标的近 120 日波动率(5.81%)的 8.5 倍，当日无公司行动记录可解释</td>
+  <td class="mono dim">2025-09-09</td>
+</tr>
+
+<tr>
+  <td><span class="sev P1">P1</span></td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td class="name"><a href="stock/9988-HK.html">阿里巴巴-W</a>
+      </td>
+  <td class="wide">较前收盘 18.5%，达该标的近 120 日波动率(2.98%)的 6.2 倍，当日无公司行动记录可解释</td>
+  <td class="mono dim">2025-09-01</td>
+</tr>
+
+<tr>
+  <td><span class="sev P1">P1</span></td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td class="name">中芯国际 A</td>
+  <td class="wide">较前收盘 17.45%，达该标的近 120 日波动率(2.1%)的 8.3 倍，当日无公司行动记录可解释</td>
+  <td class="mono dim">2025-08-28</td>
+</tr>
+
+<tr>
+  <td><span class="sev P1">P1</span></td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td class="name">中芯国际 A</td>
+  <td class="wide">较前收盘 14.19%，达该标的近 120 日波动率(1.7%)的 8.3 倍，当日无公司行动记录可解释</td>
+  <td class="mono dim">2025-08-22</td>
+</tr>
+
+<tr>
+  <td><span class="sev P1">P1</span></td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td class="name"><a href="stock/SOXX.html">iShares 半导体 ETF</a>
+      </td>
+  <td class="wide">较前收盘 18.57%，达该标的近 120 日波动率(2.35%)的 7.9 倍，当日无公司行动记录可解释</td>
+  <td class="mono dim">2025-04-09</td>
+</tr>
+
+<tr>
+  <td><span class="sev P1">P1</span></td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td class="name"><a href="stock/AAPL.html">苹果</a>
+      </td>
+  <td class="wide">较前收盘 15.33%，达该标的近 120 日波动率(1.89%)的 8.1 倍，当日无公司行动记录可解释</td>
+  <td class="mono dim">2025-04-09</td>
+</tr>
+
+<tr>
+  <td><span class="sev P1">P1</span></td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td class="name"><a href="stock/DIS.html">迪士尼</a>
+      </td>
+  <td class="wide">较前收盘 11.89%，达该标的近 120 日波动率(1.76%)的 6.8 倍，当日无公司行动记录可解释</td>
+  <td class="mono dim">2025-04-09</td>
+</tr>
+
+<tr>
+  <td><span class="sev P1">P1</span></td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td class="name"><a href="stock/AMD.html">AMD</a>
+      </td>
+  <td class="wide">较前收盘 23.82%，达该标的近 120 日波动率(2.88%)的 8.3 倍，当日无公司行动记录可解释</td>
+  <td class="mono dim">2025-04-09</td>
+</tr>
+
+<tr>
+  <td><span class="sev P1">P1</span></td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td class="name">汇丰控股</td>
+  <td class="wide">较前收盘 -14.75%，达该标的近 120 日波动率(1.01%)的 14.6 倍，当日无公司行动记录可解释</td>
+  <td class="mono dim">2025-04-07</td>
+</tr>
+
+<tr>
+  <td><span class="sev P1">P1</span></td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td class="name"><a href="stock/0857-HK.html">中国石油股份</a>
+      </td>
+  <td class="wide">较前收盘 -15.56%，达该标的近 120 日波动率(1.4%)的 11.1 倍，当日无公司行动记录可解释</td>
+  <td class="mono dim">2025-04-07</td>
+</tr>
+
+<tr>
+  <td><span class="sev P1">P1</span></td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td class="name"><a href="stock/9988-HK.html">阿里巴巴-W</a>
+      </td>
+  <td class="wide">较前收盘 -17.98%，达该标的近 120 日波动率(2.96%)的 6.1 倍，当日无公司行动记录可解释</td>
+  <td class="mono dim">2025-04-07</td>
+</tr>
+
+<tr>
+  <td><span class="sev P1">P1</span></td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td class="name"><a href="stock/AAPL.html">苹果</a>
+      </td>
+  <td class="wide">较前收盘 -9.25%，达该标的近 120 日波动率(1.48%)的 6.3 倍，当日无公司行动记录可解释</td>
+  <td class="mono dim">2025-04-03</td>
+</tr>
+
+<tr>
+  <td><span class="sev P1">P1</span></td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td class="name"><a href="stock/DIS.html">迪士尼</a>
+      </td>
+  <td class="wide">较前收盘 -9.24%，达该标的近 120 日波动率(1.45%)的 6.4 倍，当日无公司行动记录可解释</td>
+  <td class="mono dim">2025-04-03</td>
+</tr>
+
+<tr>
+  <td><span class="sev P1">P1</span></td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td class="name"><a href="stock/HSBC.html">汇丰控股</a>
+      </td>
+  <td class="wide">较前收盘 -7.71%，达该标的近 120 日波动率(1.27%)的 6.1 倍，当日无公司行动记录可解释</td>
+  <td class="mono dim">2025-04-03</td>
+</tr>
+
+<tr>
+  <td><span class="sev P1">P1</span></td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td class="name"><a href="stock/CELH.html">Celsius</a>
+      </td>
+  <td class="wide">较前收盘 27.77%，达该标的近 120 日波动率(3.92%)的 7.1 倍，当日无公司行动记录可解释</td>
+  <td class="mono dim">2025-02-21</td>
+</tr>
+
+<tr>
+  <td><span class="sev P1">P1</span></td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td class="name"><a href="stock/NVDA.html">英伟达</a>
+      </td>
+  <td class="wide">较前收盘 -16.97%，达该标的近 110 日波动率(2.81%)的 6.0 倍，当日无公司行动记录可解释</td>
+  <td class="mono dim">2025-01-27</td>
+</tr>
+
+<tr>
+  <td><span class="sev P1">P1</span></td>
+  <td class="mono dim">DQ-PRC-002</td>
+  <td class="name"><a href="stock/LITE.html">Lumentum</a>
+      </td>
+  <td class="wide">较前收盘 -22.46%，达该标的近 110 日波动率(3.28%)的 6.9 倍，当日无公司行动记录可解释</td>
+  <td class="mono dim">2025-01-27</td>
+</tr>
+
 </tbody>
 </table>
 </div>
@@ -166,15 +364,7 @@
 <tbody>
 
 <tr>
-  <td class="num up"><b>1 天</b></td>
-  <td class="mono dim">2026-08-18</td>
-  <td class="name"><a href="stock/0300-HK.html">美的集团</a></td>
-  <td>财报</td>
-  <td class="wide dim">财报　市场预期 EPS 1.82</td>
-</tr>
-
-<tr>
-  <td class="num up"><b>2 天</b></td>
+  <td class="num up"><b>今天</b></td>
   <td class="mono dim">2026-08-19</td>
   <td class="name"><a href="stock/EL.html">雅诗兰黛</a></td>
   <td>财报</td>
@@ -182,15 +372,7 @@
 </tr>
 
 <tr>
-  <td class="num up"><b>3 天</b></td>
-  <td class="mono dim">2026-08-20</td>
-  <td class="name"><a href="stock/9988-HK.html">阿里巴巴-W</a></td>
-  <td>财报</td>
-  <td class="wide dim">财报　市场预期 EPS 1.48521</td>
-</tr>
-
-<tr>
-  <td class="num up"><b>3 天</b></td>
+  <td class="num up"><b>1 天</b></td>
   <td class="mono dim">2026-08-20</td>
   <td class="name"><a href="stock/9992-HK.html">泡泡玛特</a></td>
   <td>财报</td>
@@ -198,7 +380,15 @@
 </tr>
 
 <tr>
-  <td class="num "><b>7 天</b></td>
+  <td class="num up"><b>1 天</b></td>
+  <td class="mono dim">2026-08-20</td>
+  <td class="name"><a href="stock/9988-HK.html">阿里巴巴-W</a></td>
+  <td>财报</td>
+  <td class="wide dim">财报　市场预期 EPS 1.48521</td>
+</tr>
+
+<tr>
+  <td class="num "><b>5 天</b></td>
   <td class="mono dim">2026-08-24</td>
   <td class="name"><a href="stock/9868-HK.html">小鹏汽车-W</a></td>
   <td>财报</td>
@@ -206,7 +396,7 @@
 </tr>
 
 <tr>
-  <td class="num "><b>8 天</b></td>
+  <td class="num "><b>6 天</b></td>
   <td class="mono dim">2026-08-25</td>
   <td class="name"><a href="stock/PDD.html">拼多多</a></td>
   <td>财报</td>
@@ -214,7 +404,7 @@
 </tr>
 
 <tr>
-  <td class="num "><b>9 天</b></td>
+  <td class="num "><b>7 天</b></td>
   <td class="mono dim">2026-08-26</td>
   <td class="name"><a href="stock/0857-HK.html">中国石油股份</a></td>
   <td>财报</td>
@@ -222,7 +412,7 @@
 </tr>
 
 <tr>
-  <td class="num "><b>10 天</b></td>
+  <td class="num "><b>8 天</b></td>
   <td class="mono dim">2026-08-27</td>
   <td class="name"><a href="stock/NVDA.html">英伟达</a></td>
   <td>财报</td>
@@ -249,54 +439,95 @@
   <div style="margin-top:12px">
     
     <div class="rankrow">
-      <a href="stock/0981-HK.html">中芯国际</a>
-      <span class="dim">半导体</span>
-      <span class="num up">+4.81%</span>
-    </div>
-    
-    <div class="rankrow">
-      <a href="stock/0857-HK.html">中国石油股份</a>
-      <span class="dim">能源</span>
-      <span class="num up">+0.59%</span>
-    </div>
-    
-    <div class="rankrow">
-      <a href="stock/9868-HK.html">小鹏汽车-W</a>
-      <span class="dim">汽车</span>
-      <span class="num up">+0.31%</span>
-    </div>
-    
-    <div class="rankrow">
-      <a href="stock/9880-HK.html">优必选</a>
-      <span class="dim">机器人</span>
-      <span class="num down">-0.06%</span>
-    </div>
-    
-    <div class="rankgap">中间 4 只省略</div>
-    
-    <div class="rankrow">
-      <a href="stock/9988-HK.html">阿里巴巴-W</a>
-      <span class="dim">电商</span>
-      <span class="num down">-1.64%</span>
-    </div>
-    
-    <div class="rankrow">
+      <span class="badge open" title="DQ-FUN-004 市净率为负 (-54.32)，账面净资产为负：智谱"><span class="dot"></span></span>
       <a href="stock/2513-HK.html">智谱</a>
       <span class="dim">人工智能</span>
       <span class="num down">-3.57%</span>
     </div>
     
     <div class="rankrow">
-      <a href="stock/1276-HK.html">恒瑞医药</a>
-      <span class="dim">医药</span>
-      <span class="num down">-3.74%</span>
+      <span class="badge open" title="DQ-CA-001 数据源自身不自洽：上报每股派息 1.96175 HKD，但其复权价隐含派息仅 0.25，相差 7.847 倍 ｜ DQ-CA-001 数据源自身不自洽：上报每股派息 1.029919 HKD，但其复权价隐含派息仅 0.131256，相差 7.847 倍 ｜ DQ-CA-004 全历史 491 个交易日中有 445 日复权价与数据源偏离，最大 2.201%，历史涨跌幅计算会受影响 ｜ DQ-PRC-002 较前收盘 -17.98%，达该标的近 120 日波动率(2.96%)的 6.1 倍，当日无公司行动记录可解释 ｜ DQ-PRC-002 较前收盘 18.5%，达该标的近 120 日波动率(2.98%)的 6.2 倍，当日无公司行动记录可解释"><span class="dot"></span></span>
+      <a href="stock/9988-HK.html">阿里巴巴-W</a>
+      <span class="dim">电商</span>
+      <span class="num down">-1.64%</span>
     </div>
     
     <div class="rankrow">
-      <a href="stock/1347-HK.html">华虹半导体</a>
-      <span class="dim">半导体</span>
-      <span class="num down">-11.55%</span>
+      <span class="badge open" title="DQ-PRC-002 较前收盘 -15.56%，达该标的近 120 日波动率(1.4%)的 11.1 倍，当日无公司行动记录可解释"><span class="dot"></span></span>
+      <a href="stock/0857-HK.html">中国石油股份</a>
+      <span class="dim">能源</span>
+      <span class="num up">+0.59%</span>
     </div>
+    
+    <div class="rankrow">
+      <span class="badge open" title="DQ-PRC-002 较前收盘 -22.51%，达该标的近 120 日波动率(3.29%)的 6.8 倍，当日无公司行动记录可解释"><span class="dot"></span></span>
+      <a href="stock/9992-HK.html">泡泡玛特</a>
+      <span class="dim">潮玩消费</span>
+      <span class="num down">-0.06%</span>
+    </div>
+    
+    
+    
+    <details class="rankfold">
+      <summary>另有 8 只无异常标的</summary>
+      
+      <div class="rankrow">
+        <span class="badge ok" title="今日无异常"><span class="dot"></span></span>
+        <a href="stock/1347-HK.html">华虹半导体</a>
+        <span class="dim">半导体</span>
+        <span class="num down">-11.55%</span>
+      </div>
+      
+      <div class="rankrow">
+        <span class="badge ok" title="今日无异常"><span class="dot"></span></span>
+        <a href="stock/0981-HK.html">中芯国际</a>
+        <span class="dim">半导体</span>
+        <span class="num up">+4.81%</span>
+      </div>
+      
+      <div class="rankrow">
+        <span class="badge ok" title="今日无异常"><span class="dot"></span></span>
+        <a href="stock/1276-HK.html">恒瑞医药</a>
+        <span class="dim">医药</span>
+        <span class="num down">-3.74%</span>
+      </div>
+      
+      <div class="rankrow">
+        <span class="badge ok" title="今日无异常"><span class="dot"></span></span>
+        <a href="stock/2259-HK.html">紫金黄金国际</a>
+        <span class="dim">有色金属</span>
+        <span class="num down">-0.55%</span>
+      </div>
+      
+      <div class="rankrow">
+        <span class="badge ok" title="今日无异常"><span class="dot"></span></span>
+        <a href="stock/0300-HK.html">美的集团</a>
+        <span class="dim">家电</span>
+        <span class="num down">-0.52%</span>
+      </div>
+      
+      <div class="rankrow">
+        <span class="badge ok" title="今日无异常"><span class="dot"></span></span>
+        <a href="stock/9868-HK.html">小鹏汽车-W</a>
+        <span class="dim">汽车</span>
+        <span class="num up">+0.31%</span>
+      </div>
+      
+      <div class="rankrow">
+        <span class="badge ok" title="今日无异常"><span class="dot"></span></span>
+        <a href="stock/0700-HK.html">腾讯控股</a>
+        <span class="dim">互联网</span>
+        <span class="num down">-0.23%</span>
+      </div>
+      
+      <div class="rankrow">
+        <span class="badge ok" title="今日无异常"><span class="dot"></span></span>
+        <a href="stock/9880-HK.html">优必选</a>
+        <span class="dim">机器人</span>
+        <span class="num down">-0.06%</span>
+      </div>
+      
+    </details>
     
   </div>
 </div>
@@ -312,54 +543,172 @@
   <div style="margin-top:12px">
     
     <div class="rankrow">
+      <span class="badge open" title="DQ-PRC-002 较前收盘 49.42%，达该标的近 120 日波动率(5.81%)的 8.5 倍，当日无公司行动记录可解释"><span class="dot"></span></span>
       <a href="stock/NBIS.html">Nebius</a>
       <span class="dim">云计算</span>
       <span class="num up">+8.88%</span>
     </div>
     
     <div class="rankrow">
-      <a href="stock/SNDK.html">闪迪</a>
-      <span class="dim">存储半导体</span>
-      <span class="num up">+7.39%</span>
-    </div>
-    
-    <div class="rankrow">
+      <span class="badge open" title="DQ-PRC-002 较前收盘 23.82%，达该标的近 120 日波动率(2.88%)的 8.3 倍，当日无公司行动记录可解释 ｜ DQ-PRC-002 较前收盘 23.71%，达该标的近 120 日波动率(2.67%)的 8.9 倍，当日无公司行动记录可解释"><span class="dot"></span></span>
       <a href="stock/AMD.html">AMD</a>
       <span class="dim">半导体</span>
       <span class="num up">+6.50%</span>
     </div>
     
     <div class="rankrow">
+      <span class="badge open" title="DQ-PRC-002 较前收盘 -22.46%，达该标的近 110 日波动率(3.28%)的 6.9 倍，当日无公司行动记录可解释 ｜ DQ-PRC-002 较前收盘 23.57%，达该标的近 120 日波动率(3.14%)的 7.5 倍，当日无公司行动记录可解释"><span class="dot"></span></span>
       <a href="stock/LITE.html">Lumentum</a>
       <span class="dim">光通信</span>
       <span class="num up">+5.19%</span>
     </div>
     
-    <div class="rankgap">中间 15 只省略</div>
-    
     <div class="rankrow">
-      <a href="stock/EL.html">雅诗兰黛</a>
-      <span class="dim">美妆消费</span>
-      <span class="num down">-1.40%</span>
+      <span class="badge open" title="DQ-PRC-002 较前收盘 35.47%，达该标的近 120 日波动率(5.28%)的 6.7 倍，当日无公司行动记录可解释"><span class="dot"></span></span>
+      <a href="stock/CRCL.html">Circle</a>
+      <span class="dim">加密金融</span>
+      <span class="num down">-5.01%</span>
     </div>
     
     <div class="rankrow">
-      <a href="stock/HOOD.html">Robinhood</a>
-      <span class="dim">金融科技</span>
-      <span class="num down">-3.83%</span>
-    </div>
-    
-    <div class="rankrow">
+      <span class="badge open" title="DQ-FUN-004 市销率高达 6822.7，营收极小或口径存疑：Oklo"><span class="dot"></span></span>
       <a href="stock/OKLO.html">Oklo</a>
       <span class="dim">核能</span>
       <span class="num down">-4.46%</span>
     </div>
     
     <div class="rankrow">
-      <a href="stock/CRCL.html">Circle</a>
-      <span class="dim">加密金融</span>
-      <span class="num down">-5.01%</span>
+      <span class="badge open" title="DQ-PRC-002 较前收盘 -9.24%，达该标的近 120 日波动率(1.45%)的 6.4 倍，当日无公司行动记录可解释 ｜ DQ-PRC-002 较前收盘 11.89%，达该标的近 120 日波动率(1.76%)的 6.8 倍，当日无公司行动记录可解释 ｜ DQ-PRC-002 较前收盘 -7.75%，达该标的近 120 日波动率(1.08%)的 7.2 倍，当日无公司行动记录可解释"><span class="dot"></span></span>
+      <a href="stock/DIS.html">迪士尼</a>
+      <span class="dim">传媒娱乐</span>
+      <span class="num up">+1.96%</span>
     </div>
+    
+    <div class="rankrow">
+      <span class="badge open" title="DQ-PRC-002 较前收盘 -19.19%，达该标的近 120 日波动率(2.37%)的 8.1 倍，当日无公司行动记录可解释"><span class="dot"></span></span>
+      <a href="stock/EL.html">雅诗兰黛</a>
+      <span class="dim">美妆消费</span>
+      <span class="num down">-1.40%</span>
+    </div>
+    
+    <div class="rankrow">
+      <span class="badge open" title="DQ-PRC-002 较前收盘 27.77%，达该标的近 120 日波动率(3.92%)的 7.1 倍，当日无公司行动记录可解释 ｜ DQ-PRC-002 较前收盘 -24.8%，达该标的近 120 日波动率(2.88%)的 8.6 倍，当日无公司行动记录可解释"><span class="dot"></span></span>
+      <a href="stock/CELH.html">Celsius</a>
+      <span class="dim">饮料消费</span>
+      <span class="num up">+1.08%</span>
+    </div>
+    
+    <div class="rankrow">
+      <span class="badge open" title="DQ-PRC-002 较前收盘 -7.71%，达该标的近 120 日波动率(1.27%)的 6.1 倍，当日无公司行动记录可解释"><span class="dot"></span></span>
+      <a href="stock/HSBC.html">汇丰控股</a>
+      <span class="dim">银行</span>
+      <span class="num down">-0.25%</span>
+    </div>
+    
+    <div class="rankrow">
+      <span class="badge open" title="DQ-PRC-002 较前收盘 -9.25%，达该标的近 120 日波动率(1.48%)的 6.3 倍，当日无公司行动记录可解释 ｜ DQ-PRC-002 较前收盘 15.33%，达该标的近 120 日波动率(1.89%)的 8.1 倍，当日无公司行动记录可解释"><span class="dot"></span></span>
+      <a href="stock/AAPL.html">苹果</a>
+      <span class="dim">消费电子</span>
+      <span class="num up">+0.22%</span>
+    </div>
+    
+    <div class="rankrow">
+      <span class="badge open" title="DQ-FUN-003 估值超出常规区间 PE=62.9 PB=1563.2：阿斯麦"><span class="dot"></span></span>
+      <a href="stock/ASML.html">阿斯麦</a>
+      <span class="dim">半导体设备</span>
+      <span class="num down">-0.21%</span>
+    </div>
+    
+    <div class="rankrow">
+      <span class="badge open" title="DQ-PRC-002 较前收盘 -16.97%，达该标的近 110 日波动率(2.81%)的 6.0 倍，当日无公司行动记录可解释"><span class="dot"></span></span>
+      <a href="stock/NVDA.html">英伟达</a>
+      <span class="dim">半导体</span>
+      <span class="num down">-0.06%</span>
+    </div>
+    
+    <div class="rankrow">
+      <span class="badge open" title="DQ-PRC-002 较前收盘 18.57%，达该标的近 120 日波动率(2.35%)的 7.9 倍，当日无公司行动记录可解释"><span class="dot"></span></span>
+      <a href="stock/SOXX.html">iShares 半导体 ETF</a>
+      <span class="dim">ETF</span>
+      <span class="num down">-0.06%</span>
+    </div>
+    
+    
+    
+    <details class="rankfold">
+      <summary>另有 10 只无异常标的</summary>
+      
+      <div class="rankrow">
+        <span class="badge ok" title="今日无异常"><span class="dot"></span></span>
+        <a href="stock/SNDK.html">闪迪</a>
+        <span class="dim">存储半导体</span>
+        <span class="num up">+7.39%</span>
+      </div>
+      
+      <div class="rankrow">
+        <span class="badge ok" title="今日无异常"><span class="dot"></span></span>
+        <a href="stock/HOOD.html">Robinhood</a>
+        <span class="dim">金融科技</span>
+        <span class="num down">-3.83%</span>
+      </div>
+      
+      <div class="rankrow">
+        <span class="badge ok" title="今日无异常"><span class="dot"></span></span>
+        <a href="stock/IONQ.html">IonQ</a>
+        <span class="dim">量子计算</span>
+        <span class="num up">+2.85%</span>
+      </div>
+      
+      <div class="rankrow">
+        <span class="badge ok" title="今日无异常"><span class="dot"></span></span>
+        <a href="stock/GE.html">GE Aerospace</a>
+        <span class="dim">工业</span>
+        <span class="num up">+2.15%</span>
+      </div>
+      
+      <div class="rankrow">
+        <span class="badge ok" title="今日无异常"><span class="dot"></span></span>
+        <a href="stock/TSM.html">台积电</a>
+        <span class="dim">半导体</span>
+        <span class="num down">-0.96%</span>
+      </div>
+      
+      <div class="rankrow">
+        <span class="badge ok" title="今日无异常"><span class="dot"></span></span>
+        <a href="stock/PDD.html">拼多多</a>
+        <span class="dim">电商</span>
+        <span class="num up">+0.74%</span>
+      </div>
+      
+      <div class="rankrow">
+        <span class="badge ok" title="今日无异常"><span class="dot"></span></span>
+        <a href="stock/DRAM.html">存储主题 ETF</a>
+        <span class="dim">ETF</span>
+        <span class="num up">+0.69%</span>
+      </div>
+      
+      <div class="rankrow">
+        <span class="badge ok" title="今日无异常"><span class="dot"></span></span>
+        <a href="stock/TSLA.html">特斯拉</a>
+        <span class="dim">汽车</span>
+        <span class="num up">+0.68%</span>
+      </div>
+      
+      <div class="rankrow">
+        <span class="badge ok" title="今日无异常"><span class="dot"></span></span>
+        <a href="stock/SKHY.html">SK 海力士</a>
+        <span class="dim">存储半导体</span>
+        <span class="num up">+0.40%</span>
+      </div>
+      
+      <div class="rankrow">
+        <span class="badge ok" title="今日无异常"><span class="dot"></span></span>
+        <a href="stock/GOOGL.html">谷歌-A</a>
+        <span class="dim">互联网</span>
+        <span class="num down">-0.13%</span>
+      </div>
+      
+    </details>
     
   </div>
 </div>
@@ -367,15 +716,17 @@
 </div>
 
 <div class="note">
-  涨跌幅取自最近一个交易日的收盘价。港美股交易日不同步，两边的日期可能不一样，
-  上面每一栏都标了各自的日期。
+  <b>这里按数据质量角标排序，不按涨跌幅排序。</b>
+  带红黄角标的标的全部展开、不折叠也不省略，因为这一页存在的理由就是让该动手的事都露出来；
+  无异常的标的收在折叠区里，点开可见。同一组内按涨跌幅绝对值从大到小排。
+  涨跌幅取自最近一个交易日的收盘价，港美股交易日不同步，每栏都标了各自的日期。
 </div>
 
 
 
 <footer class="foot">
   mdesk 自建港美股行情数据工作台　行情来源 yfinance，仅用于数据质量核对与个人自用，不构成任何投资建议。<br>
-  本轮共 35 只标的、21 条校验规则，未处理异常 40 条。
+  本轮共 35 只标的、22 条校验规则，未处理异常 42 条。
 </footer>
 </div>
 

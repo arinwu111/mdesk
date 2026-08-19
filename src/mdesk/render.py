@@ -8,7 +8,7 @@ from datetime import datetime, date, timedelta
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from markupsafe import Markup
 
-from . import charts, config, db
+from . import charts, config, db, report
 
 S1 = "var(--series-1)"
 S2 = "var(--series-2)"
@@ -187,7 +187,14 @@ def page_home(con, meta) -> dict:
     hour = datetime.now().hour
     greeting = ("早上好。" if hour < 11 else "下午好。" if hour < 18 else "晚上好。")
 
-    todo = _results(con, "WHERE r.status = 'open' AND r.severity IN ('P0','P1')", limit=8)
+    # 不加 limit。这一页的定位是「有没有需要动手的事」，
+    # 截断待办清单等于把该动手的事藏起来，与页面存在的理由直接冲突。
+    todo = _results(con, "WHERE r.status = 'open' AND r.severity IN ('P0','P1')")
+
+    # 时效性告警单独取出并置顶。数据本身过期时，页面上其余全部结论都建立在
+    # 过期数据上，任何个股异常的优先级都低于它。
+    blockers = _results(con, "WHERE r.status = 'open' AND r.rule_id = 'DQ-SYS-001'")
+    todo = [t for t in todo if t["rule_id"] != "DQ-SYS-001"]
 
     soon = []
     for sym, code, name, ed, etype, title in con.execute(
@@ -205,32 +212,51 @@ def page_home(con, meta) -> dict:
             "type_label": EVENT_LABEL.get(etype, etype), "title": title,
         })
 
+    # 按角标严重度排序，异常项全部展开，只有无异常的标的允许折叠。
+    # 原实现取涨跌幅前四后四、中间省略，结果是带红黄角标的标的可能正好落在
+    # 被省略的那一段里，页面看起来干净但该动手的事看不到。
     markets = []
     for mk, label in (("HK", "港股"), ("US", "美股")):
-        rs = [r for r in con.execute(
+        rs = con.execute(
             """
-            SELECT symbol, name, sector, change_pct, trade_date
-            FROM mart_watchlist_snapshot WHERE market = ? AND change_pct IS NOT NULL
-            ORDER BY change_pct DESC
-            """, [mk]).fetchall()]
+            SELECT symbol, name, sector, change_pct, trade_date, dq_badge, dq_summary
+            FROM mart_watchlist_snapshot
+            WHERE market = ? AND change_pct IS NOT NULL
+            ORDER BY CASE dq_badge WHEN 'open' THEN 0 WHEN 'explained' THEN 1 ELSE 2 END,
+                     abs(change_pct) DESC
+            """, [mk]).fetchall()
         if not rs:
             continue
+
         def fmt(r):
             return {"slug": slug(r[0]), "name": r[1], "sector": r[2],
-                    "change_fmt": pct(r[3]), "dir": direction(r[3])}
-        top, bottom = rs[:4], rs[-4:] if len(rs) > 8 else []
+                    "change_fmt": pct(r[3]), "dir": direction(r[3]),
+                    "badge": r[5], "badge_label": BADGE_LABEL.get(r[5], ""),
+                    "summary": r[6]}
+
+        flagged = [r for r in rs if r[5] in ("open", "explained")]
+        clean = [r for r in rs if r[5] not in ("open", "explained")]
         markets.append({
             "label": label, "n": len(rs), "trade_date": rs[0][4],
             "n_up": sum(1 for r in rs if r[3] > 0),
             "n_down": sum(1 for r in rs if r[3] < 0),
-            "top": [fmt(r) for r in top], "bottom": [fmt(r) for r in bottom],
-            "n_mid": max(len(rs) - len(top) - len(bottom), 0),
+            "flagged": [fmt(r) for r in flagged],
+            "clean": [fmt(r) for r in clean],
+            "n_flagged": len(flagged), "n_clean": len(clean),
         })
 
     fail = con.execute(
         "SELECT count(*) FROM raw_fetch_log WHERE run_id = (SELECT max(run_id) "
         "FROM raw_fetch_log) AND status = 'error'").fetchone()[0]
-    stale = (today - meta["data_date"]).days if meta["data_date"] else 99
+    # 时效性口径统一由 DQ-SYS-001 判定，这里只取它有没有命中，
+    # 不再自己按自然日算一遍，避免两处阈值各自漂移。
+    stale_days = con.execute(
+        """
+        SELECT count(*) FROM generate_series(
+                 (SELECT max(trade_date) FROM price_primary) + 1,
+                 CURRENT_DATE - 1, INTERVAL 1 DAY) g(d)
+        WHERE isodow(g.d::DATE) BETWEEN 1 AND 5
+        """).fetchone()[0]
 
     return {"home": {
         "greeting": greeting,
@@ -242,9 +268,11 @@ def page_home(con, meta) -> dict:
                             "WHERE dq_badge <> 'open'").fetchone()[0],
         "n_soon": sum(1 for e in soon if e["days"] <= 3),
         "todo": todo, "soon": soon, "markets": markets,
-        "fetch_label": "正常" if fail == 0 else f"{fail} 项失败",
-        "fetch_sub": (f"数据已 {stale} 天未更新" if stale > 4
-                      else "最近一轮全部成功" if fail == 0 else "见异常清单 DQ-OPS-001"),
+        "blockers": blockers,
+        "fetch_label": ("过期" if blockers else "正常" if fail == 0 else f"{fail} 项失败"),
+        "fetch_sub": (f"最新交易日落后 {stale_days} 个工作日" if blockers
+                      else "最近一轮全部成功" if fail == 0
+                      else "见异常清单 DQ-OPS-001"),
     }}
 
 
@@ -819,7 +847,9 @@ def page_report(con, meta) -> dict:
     ]
     latest = con.execute("SELECT min(trade_date), max(trade_date) FROM price_primary").fetchone()
 
+    m = report.metrics(con)
     return {
+        "m": m,
         "period": f"{latest[0]} 至 {latest[1]}（首期，覆盖全部采集窗口）",
         "s": {
             "fetch_rate": f"{fetch_ok / fetch_total * 100:.0f}%" if fetch_total else "—",

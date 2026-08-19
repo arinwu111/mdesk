@@ -2,6 +2,23 @@
 {% block body %}
 
 <h1>今天该看什么</h1>
+
+{% if home.blockers %}
+<div class="blocker">
+  <div class="bl-head">数据已过期，本页其余结论暂不可信</div>
+  {% for b in home.blockers %}
+  <div class="bl-row"><span class="sev P0">{{ b.severity }}</span>
+    <span class="mono dim">{{ b.rule_id }}</span>
+    <span>{{ b.detail }}</span></div>
+  {% endfor %}
+  <div class="bl-foot">
+    先恢复采集再看下面的内容。排查顺序：Actions 里 Daily data pipeline 最近一次运行是否变红 →
+    <a href="ops/index.html">异常清单</a>里 DQ-OPS-001 有无采集失败记录 → 本地跑
+    <span class="mono">python3 -m mdesk.healthcheck</span> 看具体哪一项不健康。
+  </div>
+</div>
+{% endif %}
+
 <p class="lede">
   {{ home.greeting }}　数据截至 {{ meta.data_date }}。
   这一页只回答一个问题：现在有没有需要你动手的事。没有的话直接去
@@ -88,29 +105,40 @@
     </span>
   </div>
   <div style="margin-top:12px">
-    {% for r in m.top %}
+    {% for r in m.flagged %}
     <div class="rankrow">
+      <span class="badge {{ r.badge }}" title="{{ r.summary }}"><span class="dot"></span></span>
       <a href="stock/{{ r.slug }}.html">{{ r.name }}</a>
       <span class="dim">{{ r.sector }}</span>
       <span class="num {{ r.dir }}">{{ r.change_fmt }}</span>
     </div>
     {% endfor %}
-    <div class="rankgap">中间 {{ m.n_mid }} 只省略</div>
-    {% for r in m.bottom %}
-    <div class="rankrow">
-      <a href="stock/{{ r.slug }}.html">{{ r.name }}</a>
-      <span class="dim">{{ r.sector }}</span>
-      <span class="num {{ r.dir }}">{{ r.change_fmt }}</span>
-    </div>
-    {% endfor %}
+    {% if not m.flagged %}
+    <div class="rankgap">该市场当前没有带角标的标的</div>
+    {% endif %}
+    {% if m.clean %}
+    <details class="rankfold">
+      <summary>另有 {{ m.n_clean }} 只无异常标的</summary>
+      {% for r in m.clean %}
+      <div class="rankrow">
+        <span class="badge ok" title="{{ r.summary }}"><span class="dot"></span></span>
+        <a href="stock/{{ r.slug }}.html">{{ r.name }}</a>
+        <span class="dim">{{ r.sector }}</span>
+        <span class="num {{ r.dir }}">{{ r.change_fmt }}</span>
+      </div>
+      {% endfor %}
+    </details>
+    {% endif %}
   </div>
 </div>
 {% endfor %}
 </div>
 
 <div class="note">
-  涨跌幅取自最近一个交易日的收盘价。港美股交易日不同步，两边的日期可能不一样，
-  上面每一栏都标了各自的日期。
+  <b>这里按数据质量角标排序，不按涨跌幅排序。</b>
+  带红黄角标的标的全部展开、不折叠也不省略，因为这一页存在的理由就是让该动手的事都露出来；
+  无异常的标的收在折叠区里，点开可见。同一组内按涨跌幅绝对值从大到小排。
+  涨跌幅取自最近一个交易日的收盘价，港美股交易日不同步，每栏都标了各自的日期。
 </div>
 
 {% endblock %}

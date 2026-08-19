@@ -10,7 +10,8 @@
 import argparse
 import time
 
-from . import db, fetch, fetch_akshare, forward, render, rules, transform
+from . import (db, fetch, fetch_akshare, forward, ledger, render, report,
+               rules, transform)
 
 
 def run(do_fetch=True, do_forward=True, do_render=True) -> None:
@@ -43,7 +44,14 @@ def run(do_fetch=True, do_forward=True, do_render=True) -> None:
 
     print("\n[5/6] 执行校验规则")
     rules.run_all(con, verbose=True)
+    # 规则跑完立刻把人工判断贴回来。顺序不能颠倒：规则会新建命中行，
+    # 台账要覆盖在这些新行上，否则页面角标会把已解释的异常重新显示成待查。
+    applied, orphan = ledger.apply_ledger(con)
+    print(f"  台账贴回 {applied} 条" + (f"，{orphan} 条悬空待确认" if orphan else ""))
     transform.build_snapshot(con)
+    # 报告快照必须在台账贴回之后写，否则已关闭数会漏掉本轮贴回的那些
+    sid = report.take_snapshot(con)
+    print(f"  运营报告快照 {sid} 已写入")
     con.close()
 
     if do_render:
@@ -65,6 +73,7 @@ def main() -> None:
         transform.build_adj_price(con)
         rules.run_all(con, verbose=False)
         transform.build_snapshot(con)
+        report.take_snapshot(con)
         con.close()
         render.render_site()
     else:

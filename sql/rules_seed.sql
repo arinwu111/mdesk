@@ -12,7 +12,8 @@
 -- ref 域：主数据本身的正确性。代码错了后面全错，所以放在最前面。
 ------------------------------------------------------------
 
-INSERT OR REPLACE INTO dq_rules VALUES (
+INSERT OR REPLACE INTO dq_rules
+(rule_id, domain, name, description, sql_expr, severity, enabled, created_at, note) VALUES (
 'DQ-REF-001', 'ref', '证券代码有效性校验',
 '自选股名单中的代码在数据源查不到任何行情，通常意味着代码写错、已退市或数据源不覆盖',
 $rule$
@@ -27,7 +28,8 @@ $rule$,
 '建库第一条规则。起因是整理自选股时发现用户给的名单里 MBIS/HOLD 是笔误、DRAM/SKHY 无法确认、智谱缺代码。证券代码本身就是需要校验的数据。'
 );
 
-INSERT OR REPLACE INTO dq_rules VALUES (
+INSERT OR REPLACE INTO dq_rules
+(rule_id, domain, name, description, sql_expr, severity, enabled, created_at, note) VALUES (
 'DQ-REF-002', 'ref', '证券类型登记一致性',
 '自选股名单里登记的品种类型与数据源返回的 quoteType 不一致，会导致后续按类型分流的规则全部走错分支',
 $rule$
@@ -51,7 +53,8 @@ $rule$,
 -- price 域：行情数据本身的自洽性
 ------------------------------------------------------------
 
-INSERT OR REPLACE INTO dq_rules VALUES (
+INSERT OR REPLACE INTO dq_rules
+(rule_id, domain, name, description, sql_expr, severity, enabled, created_at, note) VALUES (
 'DQ-PRC-001', 'price', 'OHLC 逻辑越界',
 '最高价低于最低价，或开盘收盘价落在最高最低区间之外。这类错误一定是数据问题，不可能是真实行情',
 $rule$
@@ -75,7 +78,8 @@ $rule$,
 '真正的 OHLC 越界差值至少在分位上，不会被这个容忍带掩盖。'
 );
 
-INSERT OR REPLACE INTO dq_rules VALUES (
+INSERT OR REPLACE INTO dq_rules
+(rule_id, domain, name, description, sql_expr, severity, enabled, created_at, note) VALUES (
 'DQ-PRC-002', 'price', '无公司行动的异常跳空',
 '单日涨跌幅超过该标的自身近 120 日波动率的 6 倍，且当日无任何公司行动记录。'
 '阈值按标的自身波动率分层，不用统一百分比',
@@ -125,7 +129,8 @@ $rule$,
 '历史不足 60 个交易日的次新股不参与本规则，样本量不够算不出可信的波动率。'
 );
 
-INSERT OR REPLACE INTO dq_rules VALUES (
+INSERT OR REPLACE INTO dq_rules
+(rule_id, domain, name, description, sql_expr, severity, enabled, created_at, note) VALUES (
 'DQ-PRC-003', 'price', '个股零成交量但价格变动',
 '单只标的成交量为零却有价格变化，且同市场其他标的当日成交正常。孤立出现通常意味着该股停牌而报价仍在推送',
 $rule$
@@ -161,7 +166,8 @@ $rule$,
 '初版不区分个股与全市场，港股半日市当天十来只标的一起命中，噪声很大。加上同市场同日命中占比的判据后，只保留孤立出现的情况，全市场性的交给 DQ-PRC-005。'
 );
 
-INSERT OR REPLACE INTO dq_rules VALUES (
+INSERT OR REPLACE INTO dq_rules
+(rule_id, domain, name, description, sql_expr, severity, enabled, created_at, note) VALUES (
 'DQ-PRC-005', 'price', '全市场成交量缺失',
 '同一交易日某个市场过半标的成交量都为零。这不是行情异常，是数据源当日的成交量字段整体缺失',
 $rule$
@@ -187,7 +193,8 @@ $rule$,
 '首轮命中 6 天，全部是香港半日市：平安夜、除夕、农历新年前一日。港交所这几天只有早市，数据源不返回成交量。这属于已知的市场规则而非数据错误，定为 P2 观察级，处理方式是在这些日期跳过成交量相关计算。半日市日历需要每年从港交所公告更新一次，已写入 SOP 的年度事项。'
 );
 
-INSERT OR REPLACE INTO dq_rules VALUES (
+INSERT OR REPLACE INTO dq_rules
+(rule_id, domain, name, description, sql_expr, severity, enabled, created_at, note) VALUES (
 'DQ-PRC-004', 'price', '交易日序列断档',
 '相邻两个交易日间隔超过 10 个自然日。可能是长期停牌、数据源缺失，也可能是上市后有过退市重组',
 $rule$
@@ -212,7 +219,8 @@ $rule$,
 -- corp_action 域：公司行动与复权。这个域是整个项目的核心
 ------------------------------------------------------------
 
-INSERT OR REPLACE INTO dq_rules VALUES (
+INSERT OR REPLACE INTO dq_rules
+(rule_id, domain, name, description, sql_expr, severity, enabled, created_at, note) VALUES (
 'DQ-CA-001', 'corp_action', '数据源派息金额与其复权价不自洽',
 '从数据源自己的复权价反推出的隐含派息，与它自己上报的派息金额对不上。这是纯内部矛盾，不需要任何外部资料就能判定其中一个是错的',
 $rule$
@@ -247,7 +255,8 @@ $rule$,
 '项目的核心规则，也是第一条真正抓到东西的规则。首轮就命中阿里 9988.HK 两次派息全错、汇丰 0005.HK 最近一次派息错，隐含倍数均为 7.847，恰等于港币兑美元联系汇率，说明数据源用美元金额去扣减港币价格。两只中招的都是有美股 ADR 的港股。初版规则按受影响的每个交易日报警，阿里一个根因刷出 445 条，改为按除权日定位根因后降到 3 条。'
 );
 
-INSERT OR REPLACE INTO dq_rules VALUES (
+INSERT OR REPLACE INTO dq_rules
+(rule_id, domain, name, description, sql_expr, severity, enabled, created_at, note) VALUES (
 'DQ-CA-004', 'corp_action', '自算复权序列整体偏离',
 '按公司行动自行推算的复权价与数据源整段偏离。根因通常已由 DQ-CA-001 指出，这条负责说明影响范围有多大',
 $rule$
@@ -266,7 +275,8 @@ $rule$,
 '从 DQ-CA-001 拆出来的。根因和影响范围要分开报：根因一条，用于定位和修复；影响范围一条，用于判断这只标的的历史数据还能不能用。'
 );
 
-INSERT OR REPLACE INTO dq_rules VALUES (
+INSERT OR REPLACE INTO dq_rules
+(rule_id, domain, name, description, sql_expr, severity, enabled, created_at, note) VALUES (
 'DQ-CA-002', 'corp_action', '拆合股比例超出常理',
 '拆股比例大于 100 或小于 0.01。这个量级的比例极其罕见，更可能是数据源填反了方向或单位错位',
 $rule$
@@ -281,7 +291,8 @@ $rule$,
 '拆股比例填反是复权出错最隐蔽的原因，因为价格曲线看起来仍然连续，只是整段被缩放了。'
 );
 
-INSERT OR REPLACE INTO dq_rules VALUES (
+INSERT OR REPLACE INTO dq_rules
+(rule_id, domain, name, description, sql_expr, severity, enabled, created_at, note) VALUES (
 'DQ-CA-003', 'corp_action', '派息金额超过股价一成',
 '单次现金派息超过除权日前收盘价的 10%。可能是特别股息，也可能是币种没换算或者金额单位错',
 $rule$
@@ -310,7 +321,8 @@ $rule$,
 -- 关键是区分「本就不适用」和「真缺失」，前者不是异常
 ------------------------------------------------------------
 
-INSERT OR REPLACE INTO dq_rules VALUES (
+INSERT OR REPLACE INTO dq_rules
+(rule_id, domain, name, description, sql_expr, severity, enabled, created_at, note) VALUES (
 'DQ-FUN-001', 'fundamental', '市值或股本缺失',
 '非 ETF 标的缺少市值或总股本。这两个字段任何一只正常交易的股票都不该缺',
 $rule$
@@ -330,7 +342,8 @@ $rule$,
 '预期 SDR 和次新股会命中。SKHY 是存托凭证结构、智谱和紫金黄金国际是次新股，免费数据源对这类标的的基本面覆盖通常最差。'
 );
 
-INSERT OR REPLACE INTO dq_rules VALUES (
+INSERT OR REPLACE INTO dq_rules
+(rule_id, domain, name, description, sql_expr, severity, enabled, created_at, note) VALUES (
 'DQ-FUN-002', 'fundamental', '盈利为正却没有市盈率',
 'EPS 大于零但 PE 为空。EPS 为负导致 PE 为空是正常的，EPS 为正还没有 PE 就是真缺失',
 $rule$
@@ -348,7 +361,8 @@ $rule$,
 '这条规则是为了把「无盈利所以没有 PE」和「有盈利但字段丢了」分开。优必选、智谱、OKLO 这类无盈利标的不该因为 PE 为空被告警。'
 );
 
-INSERT OR REPLACE INTO dq_rules VALUES (
+INSERT OR REPLACE INTO dq_rules
+(rule_id, domain, name, description, sql_expr, severity, enabled, created_at, note) VALUES (
 'DQ-FUN-003', 'fundamental', '估值指标极端值',
 'PE 超过 1000 或 PB 超过 100。可能是真实的极端估值，也可能是分母接近零或单位错位',
 $rule$
@@ -365,7 +379,8 @@ $rule$,
 '微利公司的 PE 天然会很大，所以定 P2。真正要防的是分母单位错位，比如把千元当成元。'
 );
 
-INSERT OR REPLACE INTO dq_rules VALUES (
+INSERT OR REPLACE INTO dq_rules
+(rule_id, domain, name, description, sql_expr, severity, enabled, created_at, note) VALUES (
 'DQ-FUN-004', 'fundamental', '净资产为负或市销率异常',
 '市净率为负说明账面净资产为负，市销率畸高说明营收极小或口径有误。'
 '两者都可能是真实情况，但都必须人工确认一次而不是默认接受',
@@ -394,7 +409,8 @@ $rule$,
 -- 同一家公司在两地上市，折算后价格应当收敛。不收敛就是有一边错了
 ------------------------------------------------------------
 
-INSERT OR REPLACE INTO dq_rules VALUES (
+INSERT OR REPLACE INTO dq_rules
+(rule_id, domain, name, description, sql_expr, severity, enabled, created_at, note) VALUES (
 'DQ-CRS-001', 'cross', '跨市场折算价差超阈值',
 '两地上市标的按存托比例和汇率折算后仍偏离超过各自设定的阈值。可能是比例错、汇率错、价格错，也可能是真实溢价',
 $rule$
@@ -441,7 +457,8 @@ $rule$,
 -- 主源 yfinance，副源 akshare（港股走新浪，美股走新浪），两条链路互相独立。
 ------------------------------------------------------------
 
-INSERT OR REPLACE INTO dq_rules VALUES (
+INSERT OR REPLACE INTO dq_rules
+(rule_id, domain, name, description, sql_expr, severity, enabled, created_at, note) VALUES (
 'DQ-SRC-001', 'source', '两源收盘价不一致',
 '同一标的同一交易日，主源与副源给出的收盘价偏离超过 0.5%。'
 '两个独立数据源不该对同一个已收盘的事实有分歧，有分歧就至少有一方错了',
@@ -464,7 +481,8 @@ $rule$,
 '留出容忍带才能让真正的分歧浮出来。'
 );
 
-INSERT OR REPLACE INTO dq_rules VALUES (
+INSERT OR REPLACE INTO dq_rules
+(rule_id, domain, name, description, sql_expr, severity, enabled, created_at, note) VALUES (
 'DQ-SRC-002', 'source', '两源成交量差异过大',
 '同一交易日两源成交量相差超过 20%。成交量口径分歧常见于是否计入暗盘、盘后交易与大宗交易',
 $rule$
@@ -485,7 +503,8 @@ $rule$,
 '真正要抓的是某一源系统性地少算或多算，而不是个别日期的零星出入。'
 );
 
-INSERT OR REPLACE INTO dq_rules VALUES (
+INSERT OR REPLACE INTO dq_rules
+(rule_id, domain, name, description, sql_expr, severity, enabled, created_at, note) VALUES (
 'DQ-SRC-003', 'source', '交易日在两源间不一致',
 '某个交易日只有一个源有数据。可能是一方漏采，也可能是对停牌日、半日市的处理口径不同',
 $rule$
@@ -521,7 +540,8 @@ $rule$,
 '会把副源尚未覆盖的历史全部报成缺失，那是噪声不是问题。'
 );
 
-INSERT OR REPLACE INTO dq_rules VALUES (
+INSERT OR REPLACE INTO dq_rules
+(rule_id, domain, name, description, sql_expr, severity, enabled, created_at, note) VALUES (
 'DQ-SRC-004', 'source', '标的未被副源覆盖',
 '自选股中的标的在副源完全查不到。不影响当前数据可用性，但这些标的失去了跨源校验能力',
 $rule$
@@ -543,7 +563,8 @@ $rule$,
 -- 数据没拉到，前面所有规则都会静默通过，所以这个域必须有
 ------------------------------------------------------------
 
-INSERT OR REPLACE INTO dq_rules VALUES (
+INSERT OR REPLACE INTO dq_rules
+(rule_id, domain, name, description, sql_expr, severity, enabled, created_at, note) VALUES (
 'DQ-OPS-001', 'ops', '采集作业未成功',
 '最近一轮采集中有标的的某个数据集返回失败或为空。数据没拉到时其他规则会静默通过，这是最危险的情况',
 $rule$
@@ -559,3 +580,75 @@ $rule$,
 'P0', true, DATE '2026-08-16',
 '监控系统自己也需要被监控。静默失败比报错更危险，因为看板照常显示，只是数字停在了昨天。首轮跑完发现 20 只标的两年内无任何公司行动被判为 empty 而误报，已排除该组合。采集层只记录事实，判断什么算异常是规则层的事。'
 );
+
+------------------------------------------------------------
+-- sys 域：系统自身的时效性
+-- 数据过期时，页面上其他所有结论都不可信，所以这个域排在展示的最前面
+------------------------------------------------------------
+
+INSERT OR REPLACE INTO dq_rules
+(rule_id, domain, name, description, sql_expr, severity, enabled, created_at, note) VALUES (
+'DQ-SYS-001', 'sys', '行情数据未按期更新',
+'某个市场的最新交易日落后当前日期超过阈值，并且采集链路本身也已停止运行。'
+'两个条件同时成立才命中，用来把「市场休市」和「管道故障」区分开',
+$rule$
+WITH last_trade AS (
+    SELECT w.market,
+           max(p.trade_date) AS last_date,
+           (SELECT count(*)
+              FROM generate_series(max(p.trade_date) + 1, CURRENT_DATE - 1, INTERVAL 1 DAY) g(d)
+             WHERE isodow(g.d::DATE) BETWEEN 1 AND 5) AS trade_gap
+    FROM price_primary p
+    JOIN ref_watchlist w ON w.symbol = p.symbol
+    WHERE NOT w.is_reference
+    GROUP BY w.market
+),
+last_run AS (
+    SELECT max(fetched_at)::DATE AS run_date,
+           (SELECT count(*)
+              FROM generate_series(max(fetched_at)::DATE + 1, CURRENT_DATE - 1, INTERVAL 1 DAY) g(d)
+             WHERE isodow(g.d::DATE) BETWEEN 1 AND 5) AS run_gap
+    FROM raw_fetch_log
+    WHERE status = 'ok'
+)
+SELECT t.market AS symbol,
+       t.last_date AS biz_date,
+       t.market || ' 最新交易日停在 ' || t.last_date::VARCHAR ||
+       '，已落后 ' || t.trade_gap::VARCHAR || ' 个工作日；' ||
+       '采集链路最后一次成功运行是 ' || r.run_date::VARCHAR ||
+       '，已停 ' || r.run_gap::VARCHAR || ' 个工作日。' ||
+       '本页其余全部结论均基于过期数据，在恢复采集前不可采信' AS detail
+FROM last_trade t
+CROSS JOIN last_run r
+WHERE t.trade_gap > 1
+  AND r.run_gap > 0
+$rule$,
+'P0', true, DATE '2026-08-19',
+'阈值取「最新交易日落后 > 1 个工作日」且「采集链路停跑 > 0 个工作日」，两个条件同时成立才命中。'
+'三处刻意设计：'
+'一、按工作日算不按自然日算。周五收盘到周一早上自然日差 3 天但工作日差 0 天，'
+'按自然日设阈值会导致每个周末必然误报。'
+'二、不计当日。当天的行情在收盘前本来就不存在，把当日计入会让每天早上都命中。'
+'三、不维护假期表，改用采集链路的运行记录做判别条件。'
+'港股农历新年连休 3 个交易日、复活节连休 2 天、美股感恩节圣诞节，'
+'这些日子最新交易日必然落后，单看交易日差一定误报，而且假期表每年都要人工更新、'
+'漏更一次就集体误报。市场休市时采集链路照常运行且成功，只是拿不到新的交易日，'
+'run_gap 为 0，规则不命中；只有管道真的停了 run_gap 才会大于 0。'
+'这样既不需要假期表，也能在漏跑一次的次日就发现。'
+'本规则建立时的实测：最新交易日 2026-08-14，当日 2026-08-19，'
+'trade_gap = 2（08-17、08-18 两个交易日缺失），run_gap = 1，两条件均满足，命中。'
+);
+
+------------------------------------------------------------
+-- 质量维度回填。domain 回答「查哪块数据」，dimension 回答「查的是哪种质量问题」。
+-- 分开写是因为两者正交，同一个 price 域里既有准确性规则也有及时性规则。
+------------------------------------------------------------
+
+UPDATE dq_rules SET dimension = '及时性'  WHERE rule_id IN ('DQ-SYS-001', 'DQ-OPS-001');
+UPDATE dq_rules SET dimension = '完整性'  WHERE rule_id IN
+    ('DQ-REF-001', 'DQ-FUN-001', 'DQ-FUN-002', 'DQ-PRC-004', 'DQ-PRC-005', 'DQ-SRC-004');
+UPDATE dq_rules SET dimension = '准确性'  WHERE rule_id IN
+    ('DQ-PRC-001', 'DQ-PRC-002', 'DQ-PRC-003', 'DQ-CA-001', 'DQ-CA-002', 'DQ-CA-003',
+     'DQ-CA-004', 'DQ-FUN-003', 'DQ-FUN-004');
+UPDATE dq_rules SET dimension = '一致性'  WHERE rule_id IN
+    ('DQ-REF-002', 'DQ-CRS-001', 'DQ-SRC-001', 'DQ-SRC-002', 'DQ-SRC-003');

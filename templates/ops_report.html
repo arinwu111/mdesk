@@ -21,15 +21,94 @@
     <div class="sub">异常条数 ÷ 行情行数</div></div>
 </div>
 
-<h2>二、异常按域分布</h2>
+<h2>二、跨期度量</h2>
+<div class="tiles">
+  <div class="tile"><div class="k">本期命中</div><div class="v">{{ m.o.n_hits }}</div>
+    <div class="sub">{% if m.prev %}上期 {{ m.prev.n_hits }}，{{ '%+d'|format(m.prev.d_hits) }}
+      {% else %}无上期快照，本次是第一期{% endif %}</div></div>
+  <div class="tile"><div class="k">已关闭</div><div class="v">{{ m.o.n_closed }}</div>
+    <div class="sub">explained {{ m.o.n_explained }} · fixed {{ m.o.n_fixed }}
+      · ignored {{ m.o.n_ignored }}</div></div>
+  <div class="tile"><div class="k">未关闭</div><div class="v">{{ m.o.n_open }}</div>
+    <div class="sub">{% if m.prev %}上期 {{ m.prev.n_open }}，{{ '%+d'|format(m.prev.d_open) }}
+      {% else %}待下期对比{% endif %}</div></div>
+  <div class="tile"><div class="k">平均关闭时长</div>
+    <div class="v">{% if m.o.avg_close_hrs is not none %}{{ '%.1f'|format(m.o.avg_close_hrs) }}
+      {% else %}—{% endif %}</div>
+    <div class="sub">{% if m.o.avg_close_hrs is not none %}小时，样本 {{ m.o.n_closed }} 条
+      {% else %}无已关闭记录{% endif %}</div></div>
+  <div class="tile"><div class="k">快照期数</div><div class="v">{{ m.history|length }}</div>
+    <div class="sub">每次跑管道留一期</div></div>
+</div>
+
+{% if m.history|length > 1 %}
+<h3>历史趋势</h3>
+<div class="scroll">
+<table>
+<thead><tr><th>快照日</th><th class="num">规则数</th><th class="num">累计命中</th>
+  <th class="num">未关闭</th><th class="num">已关闭</th></tr></thead>
+<tbody>
+{% for h in m.history %}
+<tr><td class="mono">{{ h.snapshot_id }}</td><td class="num">{{ h.n_rules }}</td>
+  <td class="num">{{ h.n_hits }}</td><td class="num">{{ h.n_open }}</td>
+  <td class="num">{{ h.n_closed }}</td></tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% else %}
+<div class="note gap">
+  <b>本期是第一期快照，跨期对比暂无数据。</b>
+  快照表 <span class="mono">dq_report_snapshot</span> 每跑一次管道留一行，
+  一天一行、同日重跑覆盖。定时任务从 2026-08-19 起每个工作日运行，
+  从第二期开始这一节会出现环比数字与趋势表。
+</div>
+{% endif %}
+
+<h3>按规则的误报率</h3>
+<div class="scroll">
+<table>
+<thead><tr><th>规则</th><th>名称</th><th>级别</th><th class="num">命中</th>
+  <th class="num">已判定</th><th class="num">explained</th><th class="num">fixed</th>
+  <th class="num">ignored</th><th class="num">误报率</th><th>说明</th></tr></thead>
+<tbody>
+{% for r in m.by_rule %}
+<tr>
+  <td class="mono">{{ r.rule_id }}</td>
+  <td>{{ r.name }}</td>
+  <td><span class="sev {{ r.severity }}">{{ r.severity }}</span></td>
+  <td class="num">{{ r.n }}</td>
+  <td class="num">{{ r.judged }}</td>
+  <td class="num dim">{{ r.n_explained }}</td>
+  <td class="num dim">{{ r.n_fixed }}</td>
+  <td class="num dim">{{ r.n_ignored }}</td>
+  <td class="num">{% if r.fp_rate is not none %}{{ '%.0f'|format(r.fp_rate) }}%
+    {% else %}不可计算{% endif %}</td>
+  <td class="dim wide">{{ r.fp_note }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+<figcaption>
+  <b>误报率的分子只取 ignored，不含 explained。</b>
+  status 里三个「已判定」取值含义不同：explained 是规则报对了、问题真实存在、根因已查明；
+  fixed 是规则报对了、数据已直接修正；只有 ignored 才是规则报错了。
+  阿里那笔派息复权错误的状态是 explained，规则报得完全正确，数据真的算错了，
+  把它算进误报率会把这个项目最有价值的一次发现标记成规则的失误。<br>
+  分母是已判定数，不含 open。未判定的命中进分母等于把「还没来得及看」算成「规则准」。
+  已判定数不足 {{ m.min_sample }} 条的规则不给比率，样本太少算出来没有意义。
+</figcaption>
+
+<h2>三、异常按域分布</h2>
 {{ domain_chart }}
 <figcaption>横轴为异常条数。域的划分对应规则库的分组。</figcaption>
 
-<h2>三、异常按标的分布</h2>
+<h2>四、异常按标的分布</h2>
 {{ symbol_chart }}
 <figcaption>只列出有异常命中的标的，横轴为异常条数。</figcaption>
 
-<h2>四、本期重点问题</h2>
+<h2>五、本期重点问题</h2>
 {% for f in findings %}
 <div class="card">
   <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
@@ -41,7 +120,7 @@
 </div>
 {% endfor %}
 
-<h2>五、规则迭代记录</h2>
+<h2>六、规则迭代记录</h2>
 <div class="scroll">
 <table>
 <thead><tr><th>规则</th><th>名称</th><th>级别</th><th class="num">本期命中</th><th>迭代说明</th></tr></thead>
@@ -59,7 +138,7 @@
 </table>
 </div>
 
-<h2>六、已知缺口与下期计划</h2>
+<h2>七、已知缺口与下期计划</h2>
 <div class="card">
 <ol style="margin:0;padding-left:20px;color:var(--ink-2)">
 {% for g in gaps %}<li style="margin-bottom:8px">{{ g | safe }}</li>{% endfor %}

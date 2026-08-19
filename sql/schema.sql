@@ -148,6 +148,11 @@ CREATE TABLE IF NOT EXISTS dq_rules (
     note        VARCHAR    -- 为什么加这条规则，来自哪次事故。别省，这是项目的演进史
 );
 
+-- 质量维度。domain 回答「查哪块数据」，dimension 回答「查的是哪种质量问题」，
+-- 两者正交：同一个 price 域里既有准确性规则也有及时性规则。
+-- 取值：完整性 / 准确性 / 一致性 / 及时性 / 合规性
+ALTER TABLE dq_rules ADD COLUMN IF NOT EXISTS dimension VARCHAR;
+
 -- 命中记录。重跑幂等：同一条命中只更新 last_seen，人工填的处理意见永不被覆盖
 CREATE TABLE IF NOT EXISTS dq_results (
     result_id     VARCHAR PRIMARY KEY,  -- md5(rule_id|symbol|biz_date)
@@ -198,4 +203,25 @@ CREATE TABLE IF NOT EXISTS mart_watchlist_snapshot (
     pb            DOUBLE,
     dq_badge      VARCHAR,   -- ok 灰 / explained 黄 / open 红
     dq_summary    VARCHAR    -- 角标点开看到的话，如「今日 -48% 来自 1 合 5」
+);
+
+------------------------------------------------------------
+-- 运营报告快照。每跑一次留一行，用来做跨期对比。
+-- 不存进 dq_results 是因为那张表是「命中明细」，这张是「期末汇总」，
+-- 明细会被规则调整改写，汇总必须冻结在当时的口径上才有对比意义。
+------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS dq_report_snapshot (
+    snapshot_id   VARCHAR PRIMARY KEY,   -- 快照日期，一天一行，重跑覆盖当天
+    taken_at      TIMESTAMP,
+    data_date     DATE,                  -- 快照对应的最新交易日
+    n_rules       BIGINT,
+    n_hits        BIGINT,                -- 累计命中总数
+    n_open        BIGINT,
+    n_closed      BIGINT,                -- explained + fixed + ignored
+    n_explained   BIGINT,
+    n_fixed       BIGINT,
+    n_ignored     BIGINT,
+    avg_close_hrs DOUBLE,                -- 平均关闭时长，小时
+    n_price_rows  BIGINT
 );
