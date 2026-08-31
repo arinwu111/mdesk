@@ -58,7 +58,7 @@
 
 <h1>规则评估</h1>
 <p class="lede">
-  报告期 2024-08-19 至 2026-08-19（首期，覆盖全部采集窗口）　共监控 35 只标的、22 条校验规则。
+  报告期 2024-08-28 至 2026-08-28（首期，覆盖全部采集窗口）　共监控 35 只标的、22 条校验规则。
   本报告由系统自动汇总，结论与改进建议部分需要人工补充。
 </p>
 
@@ -66,13 +66,13 @@
 <div class="tiles">
   <div class="tile"><div class="k">采集成功率</div><div class="v">100%</div>
     <div class="sub">35/35 个数据集</div></div>
-  <div class="tile"><div class="k">行情数据量</div><div class="v">19,261</div>
+  <div class="tile"><div class="k">行情数据量</div><div class="v">19,329</div>
     <div class="sub">日线行数</div></div>
-  <div class="tile"><div class="k">公司行动</div><div class="v">117</div>
+  <div class="tile"><div class="k">公司行动</div><div class="v">119</div>
     <div class="sub">近两年</div></div>
-  <div class="tile"><div class="k">异常总数</div><div class="v">52</div>
-    <div class="sub">P0 5 · P1 33 · P2 14</div></div>
-  <div class="tile"><div class="k">异常率</div><div class="v">0.270%</div>
+  <div class="tile"><div class="k">异常总数</div><div class="v">45</div>
+    <div class="sub">P0 3 · P1 29 · P2 13</div></div>
+  <div class="tile"><div class="k">异常率</div><div class="v">0.233%</div>
     <div class="sub">异常条数 ÷ 行情行数</div></div>
 </div>
 
@@ -88,9 +88,9 @@
     <div class="sub">上期 41，+0
       </div></div>
   <div class="tile"><div class="k">平均关闭时长</div>
-    <div class="v">24.9
+    <div class="v">-297.4
       </div>
-    <div class="sub">小时，样本 11 条
+    <div class="sub">小时，样本 4 条
       </div></div>
   <div class="tile"><div class="k">快照期数</div><div class="v">1</div>
     <div class="sub">每次跑管道留一期</div></div>
@@ -127,9 +127,9 @@
 </tr>
 
 <tr>
-  <td class="mono">DQ-FUN-004</td>
-  <td>净资产为负或市销率异常</td>
-  <td><span class="sev P1">P1</span></td>
+  <td class="mono">DQ-PRC-004</td>
+  <td>交易日序列断档</td>
+  <td><span class="sev P2">P2</span></td>
   <td class="num">6</td>
   <td class="num">0</td>
   <td class="num dim">0</td>
@@ -153,19 +153,6 @@
 </tr>
 
 <tr>
-  <td class="mono">DQ-PRC-004</td>
-  <td>交易日序列断档</td>
-  <td><span class="sev P2">P2</span></td>
-  <td class="num">6</td>
-  <td class="num">0</td>
-  <td class="num dim">0</td>
-  <td class="num dim">0</td>
-  <td class="num dim">0</td>
-  <td class="num">不可计算</td>
-  <td class="dim wide">已判定 0 条，不足 5 条，不给比率</td>
-</tr>
-
-<tr>
   <td class="mono">DQ-CA-001</td>
   <td>数据源派息金额与其复权价不自洽</td>
   <td><span class="sev P0">P0</span></td>
@@ -179,8 +166,8 @@
 </tr>
 
 <tr>
-  <td class="mono">DQ-CA-004</td>
-  <td>自算复权序列整体偏离</td>
+  <td class="mono">DQ-FUN-004</td>
+  <td>净资产为负或市销率异常</td>
   <td><span class="sev P1">P1</span></td>
   <td class="num">2</td>
   <td class="num">1</td>
@@ -302,7 +289,7 @@
   <td class="mono">DQ-CA-004</td>
   <td>自算复权序列整体偏离</td>
   <td><span class="sev P1">P1</span></td>
-  <td class="num">2</td>
+  <td class="num">1</td>
   <td class="wide dim">从 DQ-CA-001 拆出来的。根因和影响范围要分开报：根因一条，用于定位和修复；影响范围一条，用于判断这只标的的历史数据还能不能用。</td>
 </tr>
 
@@ -334,7 +321,7 @@
   <td class="mono">DQ-FUN-003</td>
   <td>估值指标极端值</td>
   <td><span class="sev P2">P2</span></td>
-  <td class="num">2</td>
+  <td class="num">1</td>
   <td class="wide dim">微利公司的 PE 天然会很大，所以定 P2。真正要防的是分母单位错位，比如把千元当成元。</td>
 </tr>
 
@@ -342,7 +329,7 @@
   <td class="mono">DQ-FUN-004</td>
   <td>净资产为负或市销率异常</td>
   <td><span class="sev P1">P1</span></td>
-  <td class="num">6</td>
+  <td class="num">3</td>
   <td class="wide dim">建个股页的关键指标面板时发现智谱 PB 为 -54.32、PS 为 816，现有规则一条都没命中——DQ-FUN-003 只查了 PE 和 PB 的上限，没查负值，等于默认接受了净资产为负这种情况。负 PB 对刚上市的科技公司可能是可转换优先股会计处理的正常结果，也可能是真的资不抵债，两种情况的含义天差地别，必须人工确认一次。这条规则是「先做界面、再发现规则漏洞」的例子。</td>
 </tr>
 
@@ -446,7 +433,7 @@
   <td class="mono">DQ-SYS-001</td>
   <td>行情数据未按期更新</td>
   <td><span class="sev P0">P0</span></td>
-  <td class="num">2</td>
+  <td class="num">0</td>
   <td class="wide dim">阈值取「最新交易日落后 &gt; 1 个工作日」且「采集链路停跑 &gt; 0 个工作日」，两个条件同时成立才命中。三处刻意设计：一、按工作日算不按自然日算。周五收盘到周一早上自然日差 3 天但工作日差 0 天，按自然日设阈值会导致每个周末必然误报。二、不计当日。当天的行情在收盘前本来就不存在，把当日计入会让每天早上都命中。三、不维护假期表，改用采集链路的运行记录做判别条件。港股农历新年连休 3 个交易日、复活节连休 2 天、美股感恩节圣诞节，这些日子最新交易日必然落后，单看交易日差一定误报，而且假期表每年都要人工更新、漏更一次就集体误报。市场休市时采集链路照常运行且成功，只是拿不到新的交易日，run_gap 为 0，规则不命中；只有管道真的停了 run_gap 才会大于 0。这样既不需要假期表，也能在漏跑一次的次日就发现。本规则建立时的实测：最新交易日 2026-08-14，当日 2026-08-19，trade_gap = 2（08-17、08-18 两个交易日缺失），run_gap = 1，两条件均满足，命中。</td>
 </tr>
 
