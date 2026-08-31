@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block body %}
 
-<h1>规则库</h1>
+<h1>规则说明</h1>
 <p class="lede">
   规则是数据不是代码。每条规则以一段 SQL 存在库里，加一条规则等于插一行，不需要改程序。
   每条都带一段来历说明，记录它为什么存在、从哪次问题里长出来的。
@@ -15,7 +15,7 @@
   <div class="tile"><div class="k">覆盖域</div><div class="v">{{ stats.domains }}</div>
     <div class="sub">{{ stats.domain_list }}</div></div>
   <div class="tile"><div class="k">P0 规则</div><div class="v">{{ stats.p0 }}</div>
-    <div class="sub">命中即当场处理</div></div>
+    <div class="sub">命中时阻断相关数字</div></div>
 </div>
 
 {% for domain, label in domain_labels %}

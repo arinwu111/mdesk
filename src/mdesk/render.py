@@ -1,5 +1,6 @@
 """渲染静态站。页面只读 mart 层和 dq 层，不碰 raw。"""
 
+import json
 import math
 import shutil
 import statistics
@@ -183,20 +184,122 @@ def page_index(con) -> dict:
             "n_sectors": n_sectors, "eg": eg}
 
 
+def _signal_rows(con) -> list[dict]:
+    """把行情变化翻译成个人需要关注的信号，不把它们包装成交易建议。"""
+    vols = _volatility(con)
+    rows = []
+    snapshots = con.execute(
+        """
+        SELECT symbol, display_code, name, market, sector, trade_date, close,
+               currency, dq_badge, dq_summary
+        FROM mart_watchlist_snapshot
+        ORDER BY market, symbol
+        """
+    ).fetchall()
+
+    for sym, code, name, market, sector, trade_date, close, cur, badge, dq_summary in snapshots:
+        history = con.execute(
+            """
+            SELECT trade_date, close, volume
+            FROM price_primary
+            WHERE symbol = ? AND close > 0
+            ORDER BY trade_date DESC LIMIT 61
+            """, [sym]
+        ).fetchall()
+        if not history:
+            continue
+
+        latest = history[0][1]
+
+        def ret_at(i):
+            return ((latest / history[i][1] - 1) * 100
+                    if len(history) > i and history[i][1] else None)
+
+        ret_1 = ret_at(1)
+        ret_20 = ret_at(20)
+        ret_60 = ret_at(60)
+        prior_vols = [r[2] for r in history[1:21] if r[2] and r[2] > 0]
+        vol_ratio = ((history[0][2] / statistics.mean(prior_vols))
+                     if history[0][2] and prior_vols else None)
+        jump_line = _threshold(vols.get(sym))
+
+        triggers = []
+        if ret_60 is not None and abs(ret_60) >= 20:
+            triggers.append({
+                "kind": "basis", "label": "基期 ±20%",
+                "detail": f"较 60 个交易日前{('上涨' if ret_60 > 0 else '下跌')} {abs(ret_60):.1f}%",
+            })
+        if ret_1 is not None and jump_line and abs(ret_1) >= jump_line:
+            triggers.append({
+                "kind": "jump", "label": "单日跳动",
+                "detail": f"单日 {ret_1:+.1f}%，超过自身关注线 ±{jump_line:.1f}%",
+            })
+        if vol_ratio is not None and vol_ratio >= 2:
+            triggers.append({
+                "kind": "volume", "label": "成交放大",
+                "detail": f"成交量为前 20 日均量的 {vol_ratio:.1f} 倍",
+            })
+
+        data_attention = badge == "open"
+        rows.append({
+            "symbol": sym, "slug": slug(sym), "display_code": code, "name": name,
+            "market": market, "market_label": MARKET_LABEL.get(market, market),
+            "sector": sector, "trade_date": str(trade_date), "currency": cur or "",
+            "close": close, "close_fmt": num(close, 3),
+            "ret_1": ret_1, "ret_1_fmt": pct(ret_1), "ret_1_dir": direction(ret_1),
+            "ret_20": ret_20, "ret_20_fmt": pct(ret_20), "ret_20_dir": direction(ret_20),
+            "ret_60": ret_60, "ret_60_fmt": pct(ret_60), "ret_60_dir": direction(ret_60),
+            "vol_ratio": vol_ratio, "vol_ratio_fmt": f"{vol_ratio:.1f}×" if vol_ratio else "—",
+            "jump_line": jump_line, "jump_line_fmt": f"±{jump_line:.1f}%" if jump_line else "—",
+            "triggers": triggers, "active": bool(triggers),
+            "trigger_text": "；".join(t["detail"] for t in triggers),
+            "trigger_labels": " / ".join(t["label"] for t in triggers),
+            "data_attention": data_attention, "dq_summary": dq_summary or "",
+            "badge": badge, "badge_label": BADGE_LABEL.get(badge, badge),
+            "priority": 2 if any(t["kind"] in ("basis", "jump") for t in triggers)
+                        else 1 if triggers else 0,
+        })
+
+    rows.sort(key=lambda r: (
+        -r["priority"], -abs(r["ret_60"] or 0), -abs(r["ret_1"] or 0), r["symbol"]
+    ))
+    return rows
+
+
+def _plan_quotes(rows) -> Markup:
+    payload = [{
+        "symbol": r["symbol"], "code": r["display_code"], "name": r["name"],
+        "slug": r["slug"], "close": r["close"], "currency": r["currency"],
+        "ret20": r["ret_20"], "ret60": r["ret_60"], "tradeDate": r["trade_date"],
+    } for r in rows]
+    return Markup(json.dumps(payload, ensure_ascii=False).replace("</", "<\\/"))
+
+
+def page_signals(con) -> dict:
+    rows = _signal_rows(con)
+    active = [r for r in rows if r["active"]]
+    return {"signals": {
+        "rows": rows, "active": active,
+        "n_active": len(active),
+        "n_basis": sum(any(t["kind"] == "basis" for t in r["triggers"]) for r in rows),
+        "n_jump": sum(any(t["kind"] == "jump" for t in r["triggers"]) for r in rows),
+        "n_volume": sum(any(t["kind"] == "volume" for t in r["triggers"]) for r in rows),
+        "n_data": sum(r["data_attention"] for r in rows),
+    }}
+
+
+def page_plans(con) -> dict:
+    rows = _signal_rows(con)
+    return {"quotes_json": _plan_quotes(rows), "plan_symbols": rows}
+
+
 def page_home(con, meta) -> dict:
-    """总览首页。只回答一个问题：现在有没有需要动手的事。"""
+    """首页是行动入口：信号、个人计划、临近事件，数据校验只做可信度提示。"""
     today = datetime.now().date()
     hour = datetime.now().hour
     greeting = ("早上好。" if hour < 11 else "下午好。" if hour < 18 else "晚上好。")
-
-    # 不加 limit。这一页的定位是「有没有需要动手的事」，
-    # 截断待办清单等于把该动手的事藏起来，与页面存在的理由直接冲突。
-    todo = _results(con, "WHERE r.status = 'open' AND r.severity IN ('P0','P1')")
-
-    # 时效性告警单独取出并置顶。数据本身过期时，页面上其余全部结论都建立在
-    # 过期数据上，任何个股异常的优先级都低于它。
-    blockers = _results(con, "WHERE r.status = 'open' AND r.rule_id = 'DQ-SYS-001'")
-    todo = [t for t in todo if t["rule_id"] != "DQ-SYS-001"]
+    rows = _signal_rows(con)
+    active = [r for r in rows if r["active"]][:12]
 
     soon = []
     for sym, code, name, ed, etype, title in con.execute(
@@ -214,68 +317,22 @@ def page_home(con, meta) -> dict:
             "type_label": EVENT_LABEL.get(etype, etype), "title": title,
         })
 
-    # 按角标严重度排序，异常项全部展开，只有无异常的标的允许折叠。
-    # 原实现取涨跌幅前四后四、中间省略，结果是带红黄角标的标的可能正好落在
-    # 被省略的那一段里，页面看起来干净但该动手的事看不到。
-    markets = []
-    for mk, label in (("HK", "港股"), ("US", "美股")):
-        rs = con.execute(
-            """
-            SELECT symbol, name, sector, change_pct, trade_date, dq_badge, dq_summary
-            FROM mart_watchlist_snapshot
-            WHERE market = ? AND change_pct IS NOT NULL
-            ORDER BY CASE dq_badge WHEN 'open' THEN 0 WHEN 'explained' THEN 1 ELSE 2 END,
-                     abs(change_pct) DESC
-            """, [mk]).fetchall()
-        if not rs:
-            continue
-
-        def fmt(r):
-            return {"slug": slug(r[0]), "name": r[1], "sector": r[2],
-                    "change_fmt": pct(r[3]), "dir": direction(r[3]),
-                    "badge": r[5], "badge_label": BADGE_LABEL.get(r[5], ""),
-                    "summary": r[6]}
-
-        flagged = [r for r in rs if r[5] in ("open", "explained")]
-        clean = [r for r in rs if r[5] not in ("open", "explained")]
-        markets.append({
-            "label": label, "n": len(rs), "trade_date": rs[0][4],
-            "n_up": sum(1 for r in rs if r[3] > 0),
-            "n_down": sum(1 for r in rs if r[3] < 0),
-            "flagged": [fmt(r) for r in flagged],
-            "clean": [fmt(r) for r in clean],
-            "n_flagged": len(flagged), "n_clean": len(clean),
-        })
-
+    blockers = _results(con, "WHERE r.status = 'open' AND r.rule_id = 'DQ-SYS-001'")
+    data_attention = [r for r in rows if r["data_attention"]]
     fail = con.execute(
         "SELECT count(*) FROM raw_fetch_log WHERE run_id = (SELECT max(run_id) "
         "FROM raw_fetch_log) AND status = 'error'").fetchone()[0]
-    # 时效性口径统一由 DQ-SYS-001 判定，这里只取它有没有命中，
-    # 不再自己按自然日算一遍，避免两处阈值各自漂移。
-    stale_days = con.execute(
-        """
-        SELECT count(*) FROM generate_series(
-                 (SELECT max(trade_date) FROM price_primary) + 1,
-                 CURRENT_DATE - 1, INTERVAL 1 DAY) g(d)
-        WHERE isodow(g.d::DATE) BETWEEN 1 AND 5
-        """).fetchone()[0]
 
     return {"home": {
-        "greeting": greeting,
-        "p0": con.execute("SELECT count(*) FROM dq_results WHERE status = 'open' "
-                          "AND severity = 'P0'").fetchone()[0],
-        "p1": con.execute("SELECT count(*) FROM dq_results WHERE status = 'open' "
-                          "AND severity = 'P1'").fetchone()[0],
-        "n_ok": con.execute("SELECT count(*) FROM mart_watchlist_snapshot "
-                            "WHERE dq_badge <> 'open'").fetchone()[0],
-        "n_soon": sum(1 for e in soon if e["days"] <= 3),
-        "todo": todo, "soon": soon, "markets": markets,
+        "greeting": greeting, "active": active, "soon": soon,
+        "n_active": len([r for r in rows if r["active"]]),
+        "n_soon": sum(1 for e in soon if e["days"] <= 7),
+        "n_basis": sum(any(t["kind"] == "basis" for t in r["triggers"]) for r in rows),
+        "n_data": len(data_attention), "data_attention": data_attention[:5],
         "blockers": blockers,
-        "fetch_label": ("过期" if blockers else "正常" if fail == 0 else f"{fail} 项失败"),
-        "fetch_sub": (f"最新交易日落后 {stale_days} 个工作日" if blockers
-                      else "最近一轮全部成功" if fail == 0
-                      else "见异常清单 DQ-OPS-001"),
-    }}
+        "fetch_label": "需确认" if blockers or fail else "可用",
+        "fetch_sub": "存在时效或采集问题" if blockers or fail else "最近一轮采集无失败",
+    }, "quotes_json": _plan_quotes(rows)}
 
 
 def _actions_for(con, symbol):
@@ -462,7 +519,7 @@ def page_stock(con, symbol, vols_all=None) -> dict:
         })
 
     return {"s": {
-        "symbol": symbol, "display_code": code, "name": name, "sector": sector,
+        "symbol": symbol, "slug": slug(symbol), "display_code": code, "name": name, "sector": sector,
         "market_label": MARKET_LABEL.get(market, market),
         "type_label": TYPE_LABEL.get(itype, itype),
         "case_note": case_note if (is_case or is_ref) else "",
@@ -930,7 +987,11 @@ def render_site() -> None:
             encoding="utf-8")
 
     write("home.html", "index.html", "home", "",
-          {"title": "总览", **page_home(con, meta)})
+          {"title": "今日行动", **page_home(con, meta)})
+    write("signals.html", "signals.html", "signals", "",
+          {"title": "关注信号", **page_signals(con)})
+    write("plans.html", "plans.html", "plans", "",
+          {"title": "我的计划", **page_plans(con)})
     write("index.html", "watchlist.html", "index", "",
           {"title": "自选股", **page_index(con)})
     write("calendar.html", "calendar.html", "calendar", "",
@@ -938,16 +999,19 @@ def render_site() -> None:
     write("newlisting.html", "ops/coverage.html", "newlisting", "../",
           {"title": "数据覆盖", **page_newlisting(con)})
 
+    write("role_transfer.html", "role-transfer.html", "role", "",
+          {"title": "能力迁移"})
+
     write("ops_index.html", "ops/index.html", "ops", "../",
-          {"title": "异常清单", **page_ops_index(con)})
+          {"title": "数据校验", **page_ops_index(con)})
     write("ops_corpaction.html", "ops/corpaction.html", "corpaction", "../",
-          {"title": "复权核对", **page_corpaction(con)})
+          {"title": "复权逻辑", **page_corpaction(con)})
     write("ops_rules.html", "ops/rules.html", "rules", "../",
-          {"title": "规则库", **page_rules(con)})
+          {"title": "规则说明", **page_rules(con)})
     write("ops_ledger.html", "ops/ledger.html", "ledger", "../",
-          {"title": "处理台账", **page_ledger(con)})
+          {"title": "调查记录", **page_ledger(con)})
     write("ops_report.html", "ops/report.html", "report", "../",
-          {"title": "运营报告", **page_report(con, meta)})
+          {"title": "规则评估", **page_report(con, meta)})
 
     # 对照标的也生成页面：复权核对页会链接到 BABA、汇丰港股这些，它们正是关键发现的对照组
     symbols = [s for s, in con.execute("SELECT symbol FROM ref_watchlist").fetchall()]
@@ -959,7 +1023,7 @@ def render_site() -> None:
 
     n = len(list(site.rglob("*.html")))
     print(f"站点已生成：{site}")
-    print(f"  {n} 个页面（8 个主页面 + {len(symbols)} 个个股页）")
+    print(f"  {n} 个页面（12 个主页面 + {len(symbols)} 个个股页）")
     print(f"  数据截至 {meta['data_date']}，未处理异常 {meta['n_open']} 条，其中 P0 {meta['n_p0']} 条")
     con.close()
 

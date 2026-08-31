@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block body %}
 
-<h1>数据质量运营报告</h1>
+<h1>规则评估</h1>
 <p class="lede">
   报告期 {{ period }}　共监控 {{ meta.n_symbols }} 只标的、{{ meta.n_rules }} 条校验规则。
   本报告由系统自动汇总，结论与改进建议部分需要人工补充。
@@ -102,7 +102,7 @@
 
 <h2>三、异常按域分布</h2>
 {{ domain_chart }}
-<figcaption>横轴为异常条数。域的划分对应规则库的分组。</figcaption>
+<figcaption>横轴为命中条数。域的划分对应规则说明的分组。</figcaption>
 
 <h2>四、异常按标的分布</h2>
 {{ symbol_chart }}

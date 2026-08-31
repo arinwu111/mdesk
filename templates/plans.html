@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block body %}
+
+<h1>我的计划</h1>
+<p class="lede">
+  先写下条件，再等市场触发。系统不会自动推荐交易；“考虑买入”或“考虑减仓”只会来自你自己保存的计划。
+  计划保存在当前浏览器，不会上传，也不会写进公开仓库。
+</p>
+
+<div class="plan-layout">
+  <form id="plan-form" class="card plan-form">
+    <h2>新建计划</h2>
+    <label>标的<select id="plan-symbol" required>{% for r in plan_symbols %}<option value="{{ r.symbol }}">{{ r.name }} · {{ r.display_code }}</option>{% endfor %}</select></label>
+    <div id="quote-preview" class="quote-preview"><b>{{ plan_symbols[0].close_fmt }} {{ plan_symbols[0].currency }}</b><span>60 日 {{ plan_symbols[0].ret_60_fmt }} · {{ plan_symbols[0].trade_date }}</span></div>
+    <label>触发条件<select id="plan-condition" required>
+      <option value="price_lte">价格小于或等于</option>
+      <option value="price_gte">价格大于或等于</option>
+      <option value="ret60_lte">60 日涨跌小于或等于</option>
+      <option value="ret60_gte">60 日涨跌大于或等于</option>
+    </select></label>
+    <label>条件值<input id="plan-value" type="number" step="0.01" required><small id="value-hint">填写价格</small></label>
+    <label>触发后提醒我<select id="plan-intent" required>
+      <option>重新评估</option><option>考虑买入</option><option>考虑减仓</option><option>检查风险</option><option>阅读材料</option>
+    </select></label>
+    <label>当时的理由<textarea id="plan-reason" rows="3" placeholder="例如：估值进入我的观察区间，但仍需确认下一季利润率"></textarea></label>
+    <button class="primary-button" type="submit">保存计划</button>
+    <p id="plan-message" class="form-message" aria-live="polite"></p>
+  </form>
+
+  <div class="plan-list-panel">
+    <div class="section-head plan-head"><div><h2>已保存计划</h2><p id="plan-summary">0 条</p></div></div>
+    <div id="plan-list" class="plan-list"></div>
+    <div id="plan-empty" class="empty-state"><b>还没有计划</b><span>从左侧选一只真正关注的股票，写下你愿意事后复盘的条件。</span></div>
+  </div>
+</div>
+
+<div class="note gap">
+  <b>边界</b>：价格达到某个数字，只代表原计划到了重新评估的时点。真正行动前仍需检查事件、数据可信度、仓位与原判断是否仍成立。
+</div>
+
+<script>
+(function () {
+  const quotes = {{ quotes_json }};
+  const bySymbol = Object.fromEntries(quotes.map(q => [q.symbol, q]));
+  const key = 'mdesk-decision-plans-v1';
+  const form = document.getElementById('plan-form');
+  const symbol = document.getElementById('plan-symbol');
+  const condition = document.getElementById('plan-condition');
+  const value = document.getElementById('plan-value');
+  const intent = document.getElementById('plan-intent');
+  const reason = document.getElementById('plan-reason');
+  const preview = document.getElementById('quote-preview');
+  const hint = document.getElementById('value-hint');
+  const list = document.getElementById('plan-list');
+  const empty = document.getElementById('plan-empty');
+  const summary = document.getElementById('plan-summary');
+  const message = document.getElementById('plan-message');
+  let plans = [];
+  try { plans = JSON.parse(localStorage.getItem(key) || '[]'); } catch (_) {}
+
+  const labels = {price_lte:'价格 ≤', price_gte:'价格 ≥', ret60_lte:'60 日涨跌 ≤', ret60_gte:'60 日涨跌 ≥'};
+  const isReturn = c => c.startsWith('ret60');
+  const triggered = (p, q) => {
+    if (!q) return false;
+    if (p.condition === 'price_lte') return q.close <= p.value;
+    if (p.condition === 'price_gte') return q.close >= p.value;
+    if (p.condition === 'ret60_lte') return q.ret60 != null && q.ret60 <= p.value;
+    return q.ret60 != null && q.ret60 >= p.value;
+  };
+  const escapeHtml = s => String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  function save() {
+    try { localStorage.setItem(key, JSON.stringify(plans)); return true; }
+    catch (_) { message.textContent = '当前浏览器不允许本地保存；本次页面内仍可使用。'; return false; }
+  }
+  function updatePreview() {
+    const q = bySymbol[symbol.value];
+    preview.innerHTML = q ? `<b>${q.close.toFixed(2)} ${q.currency}</b><span>60 日 ${q.ret60 == null ? '—' : (q.ret60 >= 0 ? '+' : '') + q.ret60.toFixed(2) + '%'} · ${q.tradeDate}</span>` : '';
+    hint.textContent = isReturn(condition.value) ? '填写百分比，例如 -20 或 20' : '填写价格';
+  }
+  function render() {
+    summary.textContent = `${plans.length} 条，其中 ${plans.filter(p => triggered(p, bySymbol[p.symbol])).length} 条已触发`;
+    empty.hidden = plans.length > 0;
+    list.innerHTML = plans.map(p => {
+      const q = bySymbol[p.symbol];
+      const hit = triggered(p, q);
+      const suffix = isReturn(p.condition) ? '%' : ` ${q ? q.currency : ''}`;
+      return `<article class="plan-card ${hit ? 'is-triggered' : ''}">
+        <div class="plan-status">${hit ? '已触发' : '等待中'}</div>
+        <h3>${escapeHtml(q ? q.name : p.symbol)} <span>${escapeHtml(q ? q.code : p.symbol)}</span></h3>
+        <div class="plan-condition">${labels[p.condition]} <b>${Number(p.value).toFixed(2)}${suffix}</b></div>
+        <div class="plan-intent">触发后：${escapeHtml(p.intent)}</div>
+        ${p.reason ? `<p>${escapeHtml(p.reason)}</p>` : ''}
+        <div class="plan-meta">当前 ${q ? q.close.toFixed(2) + ' ' + q.currency : '无行情'} · 创建于 ${escapeHtml(p.createdAt)}</div>
+        <button type="button" class="quiet-button" data-delete="${escapeHtml(p.id)}">删除</button>
+      </article>`;
+    }).join('');
+  }
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    plans.unshift({id: String(Date.now()), symbol:symbol.value, condition:condition.value, value:Number(value.value), intent:intent.value, reason:reason.value.trim(), createdAt:new Date().toLocaleDateString('zh-CN')});
+    const saved = save(); render(); form.reset(); updatePreview();
+    if (saved) message.textContent = '计划已保存在当前浏览器。';
+  });
+  list.addEventListener('click', e => {
+    const id = e.target.dataset.delete;
+    if (!id) return;
+    plans = plans.filter(p => p.id !== id); save(); render();
+  });
+  symbol.addEventListener('change', updatePreview);
+  condition.addEventListener('change', updatePreview);
+  const initial = new URLSearchParams(location.search).get('symbol');
+  if (initial && bySymbol[initial]) symbol.value = initial;
+  updatePreview(); render();
+})();
+</script>
+
+{% endblock %}

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>今日行动 · mdesk</title>
+<title>我的计划 · mdesk</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232a78d6'/%3E%3Cpath d='M6 21.5 L12 14 L17 18.5 L26 8.5' fill='none' stroke='white' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="static/style.css">
 <style>
@@ -32,10 +32,10 @@
   </div>
   <nav class="tabs">
     <span class="group-label">关注</span>
-    <a href="index.html"       class="on">今日行动</a>
+    <a href="index.html"       class="">今日行动</a>
     <a href="calendar.html"    class="">事件</a>
     <a href="signals.html"     class="">信号</a>
-    <a href="plans.html"       class="">计划</a>
+    <a href="plans.html"       class="on">计划</a>
     <a href="watchlist.html"   class="">自选股</a>
     <span class="sep"></span>
     <a href="ops/index.html" class="">数据后台</a>
@@ -47,156 +47,116 @@
 <div class="wrap">
 
 
-<h1>今天该关注什么</h1>
+<h1>我的计划</h1>
 <p class="lede">
-  下午好。　数据截至 2026-08-19。
-  这里把事件、价格信号和你预先写下的计划放在一起。它只提醒你重新判断，不替你做买卖决定。
+  先写下条件，再等市场触发。系统不会自动推荐交易；“考虑买入”或“考虑减仓”只会来自你自己保存的计划。
+  计划保存在当前浏览器，不会上传，也不会写进公开仓库。
 </p>
 
+<div class="plan-layout">
+  <form id="plan-form" class="card plan-form">
+    <h2>新建计划</h2>
+    <label>标的<select id="plan-symbol" required><option value="CRCL">Circle · US CRCL</option><option value="OKLO">Oklo · US OKLO</option><option value="9880.HK">优必选 · HK 09880</option><option value="9868.HK">小鹏汽车-W · HK 09868</option><option value="IONQ">IonQ · US IONQ</option><option value="GE">GE Aerospace · US GE</option><option value="2513.HK">智谱 · HK 02513</option><option value="HOOD">Robinhood · US HOOD</option><option value="TSLA">特斯拉 · US TSLA</option><option value="1347.HK">华虹半导体 · HK 01347</option><option value="ASML">阿斯麦 · US ASML</option><option value="NBIS">Nebius · US NBIS</option><option value="HSBC">汇丰控股 · US HSBC</option><option value="0981.HK">中芯国际 · HK 00981</option><option value="GOOGL">谷歌-A · US GOOGL</option><option value="1276.HK">恒瑞医药 · HK 01276</option><option value="PDD">拼多多 · US PDD</option><option value="LITE">Lumentum · US LITE</option><option value="0300.HK">美的集团 · HK 00300</option><option value="AMD">AMD · US AMD</option><option value="0857.HK">中国石油股份 · HK 00857</option><option value="EL">雅诗兰黛 · US EL</option><option value="SNDK">闪迪 · US SNDK</option><option value="2259.HK">紫金黄金国际 · HK 02259</option><option value="9988.HK">阿里巴巴-W · HK 09988</option><option value="AAPL">苹果 · US AAPL</option><option value="TSM">台积电 · US TSM</option><option value="DRAM">存储主题 ETF · US DRAM</option><option value="SOXX">iShares 半导体 ETF · US SOXX</option><option value="0700.HK">腾讯控股 · HK 00700</option><option value="9992.HK">泡泡玛特 · HK 09992</option><option value="CELH">Celsius · US CELH</option><option value="DIS">迪士尼 · US DIS</option><option value="NVDA">英伟达 · US NVDA</option><option value="SKHY">SK 海力士 · US SKHY</option></select></label>
+    <div id="quote-preview" class="quote-preview"><b>71.730 USD</b><span>60 日 -37.56% · 2026-08-18</span></div>
+    <label>触发条件<select id="plan-condition" required>
+      <option value="price_lte">价格小于或等于</option>
+      <option value="price_gte">价格大于或等于</option>
+      <option value="ret60_lte">60 日涨跌小于或等于</option>
+      <option value="ret60_gte">60 日涨跌大于或等于</option>
+    </select></label>
+    <label>条件值<input id="plan-value" type="number" step="0.01" required><small id="value-hint">填写价格</small></label>
+    <label>触发后提醒我<select id="plan-intent" required>
+      <option>重新评估</option><option>考虑买入</option><option>考虑减仓</option><option>检查风险</option><option>阅读材料</option>
+    </select></label>
+    <label>当时的理由<textarea id="plan-reason" rows="3" placeholder="例如：估值进入我的观察区间，但仍需确认下一季利润率"></textarea></label>
+    <button class="primary-button" type="submit">保存计划</button>
+    <p id="plan-message" class="form-message" aria-live="polite"></p>
+  </form>
 
-
-<div class="tiles">
-  <div class="tile"><div class="k">市场触发</div><div class="v up">8</div>
-    <div class="sub">价格、波动或成交变化</div></div>
-  <div class="tile"><div class="k">基期 ±20%</div><div class="v">8</div>
-    <div class="sub">较 60 个交易日前</div></div>
-  <div class="tile"><div class="k">七日内事件</div><div class="v">1</div>
-    <div class="sub">财报、除息、拆股</div></div>
-  <div class="tile"><div class="k">我的计划</div><div class="v" id="plan-count">0</div>
-    <div class="sub" id="plan-count-sub">保存在当前浏览器</div></div>
-  <div class="tile"><div class="k">数据可信度</div><div class="v" style="font-size:19px">可用</div>
-    <div class="sub">最近一轮采集无失败</div></div>
+  <div class="plan-list-panel">
+    <div class="section-head plan-head"><div><h2>已保存计划</h2><p id="plan-summary">0 条</p></div></div>
+    <div id="plan-list" class="plan-list"></div>
+    <div id="plan-empty" class="empty-state"><b>还没有计划</b><span>从左侧选一只真正关注的股票，写下你愿意事后复盘的条件。</span></div>
+  </div>
 </div>
 
-<div class="section-head">
-  <div><h2>一、由市场触发</h2><p>达到关注条件的标的，先看原因，再决定是否行动。</p></div>
-  <a class="text-link" href="signals.html">查看全部信号 →</a>
+<div class="note gap">
+  <b>边界</b>：价格达到某个数字，只代表原计划到了重新评估的时点。真正行动前仍需检查事件、数据可信度、仓位与原判断是否仍成立。
 </div>
-
-<div class="action-list">
-
-  <a class="action-row" href="stock/CRCL.html">
-    <span class="action-priority strong">重新评估</span>
-    <span class="action-main"><b>Circle</b><small>US CRCL · 较 60 个交易日前下跌 37.6%</small></span>
-    <span class="action-value down">-37.56%</span>
-  </a>
-
-  <a class="action-row" href="stock/OKLO.html">
-    <span class="action-priority strong">重新评估</span>
-    <span class="action-main"><b>Oklo</b><small>US OKLO · 较 60 个交易日前下跌 36.5%</small></span>
-    <span class="action-value down">-36.46%</span>
-  </a>
-
-  <a class="action-row" href="stock/9880-HK.html">
-    <span class="action-priority strong">重新评估</span>
-    <span class="action-main"><b>优必选</b><small>HK 09880 · 较 60 个交易日前下跌 31.6%</small></span>
-    <span class="action-value down">-31.56%</span>
-  </a>
-
-  <a class="action-row" href="stock/9868-HK.html">
-    <span class="action-priority strong">重新评估</span>
-    <span class="action-main"><b>小鹏汽车-W</b><small>HK 09868 · 较 60 个交易日前下跌 26.7%</small></span>
-    <span class="action-value down">-26.74%</span>
-  </a>
-
-  <a class="action-row" href="stock/IONQ.html">
-    <span class="action-priority strong">重新评估</span>
-    <span class="action-main"><b>IonQ</b><small>US IONQ · 较 60 个交易日前下跌 25.1%</small></span>
-    <span class="action-value down">-25.08%</span>
-  </a>
-
-  <a class="action-row" href="stock/GE.html">
-    <span class="action-priority strong">重新评估</span>
-    <span class="action-main"><b>GE Aerospace</b><small>US GE · 较 60 个交易日前上涨 24.3%</small></span>
-    <span class="action-value up">+24.30%</span>
-  </a>
-
-  <a class="action-row" href="stock/2513-HK.html">
-    <span class="action-priority strong">重新评估</span>
-    <span class="action-main"><b>智谱</b><small>HK 02513 · 较 60 个交易日前下跌 22.1%</small></span>
-    <span class="action-value down">-22.07%</span>
-  </a>
-
-  <a class="action-row" href="stock/HOOD.html">
-    <span class="action-priority strong">重新评估</span>
-    <span class="action-main"><b>Robinhood</b><small>US HOOD · 较 60 个交易日前上涨 20.6%</small></span>
-    <span class="action-value up">+20.56%</span>
-  </a>
-
-</div>
-
-
-<div class="section-head">
-  <div><h2>二、由我的计划触发</h2><p>只有你自己写下的条件，才会出现“考虑买入”或“考虑减仓”。</p></div>
-  <a class="text-link" href="plans.html">管理计划 →</a>
-</div>
-<div id="plan-actions" class="action-list"></div>
-<div id="plan-actions-empty" class="empty-state"><b>还没有触发的个人计划</b><span>可在“计划”页设置价格或区间涨跌条件。</span></div>
-
-<div class="section-head">
-  <div><h2>三、临近事件</h2><p>事件本身不是异常，但可能改变你原来的判断。</p></div>
-  <a class="text-link" href="calendar.html">打开事件日历 →</a>
-</div>
-
-<div class="scroll">
-<table>
-<thead><tr><th class="num">还有</th><th>日期</th><th>标的</th><th>类型</th><th>需要关注</th></tr></thead>
-<tbody>
-
-<tr>
-  <td class="num "><b>4 天</b></td>
-  <td class="mono dim">2026-09-04</td>
-  <td class="name"><a href="stock/GOOGL.html">谷歌-A</a></td>
-  <td>除息</td>
-  <td class="wide">除息 每股 0.22，登记日 9/07/2026，派付日 9/14/2026</td>
-</tr>
-
-</tbody>
-</table>
-</div>
-
-
-<div class="section-head">
-  <div><h2>四、数据可信度</h2><p>只有来源矛盾、字段失效或采集异常时才需要进入后台查看。</p></div>
-  <a class="text-link" href="ops/index.html">进入数据后台 →</a>
-</div>
-
-<div class="card compact-card">
-  <b>17 只标的存在未解释的数据问题</b>
-  <p>这类提示影响的是数字能不能直接使用，不代表公司或股价本身异常。</p>
-  <div class="mini-row"><a href="stock/CRCL.html">Circle</a><span>DQ-PRC-002 较前收盘 35.47%，达该标的近 120 日波动率(5.28%)的 6.7 倍，当日无公司行动记录可解释</span></div><div class="mini-row"><a href="stock/OKLO.html">Oklo</a><span>DQ-FUN-004 市销率高达 6358.4，营收极小或口径存疑：Oklo</span></div><div class="mini-row"><a href="stock/2513-HK.html">智谱</a><span>DQ-FUN-004 市净率为负 (-42.73)，账面净资产为负：智谱</span></div><div class="mini-row"><a href="stock/ASML.html">阿斯麦</a><span>DQ-FUN-003 估值超出常规区间 PE=64.1 PB=1523.1：阿斯麦</span></div><div class="mini-row"><a href="stock/NBIS.html">Nebius</a><span>DQ-PRC-002 较前收盘 49.42%，达该标的近 120 日波动率(5.81%)的 8.5 倍，当日无公司行动记录可解释</span></div>
-</div>
-
 
 <script>
 (function () {
   const quotes = [{"symbol": "CRCL", "code": "US CRCL", "name": "Circle", "slug": "CRCL", "close": 71.7300033569336, "currency": "USD", "ret20": 0.9144647005269624, "ret60": -37.56092873270029, "tradeDate": "2026-08-18"}, {"symbol": "OKLO", "code": "US OKLO", "name": "Oklo", "slug": "OKLO", "close": 41.36000061035156, "currency": "USD", "ret20": -6.276910017491588, "ret60": -36.45720857680429, "tradeDate": "2026-08-18"}, {"symbol": "9880.HK", "code": "HK 09880", "name": "优必选", "slug": "9880-HK", "close": 84.80000305175781, "currency": "HKD", "ret20": 1.6177425439007909, "ret60": -31.557706208707593, "tradeDate": "2026-08-19"}, {"symbol": "9868.HK", "code": "HK 09868", "name": "小鹏汽车-W", "slug": "9868-HK", "close": 45.86000061035156, "currency": "HKD", "ret20": -8.736317193330223, "ret60": -26.741211296817944, "tradeDate": "2026-08-19"}, {"symbol": "IONQ", "code": "US IONQ", "name": "IonQ", "slug": "IONQ", "close": 44.119998931884766, "currency": "USD", "ret20": 24.246693937832365, "ret60": -25.08065989275576, "tradeDate": "2026-08-18"}, {"symbol": "GE", "code": "US GE", "name": "GE Aerospace", "slug": "GE", "close": 375.0899963378906, "currency": "USD", "ret20": 10.093919254092022, "ret60": 24.3007635866729, "tradeDate": "2026-08-18"}, {"symbol": "2513.HK", "code": "HK 02513", "name": "智谱", "slug": "2513-HK", "close": 999.0, "currency": "HKD", "ret20": -14.978723404255323, "ret60": -22.07488299531981, "tradeDate": "2026-08-19"}, {"symbol": "HOOD", "code": "US HOOD", "name": "Robinhood", "slug": "HOOD", "close": 91.52999877929688, "currency": "USD", "ret20": -13.943213375284003, "ret60": 20.561118265064394, "tradeDate": "2026-08-18"}, {"symbol": "TSLA", "code": "US TSLA", "name": "特斯拉", "slug": "TSLA", "close": 336.8699951171875, "currency": "USD", "ret20": -11.099674972041862, "ret60": -19.380162690787806, "tradeDate": "2026-08-18"}, {"symbol": "1347.HK", "code": "HK 01347", "name": "华虹半导体", "slug": "1347-HK", "close": 112.0999984741211, "currency": "HKD", "ret20": -30.588236238934307, "ret60": -13.835516360447064, "tradeDate": "2026-08-19"}, {"symbol": "ASML", "code": "US ASML", "name": "阿斯麦", "slug": "ASML", "close": 1802.97998046875, "currency": "USD", "ret20": 0.0815965881486358, "ret60": 13.252511335976758, "tradeDate": "2026-08-18"}, {"symbol": "NBIS", "code": "US NBIS", "name": "Nebius", "slug": "NBIS", "close": 248.42999267578125, "currency": "USD", "ret20": 14.526090158960248, "ret60": 12.9586690988593, "tradeDate": "2026-08-18"}, {"symbol": "HSBC", "code": "US HSBC", "name": "汇丰控股", "slug": "HSBC", "close": 103.18000030517578, "currency": "USD", "ret20": 2.037181074605332, "ret60": 12.091251368193646, "tradeDate": "2026-08-18"}, {"symbol": "0981.HK", "code": "HK 00981", "name": "中芯国际", "slug": "0981-HK", "close": 70.5999984741211, "currency": "HKD", "ret20": -3.1550109788973435, "ret60": -11.58422063464143, "tradeDate": "2026-08-19"}, {"symbol": "GOOGL", "code": "US GOOGL", "name": "谷歌-A", "slug": "GOOGL", "close": 344.20001220703125, "currency": "USD", "ret20": -0.8497714939706302, "ret60": -11.2108525626901, "tradeDate": "2026-08-18"}, {"symbol": "1276.HK", "code": "HK 01276", "name": "恒瑞医药", "slug": "1276-HK", "close": 54.70000076293945, "currency": "HKD", "ret20": -4.8695638905400855, "ret60": -10.839442341611093, "tradeDate": "2026-08-19"}, {"symbol": "PDD", "code": "US PDD", "name": "拼多多", "slug": "PDD", "close": 87.2699966430664, "currency": "USD", "ret20": 2.876334739295605, "ret60": -10.757750459117288, "tradeDate": "2026-08-18"}, {"symbol": "LITE", "code": "US LITE", "name": "Lumentum", "slug": "LITE", "close": 873.3099975585938, "currency": "USD", "ret20": 4.268350936554732, "ret60": -9.454639962820766, "tradeDate": "2026-08-18"}, {"symbol": "0300.HK", "code": "HK 00300", "name": "美的集团", "slug": "0300-HK", "close": 96.19999694824219, "currency": "HKD", "ret20": 1.3698581680304578, "ret60": 8.029189951098203, "tradeDate": "2026-08-19"}, {"symbol": "AMD", "code": "US AMD", "name": "AMD", "slug": "AMD", "close": 484.3900146484375, "currency": "USD", "ret20": -11.028043795356945, "ret60": 7.740389820505, "tradeDate": "2026-08-18"}, {"symbol": "0857.HK", "code": "HK 00857", "name": "中国石油股份", "slug": "0857-HK", "close": 10.039999961853027, "currency": "HKD", "ret20": -0.0995047631049295, "ret60": -7.294551869051968, "tradeDate": "2026-08-19"}, {"symbol": "EL", "code": "US EL", "name": "雅诗兰黛", "slug": "EL", "close": 84.2699966430664, "currency": "USD", "ret20": 2.3066575611632167, "ret60": 6.792539262712971, "tradeDate": "2026-08-18"}, {"symbol": "SNDK", "code": "US SNDK", "name": "闪迪", "slug": "SNDK", "close": 1625.780029296875, "currency": "USD", "ret20": 2.2889143276705326, "ret60": 5.416798915310483, "tradeDate": "2026-08-18"}, {"symbol": "2259.HK", "code": "HK 02259", "name": "紫金黄金国际", "slug": "2259-HK", "close": 131.89999389648438, "currency": "HKD", "ret20": 11.59052225207855, "ret60": -5.107918060083183, "tradeDate": "2026-08-19"}, {"symbol": "9988.HK", "code": "HK 09988", "name": "阿里巴巴-W", "slug": "9988-HK", "close": 124.19999694824219, "currency": "HKD", "ret20": 9.33098469762379, "ret60": -2.2047268124077313, "tradeDate": "2026-08-19"}, {"symbol": "AAPL", "code": "US AAPL", "name": "苹果", "slug": "AAPL", "close": 310.0299987792969, "currency": "USD", "ret20": -5.403671197528648, "ret60": 1.6525160517723236, "tradeDate": "2026-08-18"}, {"symbol": "TSM", "code": "US TSM", "name": "台积电", "slug": "TSM", "close": 413.4100036621094, "currency": "USD", "ret20": -2.6377103873758245, "ret60": 1.537519307249835, "tradeDate": "2026-08-18"}, {"symbol": "DRAM", "code": "US DRAM", "name": "存储主题 ETF", "slug": "DRAM", "close": 55.099998474121094, "currency": "USD", "ret20": -6.37213270557524, "ret60": 1.398598305850407, "tradeDate": "2026-08-18"}, {"symbol": "SOXX", "code": "US SOXX", "name": "iShares 半导体 ETF", "slug": "SOXX", "close": 531.3900146484375, "currency": "USD", "ret20": -3.853876078611873, "ret60": 1.2730827306609571, "tradeDate": "2026-08-18"}, {"symbol": "0700.HK", "code": "HK 00700", "name": "腾讯控股", "slug": "0700-HK", "close": 446.20001220703125, "currency": "HKD", "ret20": 1.2709954666228374, "ret60": 1.0874531891526429, "tradeDate": "2026-08-19"}, {"symbol": "9992.HK", "code": "HK 09992", "name": "泡泡玛特", "slug": "9992-HK", "close": 151.60000610351562, "currency": "HKD", "ret20": -4.833645198199021, "ret60": 0.7309010654588777, "tradeDate": "2026-08-19"}, {"symbol": "CELH", "code": "US CELH", "name": "Celsius", "slug": "CELH", "close": 29.899999618530273, "currency": "USD", "ret20": 6.709490114393257, "ret60": 0.6733968028727721, "tradeDate": "2026-08-18"}, {"symbol": "DIS", "code": "US DIS", "name": "迪士尼", "slug": "DIS", "close": 103.94999694824219, "currency": "USD", "ret20": 8.123567306195213, "ret60": 0.3572070965889518, "tradeDate": "2026-08-18"}, {"symbol": "NVDA", "code": "US NVDA", "name": "英伟达", "slug": "NVDA", "close": 219.74000549316406, "currency": "USD", "ret20": 6.006084524227795, "ret60": 0.10478383312106931, "tradeDate": "2026-08-18"}, {"symbol": "SKHY", "code": "US SKHY", "name": "SK 海力士", "slug": "SKHY", "close": 155.6199951171875, "currency": "USD", "ret20": -9.491687270261783, "ret60": null, "tradeDate": "2026-08-18"}];
   const bySymbol = Object.fromEntries(quotes.map(q => [q.symbol, q]));
+  const key = 'mdesk-decision-plans-v1';
+  const form = document.getElementById('plan-form');
+  const symbol = document.getElementById('plan-symbol');
+  const condition = document.getElementById('plan-condition');
+  const value = document.getElementById('plan-value');
+  const intent = document.getElementById('plan-intent');
+  const reason = document.getElementById('plan-reason');
+  const preview = document.getElementById('quote-preview');
+  const hint = document.getElementById('value-hint');
+  const list = document.getElementById('plan-list');
+  const empty = document.getElementById('plan-empty');
+  const summary = document.getElementById('plan-summary');
+  const message = document.getElementById('plan-message');
   let plans = [];
-  try { plans = JSON.parse(localStorage.getItem('mdesk-decision-plans-v1') || '[]'); } catch (_) {}
-  const count = document.getElementById('plan-count');
-  const sub = document.getElementById('plan-count-sub');
-  const box = document.getElementById('plan-actions');
-  const empty = document.getElementById('plan-actions-empty');
-  const escapeHtml = s => String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const condition = (p, q) => {
+  try { plans = JSON.parse(localStorage.getItem(key) || '[]'); } catch (_) {}
+
+  const labels = {price_lte:'价格 ≤', price_gte:'价格 ≥', ret60_lte:'60 日涨跌 ≤', ret60_gte:'60 日涨跌 ≥'};
+  const isReturn = c => c.startsWith('ret60');
+  const triggered = (p, q) => {
     if (!q) return false;
     if (p.condition === 'price_lte') return q.close <= p.value;
     if (p.condition === 'price_gte') return q.close >= p.value;
     if (p.condition === 'ret60_lte') return q.ret60 != null && q.ret60 <= p.value;
-    if (p.condition === 'ret60_gte') return q.ret60 != null && q.ret60 >= p.value;
-    return false;
+    return q.ret60 != null && q.ret60 >= p.value;
   };
-  const triggered = plans.filter(p => condition(p, bySymbol[p.symbol]));
-  count.textContent = triggered.length;
-  sub.textContent = `${plans.length} 条计划中已触发`;
-  if (!triggered.length) return;
-  empty.hidden = true;
-  box.innerHTML = triggered.map(p => {
-    const q = bySymbol[p.symbol];
-    const note = p.reason ? ` · ${escapeHtml(p.reason)}` : '';
-    return `<a class="action-row" href="stock/${q.slug}.html"><span class="action-priority strong">${escapeHtml(p.intent)}</span><span class="action-main"><b>${escapeHtml(q.name)}</b><small>触发你预设的条件${note}</small></span><span class="action-value">${q.close.toFixed(2)} ${escapeHtml(q.currency)}</span></a>`;
-  }).join('');
+  const escapeHtml = s => String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  function save() {
+    try { localStorage.setItem(key, JSON.stringify(plans)); return true; }
+    catch (_) { message.textContent = '当前浏览器不允许本地保存；本次页面内仍可使用。'; return false; }
+  }
+  function updatePreview() {
+    const q = bySymbol[symbol.value];
+    preview.innerHTML = q ? `<b>${q.close.toFixed(2)} ${q.currency}</b><span>60 日 ${q.ret60 == null ? '—' : (q.ret60 >= 0 ? '+' : '') + q.ret60.toFixed(2) + '%'} · ${q.tradeDate}</span>` : '';
+    hint.textContent = isReturn(condition.value) ? '填写百分比，例如 -20 或 20' : '填写价格';
+  }
+  function render() {
+    summary.textContent = `${plans.length} 条，其中 ${plans.filter(p => triggered(p, bySymbol[p.symbol])).length} 条已触发`;
+    empty.hidden = plans.length > 0;
+    list.innerHTML = plans.map(p => {
+      const q = bySymbol[p.symbol];
+      const hit = triggered(p, q);
+      const suffix = isReturn(p.condition) ? '%' : ` ${q ? q.currency : ''}`;
+      return `<article class="plan-card ${hit ? 'is-triggered' : ''}">
+        <div class="plan-status">${hit ? '已触发' : '等待中'}</div>
+        <h3>${escapeHtml(q ? q.name : p.symbol)} <span>${escapeHtml(q ? q.code : p.symbol)}</span></h3>
+        <div class="plan-condition">${labels[p.condition]} <b>${Number(p.value).toFixed(2)}${suffix}</b></div>
+        <div class="plan-intent">触发后：${escapeHtml(p.intent)}</div>
+        ${p.reason ? `<p>${escapeHtml(p.reason)}</p>` : ''}
+        <div class="plan-meta">当前 ${q ? q.close.toFixed(2) + ' ' + q.currency : '无行情'} · 创建于 ${escapeHtml(p.createdAt)}</div>
+        <button type="button" class="quiet-button" data-delete="${escapeHtml(p.id)}">删除</button>
+      </article>`;
+    }).join('');
+  }
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    plans.unshift({id: String(Date.now()), symbol:symbol.value, condition:condition.value, value:Number(value.value), intent:intent.value, reason:reason.value.trim(), createdAt:new Date().toLocaleDateString('zh-CN')});
+    const saved = save(); render(); form.reset(); updatePreview();
+    if (saved) message.textContent = '计划已保存在当前浏览器。';
+  });
+  list.addEventListener('click', e => {
+    const id = e.target.dataset.delete;
+    if (!id) return;
+    plans = plans.filter(p => p.id !== id); save(); render();
+  });
+  symbol.addEventListener('change', updatePreview);
+  condition.addEventListener('change', updatePreview);
+  const initial = new URLSearchParams(location.search).get('symbol');
+  if (initial && bySymbol[initial]) symbol.value = initial;
+  updatePreview(); render();
 })();
 </script>
 

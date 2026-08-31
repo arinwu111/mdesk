@@ -9,6 +9,10 @@
   这只标的不在自选股名单里，只作为跨市场校验的对照组采集。{{ s.case_note }}
   {%- elif s.case_note %}<br>案例价值：{{ s.case_note }}{% endif %}
 </p>
+<div class="context-actions">
+  <a class="primary-link" href="../plans.html?symbol={{ s.symbol }}">为这只股票设计划</a>
+  <a class="text-link" href="../signals.html#{{ s.slug }}">查看它的关注信号 →</a>
+</div>
 
 <div class="tiles">
   <div class="tile"><div class="k">最新价</div><div class="v">{{ s.close_fmt }}</div>
@@ -19,13 +23,13 @@
     <div class="sub">{{ s.currency }}</div></div>
   <div class="tile"><div class="k">PE(TTM)</div><div class="v">{{ s.pe_fmt }}</div>
     <div class="sub">{{ s.pe_note }}</div></div>
-  <div class="tile"><div class="k">数据质量</div>
+  <div class="tile"><div class="k">数据可信度</div>
     <div class="v"><span class="badge {{ s.badge }}" style="font-size:20px">
       <span class="dot" style="width:11px;height:11px"></span>{{ s.badge_label }}</span></div>
     <div class="sub">{{ s.open_count }} 条待查异常</div></div>
 </div>
 
-<h2>复权价走势</h2>
+<h2>价格走势与复权说明</h2>
 {% if s.two_series %}
 <div class="legend">
   <span class="item"><span class="swatch" style="background:var(--series-1)"></span>自算复权价</span>
@@ -38,7 +42,7 @@
   上图为复权价，下图为成交量，共用同一条时间轴，共 {{ s.n_points }} 个交易日。
   {% if s.two_series %}
   两条价格线本应完全重合，这只标的的自算复权价与数据源给的对不上，
-  差异原因见下方公司行动，以及运营视图的<a href="../ops/corpaction.html">复权核对</a>页。
+  差异原因见下方公司行动，以及数据后台的<a href="../ops/corpaction.html">复权逻辑</a>页。
   {% else %}
   自算复权价与数据源完全一致，所以价格图上只有一条线。
   {% endif %}
@@ -83,7 +87,7 @@
 </div>
 <figcaption>
   告警阈值是这只标的自己的单日跳空告警线，等于它近 120 日日波动率的 6 倍。
-  单日涨跌超过这个数且当天没有公司行动可解释，就会命中 DQ-PRC-002 进入异常清单。
+  单日涨跌超过这个数且当天没有公司行动可解释，就会命中 DQ-PRC-002，出现在关注信号与数据校验中。
   每只标的的线都不一样，所以高波动标的不会因为正常波动被反复告警。
 </figcaption>
 
@@ -91,7 +95,7 @@
 {% if s.n_peers > 1 %}
 <div class="scroll">
 <table>
-<thead><tr><th>标的</th><th class="num">最新涨跌</th><th class="num">年化波动</th><th>数据质量</th></tr></thead>
+<thead><tr><th>标的</th><th class="num">最新涨跌</th><th class="num">年化波动</th><th>数据可信度</th></tr></thead>
 <tbody>
 {% for p in s.peers %}
 <tr {% if p.is_self %}style="background:var(--wash)"{% endif %}>
@@ -134,7 +138,7 @@
 <p class="dim">近两年无派息、拆股或其他公司行动记录。</p>
 {% endif %}
 
-<h2>该标的的异常记录</h2>
+<h2>该标的的数据校验记录</h2>
 {% if s.issues %}
 <div class="scroll">
 <table>

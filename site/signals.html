@@ -1,0 +1,789 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>关注信号 · mdesk</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232a78d6'/%3E%3Cpath d='M6 21.5 L12 14 L17 18.5 L26 8.5' fill='none' stroke='white' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="static/style.css">
+<style>
+.chartbox { position: relative; }
+.chartbox .tip {
+  position: absolute; top: 6px; transform: translateX(-50%);
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 7px 10px; font-size: 12px; pointer-events: none; opacity: 0;
+  transition: opacity .1s; white-space: nowrap; box-shadow: 0 2px 10px rgba(0,0,0,.10);
+  color: var(--ink);
+}
+.chartbox .tip b { display: block; color: var(--ink-muted); font-weight: 500;
+  font-size: 11px; margin-bottom: 3px; }
+.chartbox .tip span { display: flex; align-items: center; gap: 6px; }
+.chartbox .tip i { width: 9px; height: 2px; border-radius: 1px; flex: none; }
+.chartbox .tip em { font-style: normal; margin-left: auto; padding-left: 14px;
+  font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">mdesk<span>自选股事件与决策工作台</span></div>
+    <div class="stamp">数据截至 2026-08-19　生成于 2026-08-31 16:40</div>
+  </div>
+  <nav class="tabs">
+    <span class="group-label">关注</span>
+    <a href="index.html"       class="">今日行动</a>
+    <a href="calendar.html"    class="">事件</a>
+    <a href="signals.html"     class="on">信号</a>
+    <a href="plans.html"       class="">计划</a>
+    <a href="watchlist.html"   class="">自选股</a>
+    <span class="sep"></span>
+    <a href="ops/index.html" class="">数据后台</a>
+    <a href="role-transfer.html" class="">能力迁移</a>
+  </nav>
+
+</header>
+
+<div class="wrap">
+
+
+<h1>关注信号</h1>
+<p class="lede">
+  信号只表示“越过了预设关注线”，不等于异常，更不等于买卖建议。
+  当前基期定义为 60 个交易日前；累计涨跌达到 ±20%、单日跳动超过自身波动线，或成交量达到前 20 日均量两倍时进入关注区。
+</p>
+
+<div class="tiles">
+  <div class="tile"><div class="k">当前触发</div><div class="v">8</div><div class="sub">至少命中一个条件</div></div>
+  <div class="tile"><div class="k">基期 ±20%</div><div class="v">8</div><div class="sub">较 60 个交易日前</div></div>
+  <div class="tile"><div class="k">单日跳动</div><div class="v">0</div><div class="sub">超过自身波动关注线</div></div>
+  <div class="tile"><div class="k">成交放大</div><div class="v">0</div><div class="sub">达到前 20 日均量两倍</div></div>
+  <div class="tile"><div class="k">数据提示</div><div class="v">17</div><div class="sub">与市场信号分开计算</div></div>
+</div>
+
+<div class="signal-key">
+  <span><i class="signal-dot basis"></i>基期变化</span>
+  <span><i class="signal-dot jump"></i>单日跳动</span>
+  <span><i class="signal-dot volume"></i>成交放大</span>
+  <span class="dim">同一只标的可同时触发多个条件</span>
+</div>
+
+<div class="scroll">
+<table class="sortable" id="signals-table">
+<thead><tr>
+  <th data-sort="text">代码</th><th data-sort="text">名称</th><th data-sort="text">市场</th>
+  <th data-sort="num" class="num">最新价</th><th data-sort="num" class="num">日涨跌</th>
+  <th data-sort="num" class="num">20 日</th><th data-sort="num" class="num">60 日</th>
+  <th data-sort="num" class="num">量比</th><th>关注原因</th><th>数据可信度</th>
+</tr></thead>
+<tbody>
+
+<tr id="CRCL" class="signal-active">
+  <td class="mono dim">US CRCL</td>
+  <td class="name"><a href="stock/CRCL.html">Circle</a></td>
+  <td class="dim">美股</td>
+  <td class="num" data-v="71.7300033569336">71.730</td>
+  <td class="num down" data-v="-3.834284919389652">-3.83%</td>
+  <td class="num up" data-v="0.9144647005269624">+0.91%</td>
+  <td class="num down" data-v="-37.56092873270029"><b>-37.56%</b></td>
+  <td class="num" data-v="0.787239290127921">0.8×</td>
+  <td class="wide">
+    
+      <span class="signal-chip basis">基期 ±20%</span>
+      <div class="signal-detail">较 60 个交易日前下跌 37.6%</div>
+    
+  </td>
+  <td><span class="badge open" title="DQ-PRC-002 较前收盘 35.47%，达该标的近 120 日波动率(5.28%)的 6.7 倍，当日无公司行动记录可解释"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr id="OKLO" class="signal-active">
+  <td class="mono dim">US OKLO</td>
+  <td class="name"><a href="stock/OKLO.html">Oklo</a></td>
+  <td class="dim">美股</td>
+  <td class="num" data-v="41.36000061035156">41.360</td>
+  <td class="num down" data-v="-5.742936181455094">-5.74%</td>
+  <td class="num down" data-v="-6.276910017491588">-6.28%</td>
+  <td class="num down" data-v="-36.45720857680429"><b>-36.46%</b></td>
+  <td class="num" data-v="0.7868359650606207">0.8×</td>
+  <td class="wide">
+    
+      <span class="signal-chip basis">基期 ±20%</span>
+      <div class="signal-detail">较 60 个交易日前下跌 36.5%</div>
+    
+  </td>
+  <td><span class="badge open" title="DQ-FUN-004 市销率高达 6358.4，营收极小或口径存疑：Oklo"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr id="9880-HK" class="signal-active">
+  <td class="mono dim">HK 09880</td>
+  <td class="name"><a href="stock/9880-HK.html">优必选</a></td>
+  <td class="dim">港股</td>
+  <td class="num" data-v="84.80000305175781">84.800</td>
+  <td class="num down" data-v="-10.548522867177878">-10.55%</td>
+  <td class="num up" data-v="1.6177425439007909">+1.62%</td>
+  <td class="num down" data-v="-31.557706208707593"><b>-31.56%</b></td>
+  <td class="num" data-v="1.6053888588692131">1.6×</td>
+  <td class="wide">
+    
+      <span class="signal-chip basis">基期 ±20%</span>
+      <div class="signal-detail">较 60 个交易日前下跌 31.6%</div>
+    
+  </td>
+  <td><span class="badge ok" title="今日无异常"><span class="dot"></span>正常</span></td>
+</tr>
+
+<tr id="9868-HK" class="signal-active">
+  <td class="mono dim">HK 09868</td>
+  <td class="name"><a href="stock/9868-HK.html">小鹏汽车-W</a></td>
+  <td class="dim">港股</td>
+  <td class="num" data-v="45.86000061035156">45.860</td>
+  <td class="num down" data-v="-2.9623312757160125">-2.96%</td>
+  <td class="num down" data-v="-8.736317193330223">-8.74%</td>
+  <td class="num down" data-v="-26.741211296817944"><b>-26.74%</b></td>
+  <td class="num" data-v="0.3314350874270866">0.3×</td>
+  <td class="wide">
+    
+      <span class="signal-chip basis">基期 ±20%</span>
+      <div class="signal-detail">较 60 个交易日前下跌 26.7%</div>
+    
+  </td>
+  <td><span class="badge ok" title="今日无异常"><span class="dot"></span>正常</span></td>
+</tr>
+
+<tr id="IONQ" class="signal-active">
+  <td class="mono dim">US IONQ</td>
+  <td class="name"><a href="stock/IONQ.html">IonQ</a></td>
+  <td class="dim">美股</td>
+  <td class="num" data-v="44.119998931884766">44.120</td>
+  <td class="num down" data-v="-5.807005149108324">-5.81%</td>
+  <td class="num up" data-v="24.246693937832365">+24.25%</td>
+  <td class="num down" data-v="-25.08065989275576"><b>-25.08%</b></td>
+  <td class="num" data-v="0.7874014255248912">0.8×</td>
+  <td class="wide">
+    
+      <span class="signal-chip basis">基期 ±20%</span>
+      <div class="signal-detail">较 60 个交易日前下跌 25.1%</div>
+    
+  </td>
+  <td><span class="badge ok" title="今日无异常"><span class="dot"></span>正常</span></td>
+</tr>
+
+<tr id="GE" class="signal-active">
+  <td class="mono dim">US GE</td>
+  <td class="name"><a href="stock/GE.html">GE Aerospace</a></td>
+  <td class="dim">美股</td>
+  <td class="num" data-v="375.0899963378906">375.090</td>
+  <td class="num up" data-v="1.532090998111424">+1.53%</td>
+  <td class="num up" data-v="10.093919254092022">+10.09%</td>
+  <td class="num up" data-v="24.3007635866729"><b>+24.30%</b></td>
+  <td class="num" data-v="1.4486361885608607">1.4×</td>
+  <td class="wide">
+    
+      <span class="signal-chip basis">基期 ±20%</span>
+      <div class="signal-detail">较 60 个交易日前上涨 24.3%</div>
+    
+  </td>
+  <td><span class="badge ok" title="今日无异常"><span class="dot"></span>正常</span></td>
+</tr>
+
+<tr id="2513-HK" class="signal-active">
+  <td class="mono dim">HK 02513</td>
+  <td class="name"><a href="stock/2513-HK.html">智谱</a></td>
+  <td class="dim">港股</td>
+  <td class="num" data-v="999.0">999.000</td>
+  <td class="num down" data-v="-4.218600191754551">-4.22%</td>
+  <td class="num down" data-v="-14.978723404255323">-14.98%</td>
+  <td class="num down" data-v="-22.07488299531981"><b>-22.07%</b></td>
+  <td class="num" data-v="0.42530821913565836">0.4×</td>
+  <td class="wide">
+    
+      <span class="signal-chip basis">基期 ±20%</span>
+      <div class="signal-detail">较 60 个交易日前下跌 22.1%</div>
+    
+  </td>
+  <td><span class="badge open" title="DQ-FUN-004 市净率为负 (-42.73)，账面净资产为负：智谱"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr id="HOOD" class="signal-active">
+  <td class="mono dim">US HOOD</td>
+  <td class="name"><a href="stock/HOOD.html">Robinhood</a></td>
+  <td class="dim">美股</td>
+  <td class="num" data-v="91.52999877929688">91.530</td>
+  <td class="num down" data-v="-4.9038973721590935">-4.90%</td>
+  <td class="num down" data-v="-13.943213375284003">-13.94%</td>
+  <td class="num up" data-v="20.561118265064394"><b>+20.56%</b></td>
+  <td class="num" data-v="0.7946737494345131">0.8×</td>
+  <td class="wide">
+    
+      <span class="signal-chip basis">基期 ±20%</span>
+      <div class="signal-detail">较 60 个交易日前上涨 20.6%</div>
+    
+  </td>
+  <td><span class="badge ok" title="今日无异常"><span class="dot"></span>正常</span></td>
+</tr>
+
+<tr id="TSLA" class="">
+  <td class="mono dim">US TSLA</td>
+  <td class="name"><a href="stock/TSLA.html">特斯拉</a></td>
+  <td class="dim">美股</td>
+  <td class="num" data-v="336.8699951171875">336.870</td>
+  <td class="num down" data-v="-0.716178238492593">-0.72%</td>
+  <td class="num down" data-v="-11.099674972041862">-11.10%</td>
+  <td class="num down" data-v="-19.380162690787806"><b>-19.38%</b></td>
+  <td class="num" data-v="0.708194603026571">0.7×</td>
+  <td class="wide">
+    <span class="dim">未触发</span>
+  </td>
+  <td><span class="badge ok" title="今日无异常"><span class="dot"></span>正常</span></td>
+</tr>
+
+<tr id="1347-HK" class="">
+  <td class="mono dim">HK 01347</td>
+  <td class="name"><a href="stock/1347-HK.html">华虹半导体</a></td>
+  <td class="dim">港股</td>
+  <td class="num" data-v="112.0999984741211">112.100</td>
+  <td class="num down" data-v="-13.033356259004048">-13.03%</td>
+  <td class="num down" data-v="-30.588236238934307">-30.59%</td>
+  <td class="num down" data-v="-13.835516360447064"><b>-13.84%</b></td>
+  <td class="num" data-v="1.248839462006269">1.2×</td>
+  <td class="wide">
+    <span class="dim">未触发</span>
+  </td>
+  <td><span class="badge ok" title="今日无异常"><span class="dot"></span>正常</span></td>
+</tr>
+
+<tr id="ASML" class="">
+  <td class="mono dim">US ASML</td>
+  <td class="name"><a href="stock/ASML.html">阿斯麦</a></td>
+  <td class="dim">美股</td>
+  <td class="num" data-v="1802.97998046875">1,802.980</td>
+  <td class="num down" data-v="-4.255704089820911">-4.26%</td>
+  <td class="num up" data-v="0.0815965881486358">+0.08%</td>
+  <td class="num up" data-v="13.252511335976758"><b>+13.25%</b></td>
+  <td class="num" data-v="0.9569997587822311">1.0×</td>
+  <td class="wide">
+    <span class="dim">未触发</span>
+  </td>
+  <td><span class="badge open" title="DQ-FUN-003 估值超出常规区间 PE=64.1 PB=1523.1：阿斯麦"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr id="NBIS" class="">
+  <td class="mono dim">US NBIS</td>
+  <td class="name"><a href="stock/NBIS.html">Nebius</a></td>
+  <td class="dim">美股</td>
+  <td class="num" data-v="248.42999267578125">248.430</td>
+  <td class="num down" data-v="-7.595318193845246">-7.60%</td>
+  <td class="num up" data-v="14.526090158960248">+14.53%</td>
+  <td class="num up" data-v="12.9586690988593"><b>+12.96%</b></td>
+  <td class="num" data-v="0.8396854706990803">0.8×</td>
+  <td class="wide">
+    <span class="dim">未触发</span>
+  </td>
+  <td><span class="badge open" title="DQ-PRC-002 较前收盘 49.42%，达该标的近 120 日波动率(5.81%)的 8.5 倍，当日无公司行动记录可解释"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr id="HSBC" class="">
+  <td class="mono dim">US HSBC</td>
+  <td class="name"><a href="stock/HSBC.html">汇丰控股</a></td>
+  <td class="dim">美股</td>
+  <td class="num" data-v="103.18000030517578">103.180</td>
+  <td class="num down" data-v="-0.5973051332887502">-0.60%</td>
+  <td class="num up" data-v="2.037181074605332">+2.04%</td>
+  <td class="num up" data-v="12.091251368193646"><b>+12.09%</b></td>
+  <td class="num" data-v="0.686642910713106">0.7×</td>
+  <td class="wide">
+    <span class="dim">未触发</span>
+  </td>
+  <td><span class="badge open" title="DQ-PRC-002 较前收盘 -7.71%，达该标的近 120 日波动率(1.27%)的 6.1 倍，当日无公司行动记录可解释"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr id="0981-HK" class="">
+  <td class="mono dim">HK 00981</td>
+  <td class="name"><a href="stock/0981-HK.html">中芯国际</a></td>
+  <td class="dim">港股</td>
+  <td class="num" data-v="70.5999984741211">70.600</td>
+  <td class="num down" data-v="-6.921555841284855">-6.92%</td>
+  <td class="num down" data-v="-3.1550109788973435">-3.16%</td>
+  <td class="num down" data-v="-11.58422063464143"><b>-11.58%</b></td>
+  <td class="num" data-v="0.8529046034456546">0.9×</td>
+  <td class="wide">
+    <span class="dim">未触发</span>
+  </td>
+  <td><span class="badge ok" title="今日无异常"><span class="dot"></span>正常</span></td>
+</tr>
+
+<tr id="GOOGL" class="">
+  <td class="mono dim">US GOOGL</td>
+  <td class="name"><a href="stock/GOOGL.html">谷歌-A</a></td>
+  <td class="dim">美股</td>
+  <td class="num" data-v="344.20001220703125">344.200</td>
+  <td class="num up" data-v="0.05814308343932151">+0.06%</td>
+  <td class="num down" data-v="-0.8497714939706302">-0.85%</td>
+  <td class="num down" data-v="-11.2108525626901"><b>-11.21%</b></td>
+  <td class="num" data-v="0.6198440753474408">0.6×</td>
+  <td class="wide">
+    <span class="dim">未触发</span>
+  </td>
+  <td><span class="badge ok" title="今日无异常"><span class="dot"></span>正常</span></td>
+</tr>
+
+<tr id="1276-HK" class="">
+  <td class="mono dim">HK 01276</td>
+  <td class="name"><a href="stock/1276-HK.html">恒瑞医药</a></td>
+  <td class="dim">港股</td>
+  <td class="num" data-v="54.70000076293945">54.700</td>
+  <td class="num up" data-v="0.8294944938976201">+0.83%</td>
+  <td class="num down" data-v="-4.8695638905400855">-4.87%</td>
+  <td class="num down" data-v="-10.839442341611093"><b>-10.84%</b></td>
+  <td class="num" data-v="0.6831575965132398">0.7×</td>
+  <td class="wide">
+    <span class="dim">未触发</span>
+  </td>
+  <td><span class="badge ok" title="今日无异常"><span class="dot"></span>正常</span></td>
+</tr>
+
+<tr id="PDD" class="">
+  <td class="mono dim">US PDD</td>
+  <td class="name"><a href="stock/PDD.html">拼多多</a></td>
+  <td class="dim">美股</td>
+  <td class="num" data-v="87.2699966430664">87.270</td>
+  <td class="num up" data-v="0.3795654386857805">+0.38%</td>
+  <td class="num up" data-v="2.876334739295605">+2.88%</td>
+  <td class="num down" data-v="-10.757750459117288"><b>-10.76%</b></td>
+  <td class="num" data-v="0.9409850231434754">0.9×</td>
+  <td class="wide">
+    <span class="dim">未触发</span>
+  </td>
+  <td><span class="badge ok" title="今日无异常"><span class="dot"></span>正常</span></td>
+</tr>
+
+<tr id="LITE" class="">
+  <td class="mono dim">US LITE</td>
+  <td class="name"><a href="stock/LITE.html">Lumentum</a></td>
+  <td class="dim">美股</td>
+  <td class="num" data-v="873.3099975585938">873.310</td>
+  <td class="num down" data-v="-9.865829749903899">-9.87%</td>
+  <td class="num up" data-v="4.268350936554732">+4.27%</td>
+  <td class="num down" data-v="-9.454639962820766"><b>-9.45%</b></td>
+  <td class="num" data-v="1.1472628140650616">1.1×</td>
+  <td class="wide">
+    <span class="dim">未触发</span>
+  </td>
+  <td><span class="badge open" title="DQ-PRC-002 较前收盘 -22.46%，达该标的近 108 日波动率(3.3%)的 6.8 倍，当日无公司行动记录可解释 ｜ DQ-PRC-002 较前收盘 23.57%，达该标的近 120 日波动率(3.14%)的 7.5 倍，当日无公司行动记录可解释"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr id="0300-HK" class="">
+  <td class="mono dim">HK 00300</td>
+  <td class="name"><a href="stock/0300-HK.html">美的集团</a></td>
+  <td class="dim">港股</td>
+  <td class="num" data-v="96.19999694824219">96.200</td>
+  <td class="num down" data-v="-0.05195122260551743">-0.05%</td>
+  <td class="num up" data-v="1.3698581680304578">+1.37%</td>
+  <td class="num up" data-v="8.029189951098203"><b>+8.03%</b></td>
+  <td class="num" data-v="0.20682073311827365">0.2×</td>
+  <td class="wide">
+    <span class="dim">未触发</span>
+  </td>
+  <td><span class="badge ok" title="今日无异常"><span class="dot"></span>正常</span></td>
+</tr>
+
+<tr id="AMD" class="">
+  <td class="mono dim">US AMD</td>
+  <td class="name"><a href="stock/AMD.html">AMD</a></td>
+  <td class="dim">美股</td>
+  <td class="num" data-v="484.3900146484375">484.390</td>
+  <td class="num down" data-v="-4.2707480931941655">-4.27%</td>
+  <td class="num down" data-v="-11.028043795356945">-11.03%</td>
+  <td class="num up" data-v="7.740389820505"><b>+7.74%</b></td>
+  <td class="num" data-v="0.8344441962135016">0.8×</td>
+  <td class="wide">
+    <span class="dim">未触发</span>
+  </td>
+  <td><span class="badge open" title="DQ-PRC-002 较前收盘 23.82%，达该标的近 120 日波动率(2.88%)的 8.3 倍，当日无公司行动记录可解释 ｜ DQ-PRC-002 较前收盘 23.71%，达该标的近 120 日波动率(2.67%)的 8.9 倍，当日无公司行动记录可解释"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr id="0857-HK" class="">
+  <td class="mono dim">HK 00857</td>
+  <td class="name"><a href="stock/0857-HK.html">中国石油股份</a></td>
+  <td class="dim">港股</td>
+  <td class="num" data-v="10.039999961853027">10.040</td>
+  <td class="num up" data-v="2.3967327828964713">+2.40%</td>
+  <td class="num down" data-v="-0.0995047631049295">-0.10%</td>
+  <td class="num down" data-v="-7.294551869051968"><b>-7.29%</b></td>
+  <td class="num" data-v="0.6469664376924315">0.6×</td>
+  <td class="wide">
+    <span class="dim">未触发</span>
+  </td>
+  <td><span class="badge open" title="DQ-PRC-002 较前收盘 -15.56%，达该标的近 120 日波动率(1.4%)的 11.1 倍，当日无公司行动记录可解释"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr id="EL" class="">
+  <td class="mono dim">US EL</td>
+  <td class="name"><a href="stock/EL.html">雅诗兰黛</a></td>
+  <td class="dim">美股</td>
+  <td class="num" data-v="84.2699966430664">84.270</td>
+  <td class="num down" data-v="-0.08299703327443453">-0.08%</td>
+  <td class="num up" data-v="2.3066575611632167">+2.31%</td>
+  <td class="num up" data-v="6.792539262712971"><b>+6.79%</b></td>
+  <td class="num" data-v="1.4535815505277454">1.5×</td>
+  <td class="wide">
+    <span class="dim">未触发</span>
+  </td>
+  <td><span class="badge open" title="DQ-PRC-002 较前收盘 -19.19%，达该标的近 120 日波动率(2.37%)的 8.1 倍，当日无公司行动记录可解释"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr id="SNDK" class="">
+  <td class="mono dim">US SNDK</td>
+  <td class="name"><a href="stock/SNDK.html">闪迪</a></td>
+  <td class="dim">美股</td>
+  <td class="num" data-v="1625.780029296875">1,625.780</td>
+  <td class="num down" data-v="-9.01418409434429">-9.01%</td>
+  <td class="num up" data-v="2.2889143276705326">+2.29%</td>
+  <td class="num up" data-v="5.416798915310483"><b>+5.42%</b></td>
+  <td class="num" data-v="1.0750646045069812">1.1×</td>
+  <td class="wide">
+    <span class="dim">未触发</span>
+  </td>
+  <td><span class="badge ok" title="今日无异常"><span class="dot"></span>正常</span></td>
+</tr>
+
+<tr id="2259-HK" class="">
+  <td class="mono dim">HK 02259</td>
+  <td class="name"><a href="stock/2259-HK.html">紫金黄金国际</a></td>
+  <td class="dim">港股</td>
+  <td class="num" data-v="131.89999389648438">131.900</td>
+  <td class="num down" data-v="-4.281574038178637">-4.28%</td>
+  <td class="num up" data-v="11.59052225207855">+11.59%</td>
+  <td class="num down" data-v="-5.107918060083183"><b>-5.11%</b></td>
+  <td class="num" data-v="0.3368205925800441">0.3×</td>
+  <td class="wide">
+    <span class="dim">未触发</span>
+  </td>
+  <td><span class="badge ok" title="今日无异常"><span class="dot"></span>正常</span></td>
+</tr>
+
+<tr id="9988-HK" class="">
+  <td class="mono dim">HK 09988</td>
+  <td class="name"><a href="stock/9988-HK.html">阿里巴巴-W</a></td>
+  <td class="dim">港股</td>
+  <td class="num" data-v="124.19999694824219">124.200</td>
+  <td class="num down" data-v="-1.9731650041169835">-1.97%</td>
+  <td class="num up" data-v="9.33098469762379">+9.33%</td>
+  <td class="num down" data-v="-2.2047268124077313"><b>-2.20%</b></td>
+  <td class="num" data-v="0.48574904550123815">0.5×</td>
+  <td class="wide">
+    <span class="dim">未触发</span>
+  </td>
+  <td><span class="badge open" title="DQ-CA-001 数据源自身不自洽：上报每股派息 1.960725 HKD，但其复权价隐含派息仅 0.25，相差 7.843 倍 ｜ DQ-CA-001 数据源自身不自洽：上报每股派息 1.029381 HKD，但其复权价隐含派息仅 0.131256，相差 7.843 倍 ｜ DQ-CA-004 全历史 491 个交易日中有 445 日复权价与数据源偏离，最大 2.201%，历史涨跌幅计算会受影响 ｜ DQ-CA-004 全历史 491 个交易日中有 442 日复权价与数据源偏离，最大 2.2%，历史涨跌幅计算会受影响 ｜ DQ-PRC-002 较前收盘 -17.98%，达该标的近 120 日波动率(2.96%)的 6.1 倍，当日无公司行动记录可解释 ｜ DQ-PRC-002 较前收盘 18.5%，达该标的近 120 日波动率(2.98%)的 6.2 倍，当日无公司行动记录可解释"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr id="AAPL" class="">
+  <td class="mono dim">US AAPL</td>
+  <td class="name"><a href="stock/AAPL.html">苹果</a></td>
+  <td class="dim">美股</td>
+  <td class="num" data-v="310.0299987792969">310.030</td>
+  <td class="num up" data-v="1.4529279409058127">+1.45%</td>
+  <td class="num down" data-v="-5.403671197528648">-5.40%</td>
+  <td class="num up" data-v="1.6525160517723236"><b>+1.65%</b></td>
+  <td class="num" data-v="1.029283161784211">1.0×</td>
+  <td class="wide">
+    <span class="dim">未触发</span>
+  </td>
+  <td><span class="badge open" title="DQ-PRC-002 较前收盘 -9.25%，达该标的近 120 日波动率(1.48%)的 6.3 倍，当日无公司行动记录可解释 ｜ DQ-PRC-002 较前收盘 15.33%，达该标的近 120 日波动率(1.89%)的 8.1 倍，当日无公司行动记录可解释"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr id="TSM" class="">
+  <td class="mono dim">US TSM</td>
+  <td class="name"><a href="stock/TSM.html">台积电</a></td>
+  <td class="dim">美股</td>
+  <td class="num" data-v="413.4100036621094">413.410</td>
+  <td class="num down" data-v="-4.074528971588709">-4.07%</td>
+  <td class="num down" data-v="-2.6377103873758245">-2.64%</td>
+  <td class="num up" data-v="1.537519307249835"><b>+1.54%</b></td>
+  <td class="num" data-v="1.109250750753723">1.1×</td>
+  <td class="wide">
+    <span class="dim">未触发</span>
+  </td>
+  <td><span class="badge ok" title="今日无异常"><span class="dot"></span>正常</span></td>
+</tr>
+
+<tr id="DRAM" class="">
+  <td class="mono dim">US DRAM</td>
+  <td class="name"><a href="stock/DRAM.html">存储主题 ETF</a></td>
+  <td class="dim">美股</td>
+  <td class="num" data-v="55.099998474121094">55.100</td>
+  <td class="num down" data-v="-8.759730036417446">-8.76%</td>
+  <td class="num down" data-v="-6.37213270557524">-6.37%</td>
+  <td class="num up" data-v="1.398598305850407"><b>+1.40%</b></td>
+  <td class="num" data-v="1.002749392038919">1.0×</td>
+  <td class="wide">
+    <span class="dim">未触发</span>
+  </td>
+  <td><span class="badge ok" title="今日无异常"><span class="dot"></span>正常</span></td>
+</tr>
+
+<tr id="SOXX" class="">
+  <td class="mono dim">US SOXX</td>
+  <td class="name"><a href="stock/SOXX.html">iShares 半导体 ETF</a></td>
+  <td class="dim">美股</td>
+  <td class="num" data-v="531.3900146484375">531.390</td>
+  <td class="num down" data-v="-4.959575889060808">-4.96%</td>
+  <td class="num down" data-v="-3.853876078611873">-3.85%</td>
+  <td class="num up" data-v="1.2730827306609571"><b>+1.27%</b></td>
+  <td class="num" data-v="1.020731429929734">1.0×</td>
+  <td class="wide">
+    <span class="dim">未触发</span>
+  </td>
+  <td><span class="badge open" title="DQ-PRC-002 较前收盘 18.57%，达该标的近 120 日波动率(2.35%)的 7.9 倍，当日无公司行动记录可解释"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr id="0700-HK" class="">
+  <td class="mono dim">HK 00700</td>
+  <td class="name"><a href="stock/0700-HK.html">腾讯控股</a></td>
+  <td class="dim">港股</td>
+  <td class="num" data-v="446.20001220703125">446.200</td>
+  <td class="num up" data-v="0.858955326169375">+0.86%</td>
+  <td class="num up" data-v="1.2709954666228374">+1.27%</td>
+  <td class="num up" data-v="1.0874531891526429"><b>+1.09%</b></td>
+  <td class="num" data-v="0.36811303232605863">0.4×</td>
+  <td class="wide">
+    <span class="dim">未触发</span>
+  </td>
+  <td><span class="badge ok" title="今日无异常"><span class="dot"></span>正常</span></td>
+</tr>
+
+<tr id="9992-HK" class="">
+  <td class="mono dim">HK 09992</td>
+  <td class="name"><a href="stock/9992-HK.html">泡泡玛特</a></td>
+  <td class="dim">港股</td>
+  <td class="num" data-v="151.60000610351562">151.600</td>
+  <td class="num up" data-v="0.9993337368457755">+1.00%</td>
+  <td class="num down" data-v="-4.833645198199021">-4.83%</td>
+  <td class="num up" data-v="0.7309010654588777"><b>+0.73%</b></td>
+  <td class="num" data-v="0.37761572790727166">0.4×</td>
+  <td class="wide">
+    <span class="dim">未触发</span>
+  </td>
+  <td><span class="badge open" title="DQ-PRC-002 较前收盘 -22.51%，达该标的近 120 日波动率(3.29%)的 6.8 倍，当日无公司行动记录可解释"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr id="CELH" class="">
+  <td class="mono dim">US CELH</td>
+  <td class="name"><a href="stock/CELH.html">Celsius</a></td>
+  <td class="dim">美股</td>
+  <td class="num" data-v="29.899999618530273">29.900</td>
+  <td class="num down" data-v="-0.1669487249931989">-0.17%</td>
+  <td class="num up" data-v="6.709490114393257">+6.71%</td>
+  <td class="num up" data-v="0.6733968028727721"><b>+0.67%</b></td>
+  <td class="num" data-v="0.7026051694854346">0.7×</td>
+  <td class="wide">
+    <span class="dim">未触发</span>
+  </td>
+  <td><span class="badge open" title="DQ-PRC-002 较前收盘 27.77%，达该标的近 120 日波动率(3.92%)的 7.1 倍，当日无公司行动记录可解释 ｜ DQ-PRC-002 较前收盘 -24.8%，达该标的近 120 日波动率(2.88%)的 8.6 倍，当日无公司行动记录可解释"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr id="DIS" class="">
+  <td class="mono dim">US DIS</td>
+  <td class="name"><a href="stock/DIS.html">迪士尼</a></td>
+  <td class="dim">美股</td>
+  <td class="num" data-v="103.94999694824219">103.950</td>
+  <td class="num up" data-v="0.43477966013738545">+0.43%</td>
+  <td class="num up" data-v="8.123567306195213">+8.12%</td>
+  <td class="num up" data-v="0.3572070965889518"><b>+0.36%</b></td>
+  <td class="num" data-v="0.5366548378308523">0.5×</td>
+  <td class="wide">
+    <span class="dim">未触发</span>
+  </td>
+  <td><span class="badge open" title="DQ-PRC-002 较前收盘 -9.24%，达该标的近 120 日波动率(1.45%)的 6.4 倍，当日无公司行动记录可解释 ｜ DQ-PRC-002 较前收盘 11.89%，达该标的近 120 日波动率(1.76%)的 6.8 倍，当日无公司行动记录可解释 ｜ DQ-PRC-002 较前收盘 -7.75%，达该标的近 120 日波动率(1.08%)的 7.2 倍，当日无公司行动记录可解释"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr id="NVDA" class="">
+  <td class="mono dim">US NVDA</td>
+  <td class="name"><a href="stock/NVDA.html">英伟达</a></td>
+  <td class="dim">美股</td>
+  <td class="num" data-v="219.74000549316406">219.740</td>
+  <td class="num down" data-v="-2.3421133026656604">-2.34%</td>
+  <td class="num up" data-v="6.006084524227795">+6.01%</td>
+  <td class="num up" data-v="0.10478383312106931"><b>+0.10%</b></td>
+  <td class="num" data-v="0.8521384180267458">0.9×</td>
+  <td class="wide">
+    <span class="dim">未触发</span>
+  </td>
+  <td><span class="badge open" title="DQ-PRC-002 较前收盘 -16.97%，达该标的近 108 日波动率(2.8%)的 6.1 倍，当日无公司行动记录可解释"><span class="dot"></span>待查</span></td>
+</tr>
+
+<tr id="SKHY" class="">
+  <td class="mono dim">US SKHY</td>
+  <td class="name"><a href="stock/SKHY.html">SK 海力士</a></td>
+  <td class="dim">美股</td>
+  <td class="num" data-v="155.6199951171875">155.620</td>
+  <td class="num down" data-v="-9.195944285566737">-9.20%</td>
+  <td class="num down" data-v="-9.491687270261783">-9.49%</td>
+  <td class="num " data-v=""><b>—</b></td>
+  <td class="num" data-v="0.6681635443275543">0.7×</td>
+  <td class="wide">
+    <span class="dim">未触发</span>
+  </td>
+  <td><span class="badge ok" title="今日无异常"><span class="dot"></span>正常</span></td>
+</tr>
+
+</tbody>
+</table>
+</div>
+
+<div class="note">
+  <b>为什么同时保留固定 20% 和波动率关注线。</b>
+  60 日 ±20% 用来提醒中期变化，回答“这只票和我上次认真看它时相比变了多少”；
+  单日关注线随每只股票近 120 日波动率变化，避免高波动标的天天报警、低波动标的大跳动却被忽略。
+</div>
+
+
+
+<footer class="foot">
+  mdesk 自选股事件与决策工作台　提醒来自预设条件，不构成买卖建议。<br>
+  本轮共 35 只标的、22 条后台校验规则；个人计划仅保存在当前浏览器。
+</footer>
+</div>
+
+<script>
+document.querySelectorAll('.chartbox').forEach(function (box) {
+  var cfg = JSON.parse(box.dataset.chart);
+  var svg = box.querySelector('svg');
+  var cross = svg.querySelector('.cross');
+  var dots = svg.querySelectorAll('.hd');
+  var hit = svg.querySelector('.hit');
+  var tip = document.createElement('div');
+  tip.className = 'tip';
+  box.appendChild(tip);
+
+  function nearest(clientX) {
+    var r = svg.getBoundingClientRect();
+    var vx = (clientX - r.left) / r.width * cfg.width;
+    var best = 0, bd = Infinity;
+    for (var i = 0; i < cfg.px.length; i++) {
+      var d = Math.abs(cfg.px[i] - vx);
+      if (d < bd) { bd = d; best = i; }
+    }
+    return best;
+  }
+
+  function show(e) {
+    var i = nearest(e.clientX);
+    cross.setAttribute('x1', cfg.px[i]);
+    cross.setAttribute('x2', cfg.px[i]);
+    cross.setAttribute('opacity', '1');
+    var lines = '<b>' + cfg.x[i] + '</b>';
+    cfg.series.forEach(function (s, k) {
+      var dot = dots[k];
+      if (s.py[i] === null) { dot.setAttribute('opacity', '0'); return; }
+      dot.setAttribute('cx', cfg.px[i]);
+      dot.setAttribute('cy', s.py[i]);
+      dot.setAttribute('opacity', '1');
+      lines += '<span><i style="background:' + s.color + '"></i>' +
+               s.name + '<em>' + s.val[i] + '</em></span>';
+    });
+    tip.innerHTML = lines;
+    var r = svg.getBoundingClientRect();
+    var left = cfg.px[i] / cfg.width * r.width;
+    tip.style.left = Math.min(Math.max(left, 70), r.width - 70) + 'px';
+    tip.style.opacity = '1';
+  }
+
+  function hide() {
+    cross.setAttribute('opacity', '0');
+    dots.forEach(function (d) { d.setAttribute('opacity', '0'); });
+    tip.style.opacity = '0';
+  }
+
+  hit.addEventListener('mousemove', show);
+  hit.addEventListener('mouseleave', hide);
+  hit.addEventListener('touchmove', function (e) {
+    if (e.touches.length) { show(e.touches[0]); }
+  }, { passive: true });
+});
+</script>
+<script>
+(function () {
+  var table = document.getElementById('wl');
+  if (!table) return;
+  var tbody = table.tBodies[0];
+  var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr:not(.grouprow)'));
+  var groupBy = 'market', sortCol = null, sortDir = 1;
+
+  function cellValue(tr, i, kind) {
+    var td = tr.cells[i];
+    if (kind === 'num') {
+      var raw = td.getAttribute('data-v');
+      if (raw === null || raw === '') return null;
+      var n = parseFloat(raw);
+      return isNaN(n) ? null : n;
+    }
+    return (td.textContent || '').trim();
+  }
+
+  function render() {
+    var ordered = rows.slice();
+    if (sortCol !== null) {
+      var kind = table.tHead.rows[0].cells[sortCol].getAttribute('data-sort');
+      ordered.sort(function (a, b) {
+        var x = cellValue(a, sortCol, kind), y = cellValue(b, sortCol, kind);
+        // 空值恒排在后面，不参与升降序
+        if (x === null && y === null) return 0;
+        if (x === null) return 1;
+        if (y === null) return -1;
+        if (kind === 'num') return (x - y) * sortDir;
+        return x.localeCompare(y, 'zh') * sortDir;
+      });
+    }
+    tbody.innerHTML = '';
+    if (groupBy === 'none') {
+      ordered.forEach(function (r) { tbody.appendChild(r); });
+      return;
+    }
+    var seen = [], buckets = {};
+    ordered.forEach(function (r) {
+      var k = r.dataset[groupBy] || '未分类';
+      if (!buckets[k]) { buckets[k] = []; seen.push(k); }
+      buckets[k].push(r);
+    });
+    var ncols = table.tHead.rows[0].cells.length;
+    seen.forEach(function (k) {
+      var tr = document.createElement('tr');
+      tr.className = 'grouprow';
+      var td = document.createElement('td');
+      td.colSpan = ncols;
+      td.innerHTML = k + '<span>' + buckets[k].length + ' 只</span>';
+      tr.appendChild(td);
+      tbody.appendChild(tr);
+      buckets[k].forEach(function (r) { tbody.appendChild(r); });
+    });
+  }
+
+  table.tHead.rows[0].querySelectorAll('th[data-sort]').forEach(function (th, _i) {
+    th.addEventListener('click', function () {
+      var idx = Array.prototype.indexOf.call(th.parentNode.cells, th);
+      sortDir = (sortCol === idx) ? -sortDir : -1;   // 首次点击默认降序
+      sortCol = idx;
+      table.tHead.rows[0].querySelectorAll('th').forEach(function (o) {
+        o.removeAttribute('aria-sort');
+      });
+      th.setAttribute('aria-sort', sortDir === 1 ? 'ascending' : 'descending');
+      render();
+    });
+  });
+
+  document.querySelectorAll('.toolbar button[data-group]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      groupBy = b.dataset.group;
+      document.querySelectorAll('.toolbar button[data-group]').forEach(function (o) {
+        o.setAttribute('aria-pressed', String(o === b));
+      });
+      render();
+    });
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

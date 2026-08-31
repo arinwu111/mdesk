@@ -1,80 +1,68 @@
 {% extends "base.html" %}
 {% block body %}
 
-<h1>今天该看什么</h1>
+<h1>今天该关注什么</h1>
+<p class="lede">
+  {{ home.greeting }}　数据截至 {{ meta.data_date }}。
+  这里把事件、价格信号和你预先写下的计划放在一起。它只提醒你重新判断，不替你做买卖决定。
+</p>
 
 {% if home.blockers %}
 <div class="blocker">
-  <div class="bl-head">数据已过期，本页其余结论暂不可信</div>
+  <div class="bl-head">数据时效需要先确认</div>
   {% for b in home.blockers %}
-  <div class="bl-row"><span class="sev P0">{{ b.severity }}</span>
-    <span class="mono dim">{{ b.rule_id }}</span>
-    <span>{{ b.detail }}</span></div>
+  <div class="bl-row"><span class="sev P0">提示</span><span>{{ b.detail }}</span></div>
   {% endfor %}
-  <div class="bl-foot">
-    先恢复采集再看下面的内容。排查顺序：Actions 里 Daily data pipeline 最近一次运行是否变红 →
-    <a href="ops/index.html">异常清单</a>里 DQ-OPS-001 有无采集失败记录 → 本地跑
-    <span class="mono">python3 -m mdesk.healthcheck</span> 看具体哪一项不健康。
-  </div>
+  <div class="bl-foot">在数据恢复更新前，价格信号只作参考。详情见 <a href="ops/index.html">数据校验</a>。</div>
 </div>
 {% endif %}
 
-<p class="lede">
-  {{ home.greeting }}　数据截至 {{ meta.data_date }}。
-  这一页只回答一个问题：现在有没有需要你动手的事。没有的话直接去
-  <a href="watchlist.html">自选股</a> 看盘。
-</p>
-
 <div class="tiles">
-  <div class="tile"><div class="k">需当场处理</div>
-    <div class="v {{ 'up' if home.p0 else '' }}">{{ home.p0 }}</div>
-    <div class="sub">P0 异常</div></div>
-  <div class="tile"><div class="k">待排期</div><div class="v">{{ home.p1 }}</div>
-    <div class="sub">P1 异常</div></div>
-  <div class="tile"><div class="k">三日内事件</div>
-    <div class="v {{ 'up' if home.n_soon else '' }}">{{ home.n_soon }}</div>
+  <div class="tile"><div class="k">市场触发</div><div class="v {{ 'up' if home.n_active else '' }}">{{ home.n_active }}</div>
+    <div class="sub">价格、波动或成交变化</div></div>
+  <div class="tile"><div class="k">基期 ±20%</div><div class="v">{{ home.n_basis }}</div>
+    <div class="sub">较 60 个交易日前</div></div>
+  <div class="tile"><div class="k">七日内事件</div><div class="v">{{ home.n_soon }}</div>
     <div class="sub">财报、除息、拆股</div></div>
-  <div class="tile"><div class="k">数据可信标的</div><div class="v">{{ home.n_ok }}/{{ meta.n_symbols }}</div>
-    <div class="sub">无未解释异常</div></div>
-  <div class="tile"><div class="k">采集状态</div>
-    <div class="v" style="font-size:19px">{{ home.fetch_label }}</div>
+  <div class="tile"><div class="k">我的计划</div><div class="v" id="plan-count">0</div>
+    <div class="sub" id="plan-count-sub">保存在当前浏览器</div></div>
+  <div class="tile"><div class="k">数据可信度</div><div class="v" style="font-size:19px">{{ home.fetch_label }}</div>
     <div class="sub">{{ home.fetch_sub }}</div></div>
 </div>
 
-<h2>一、盘前确认</h2>
-{% if home.todo %}
-<div class="scroll">
-<table>
-<thead><tr><th>级别</th><th>规则</th><th>标的</th><th>说明</th><th>业务日</th></tr></thead>
-<tbody>
-{% for t in home.todo %}
-<tr>
-  <td><span class="sev {{ t.severity }}">{{ t.severity }}</span></td>
-  <td class="mono dim">{{ t.rule_id }}</td>
-  <td class="name">{% if t.slug %}<a href="stock/{{ t.slug }}.html">{{ t.name }}</a>
-      {% else %}{{ t.name }}{% endif %}</td>
-  <td class="wide">{{ t.detail }}</td>
-  <td class="mono dim">{{ t.biz_date }}</td>
-</tr>
-{% endfor %}
-</tbody>
-</table>
+<div class="section-head">
+  <div><h2>一、由市场触发</h2><p>达到关注条件的标的，先看原因，再决定是否行动。</p></div>
+  <a class="text-link" href="signals.html">查看全部信号 →</a>
 </div>
-<p class="dim" style="margin-top:10px">
-  完整清单见 <a href="ops/index.html">异常清单</a>，处理方式见
-  <a href="ops/ledger.html">处理台账</a>。
-</p>
+{% if home.active %}
+<div class="action-list">
+{% for r in home.active %}
+  <a class="action-row" href="stock/{{ r.slug }}.html">
+    <span class="action-priority {{ 'strong' if r.priority == 2 else '' }}">{{ '重新评估' if r.priority == 2 else '查看原因' }}</span>
+    <span class="action-main"><b>{{ r.name }}</b><small>{{ r.display_code }} · {{ r.trigger_text }}</small></span>
+    <span class="action-value {{ r.ret_60_dir }}">{{ r.ret_60_fmt }}</span>
+  </a>
+{% endfor %}
+</div>
 {% else %}
-<div class="card"><p style="margin:0">
-  没有待处理的异常。全部 {{ meta.n_rules }} 条规则本轮的命中都已解释或归档。
-</p></div>
+<div class="empty-state"><b>没有市场信号触发</b><span>这意味着当前没有越过你设定的关注线，不等于市场没有变化。</span></div>
 {% endif %}
 
-<h2>二、临近事件</h2>
+<div class="section-head">
+  <div><h2>二、由我的计划触发</h2><p>只有你自己写下的条件，才会出现“考虑买入”或“考虑减仓”。</p></div>
+  <a class="text-link" href="plans.html">管理计划 →</a>
+</div>
+<div id="plan-actions" class="action-list"></div>
+<div id="plan-actions-empty" class="empty-state"><b>还没有触发的个人计划</b><span>可在“计划”页设置价格或区间涨跌条件。</span></div>
+
+<div class="section-head">
+  <div><h2>三、临近事件</h2><p>事件本身不是异常，但可能改变你原来的判断。</p></div>
+  <a class="text-link" href="calendar.html">打开事件日历 →</a>
+</div>
 {% if home.soon %}
 <div class="scroll">
 <table>
-<thead><tr><th class="num">还有</th><th>日期</th><th>标的</th><th>类型</th><th>说明</th></tr></thead>
+<thead><tr><th class="num">还有</th><th>日期</th><th>标的</th><th>类型</th><th>需要关注</th></tr></thead>
 <tbody>
 {% for e in home.soon %}
 <tr>
@@ -82,63 +70,60 @@
   <td class="mono dim">{{ e.event_date }}</td>
   <td class="name"><a href="stock/{{ e.slug }}.html">{{ e.name }}</a></td>
   <td>{{ e.type_label }}</td>
-  <td class="wide dim">{{ e.title }}</td>
+  <td class="wide">{{ e.title }}</td>
 </tr>
 {% endfor %}
 </tbody>
 </table>
 </div>
-<p class="dim" style="margin-top:10px">完整日历见 <a href="calendar.html">事件日历</a>。</p>
 {% else %}
-<div class="card"><p style="margin:0">未来 14 天内没有已知事件。</p></div>
+<div class="empty-state"><b>未来 14 天没有已知事件</b><span>港股部分前瞻事件仍依赖公告原文，覆盖边界见事件页。</span></div>
 {% endif %}
 
-<h2>三、昨日市场</h2>
-<div class="cols2">
-{% for m in home.markets %}
-<div class="card">
-  <div style="display:flex;align-items:baseline;gap:10px">
-    <span style="font-weight:620">{{ m.label }}</span>
-    <span class="dim" style="font-size:12px">{{ m.trade_date }}　{{ m.n }} 只</span>
-    <span style="margin-left:auto" class="mono">
-      <span class="up">{{ m.n_up }} 涨</span>　<span class="down">{{ m.n_down }} 跌</span>
-    </span>
-  </div>
-  <div style="margin-top:12px">
-    {% for r in m.flagged %}
-    <div class="rankrow">
-      <span class="badge {{ r.badge }}" title="{{ r.summary }}"><span class="dot"></span></span>
-      <a href="stock/{{ r.slug }}.html">{{ r.name }}</a>
-      <span class="dim">{{ r.sector }}</span>
-      <span class="num {{ r.dir }}">{{ r.change_fmt }}</span>
-    </div>
-    {% endfor %}
-    {% if not m.flagged %}
-    <div class="rankgap">该市场当前没有带角标的标的</div>
-    {% endif %}
-    {% if m.clean %}
-    <details class="rankfold">
-      <summary>另有 {{ m.n_clean }} 只无异常标的</summary>
-      {% for r in m.clean %}
-      <div class="rankrow">
-        <span class="badge ok" title="{{ r.summary }}"><span class="dot"></span></span>
-        <a href="stock/{{ r.slug }}.html">{{ r.name }}</a>
-        <span class="dim">{{ r.sector }}</span>
-        <span class="num {{ r.dir }}">{{ r.change_fmt }}</span>
-      </div>
-      {% endfor %}
-    </details>
-    {% endif %}
-  </div>
+<div class="section-head">
+  <div><h2>四、数据可信度</h2><p>只有来源矛盾、字段失效或采集异常时才需要进入后台查看。</p></div>
+  <a class="text-link" href="ops/index.html">进入数据后台 →</a>
 </div>
-{% endfor %}
+{% if home.data_attention %}
+<div class="card compact-card">
+  <b>{{ home.n_data }} 只标的存在未解释的数据问题</b>
+  <p>这类提示影响的是数字能不能直接使用，不代表公司或股价本身异常。</p>
+  {% for r in home.data_attention %}<div class="mini-row"><a href="stock/{{ r.slug }}.html">{{ r.name }}</a><span>{{ r.dq_summary }}</span></div>{% endfor %}
 </div>
+{% else %}
+<div class="empty-state"><b>当前没有未解释的数据矛盾</b><span>后台校验仍会继续运行，但不会占据你的主要注意力。</span></div>
+{% endif %}
 
-<div class="note">
-  <b>这里按数据质量角标排序，不按涨跌幅排序。</b>
-  带红黄角标的标的全部展开、不折叠也不省略，因为这一页存在的理由就是让该动手的事都露出来；
-  无异常的标的收在折叠区里，点开可见。同一组内按涨跌幅绝对值从大到小排。
-  涨跌幅取自最近一个交易日的收盘价，港美股交易日不同步，每栏都标了各自的日期。
-</div>
+<script>
+(function () {
+  const quotes = {{ quotes_json }};
+  const bySymbol = Object.fromEntries(quotes.map(q => [q.symbol, q]));
+  let plans = [];
+  try { plans = JSON.parse(localStorage.getItem('mdesk-decision-plans-v1') || '[]'); } catch (_) {}
+  const count = document.getElementById('plan-count');
+  const sub = document.getElementById('plan-count-sub');
+  const box = document.getElementById('plan-actions');
+  const empty = document.getElementById('plan-actions-empty');
+  const escapeHtml = s => String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const condition = (p, q) => {
+    if (!q) return false;
+    if (p.condition === 'price_lte') return q.close <= p.value;
+    if (p.condition === 'price_gte') return q.close >= p.value;
+    if (p.condition === 'ret60_lte') return q.ret60 != null && q.ret60 <= p.value;
+    if (p.condition === 'ret60_gte') return q.ret60 != null && q.ret60 >= p.value;
+    return false;
+  };
+  const triggered = plans.filter(p => condition(p, bySymbol[p.symbol]));
+  count.textContent = triggered.length;
+  sub.textContent = `${plans.length} 条计划中已触发`;
+  if (!triggered.length) return;
+  empty.hidden = true;
+  box.innerHTML = triggered.map(p => {
+    const q = bySymbol[p.symbol];
+    const note = p.reason ? ` · ${escapeHtml(p.reason)}` : '';
+    return `<a class="action-row" href="stock/${q.slug}.html"><span class="action-priority strong">${escapeHtml(p.intent)}</span><span class="action-main"><b>${escapeHtml(q.name)}</b><small>触发你预设的条件${note}</small></span><span class="action-value">${q.close.toFixed(2)} ${escapeHtml(q.currency)}</span></a>`;
+  }).join('');
+})();
+</script>
 
 {% endblock %}

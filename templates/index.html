@@ -3,7 +3,7 @@
 
 <h1>自选股</h1>
 <p class="lede">
-  这一页的数字都经过校验层核对过。每行末尾的角标说明该行数据当前可不可信：
+  这里是你的关注范围，不是全市场行情终端。每行末尾的角标只说明数据当前可不可信：
   <span class="badge ok"><span class="dot"></span>灰</span> 无异常，
   <span class="badge explained"><span class="dot"></span>黄</span> 有异常但原因已查明、数字可用，
   <span class="badge open"><span class="dot"></span>红</span> 有异常且原因未明、暂不可信。
@@ -44,7 +44,7 @@
   <th data-sort="num" class="num">PE(TTM)</th>
   <th data-sort="num" class="num">年化波动</th>
   <th data-sort="num" class="num">告警线</th>
-  <th data-sort="num">数据质量</th>
+  <th data-sort="num">数据可信度</th>
 </tr></thead>
 <tbody>
 {% for r in rows %}
@@ -76,7 +76,7 @@
   告警线取其折回单日后的 6 倍（下限 5%）。
   所以{{ eg.high_name }}的线是 ±{{ eg.high_thr }}，{{ eg.low_name }}的线是 ±{{ eg.low_thr }}。
   同样是单日涨 20%，前者属于日常波动，后者是必须查清的重大异动。
-  单日涨跌越过各自的线且当天无公司行动可解释，才会命中规则 DQ-PRC-002 进入异常清单。
+  单日涨跌越过各自的线且当天无公司行动可解释，才会命中规则 DQ-PRC-002，并进入关注信号。
   把鼠标停在角标上能看到该行的具体判据。
 </div>
 

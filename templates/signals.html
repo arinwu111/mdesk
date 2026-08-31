@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block body %}
+
+<h1>关注信号</h1>
+<p class="lede">
+  信号只表示“越过了预设关注线”，不等于异常，更不等于买卖建议。
+  当前基期定义为 60 个交易日前；累计涨跌达到 ±20%、单日跳动超过自身波动线，或成交量达到前 20 日均量两倍时进入关注区。
+</p>
+
+<div class="tiles">
+  <div class="tile"><div class="k">当前触发</div><div class="v">{{ signals.n_active }}</div><div class="sub">至少命中一个条件</div></div>
+  <div class="tile"><div class="k">基期 ±20%</div><div class="v">{{ signals.n_basis }}</div><div class="sub">较 60 个交易日前</div></div>
+  <div class="tile"><div class="k">单日跳动</div><div class="v">{{ signals.n_jump }}</div><div class="sub">超过自身波动关注线</div></div>
+  <div class="tile"><div class="k">成交放大</div><div class="v">{{ signals.n_volume }}</div><div class="sub">达到前 20 日均量两倍</div></div>
+  <div class="tile"><div class="k">数据提示</div><div class="v">{{ signals.n_data }}</div><div class="sub">与市场信号分开计算</div></div>
+</div>
+
+<div class="signal-key">
+  <span><i class="signal-dot basis"></i>基期变化</span>
+  <span><i class="signal-dot jump"></i>单日跳动</span>
+  <span><i class="signal-dot volume"></i>成交放大</span>
+  <span class="dim">同一只标的可同时触发多个条件</span>
+</div>
+
+<div class="scroll">
+<table class="sortable" id="signals-table">
+<thead><tr>
+  <th data-sort="text">代码</th><th data-sort="text">名称</th><th data-sort="text">市场</th>
+  <th data-sort="num" class="num">最新价</th><th data-sort="num" class="num">日涨跌</th>
+  <th data-sort="num" class="num">20 日</th><th data-sort="num" class="num">60 日</th>
+  <th data-sort="num" class="num">量比</th><th>关注原因</th><th>数据可信度</th>
+</tr></thead>
+<tbody>
+{% for r in signals.rows %}
+<tr id="{{ r.slug }}" class="{{ 'signal-active' if r.active else '' }}">
+  <td class="mono dim">{{ r.display_code }}</td>
+  <td class="name"><a href="stock/{{ r.slug }}.html">{{ r.name }}</a></td>
+  <td class="dim">{{ r.market_label }}</td>
+  <td class="num" data-v="{{ r.close or '' }}">{{ r.close_fmt }}</td>
+  <td class="num {{ r.ret_1_dir }}" data-v="{{ r.ret_1 or '' }}">{{ r.ret_1_fmt }}</td>
+  <td class="num {{ r.ret_20_dir }}" data-v="{{ r.ret_20 or '' }}">{{ r.ret_20_fmt }}</td>
+  <td class="num {{ r.ret_60_dir }}" data-v="{{ r.ret_60 or '' }}"><b>{{ r.ret_60_fmt }}</b></td>
+  <td class="num" data-v="{{ r.vol_ratio or '' }}">{{ r.vol_ratio_fmt }}</td>
+  <td class="wide">
+    {% if r.triggers %}
+      {% for t in r.triggers %}<span class="signal-chip {{ t.kind }}">{{ t.label }}</span>{% endfor %}
+      <div class="signal-detail">{{ r.trigger_text }}</div>
+    {% else %}<span class="dim">未触发</span>{% endif %}
+  </td>
+  <td><span class="badge {{ r.badge }}" title="{{ r.dq_summary }}"><span class="dot"></span>{{ r.badge_label }}</span></td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+<div class="note">
+  <b>为什么同时保留固定 20% 和波动率关注线。</b>
+  60 日 ±20% 用来提醒中期变化，回答“这只票和我上次认真看它时相比变了多少”；
+  单日关注线随每只股票近 120 日波动率变化，避免高波动标的天天报警、低波动标的大跳动却被忽略。
+</div>
+
+{% endblock %}

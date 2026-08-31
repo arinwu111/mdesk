@@ -3,7 +3,7 @@
 
 <h1>事件日历</h1>
 <p class="lede">
-  持仓相关事件漏掉是会真金白银出问题的。上半页是还没发生的，下半页是已经发生的。
+  事件不是异常，但可能改变原来的判断。上半页是还没发生的，下半页是已经发生的。
   前瞻数据来自三个源：Nasdaq 公开日历给美股的除息与拆股，yfinance 给港美股的下一次财报日，
   港交所披露易给港股公告原文。
 </p>
@@ -70,7 +70,7 @@
 <div class="scroll">
 <table>
 <thead><tr><th>除权日</th><th>代码</th><th>名称</th><th>类型</th>
-  <th class="num">每股金额</th><th class="num">比例</th><th class="num">占前收盘</th><th>数据质量</th></tr></thead>
+  <th class="num">每股金额</th><th class="num">比例</th><th class="num">占前收盘</th><th>数据可信度</th></tr></thead>
 <tbody>
 {% for a in recent %}
 <tr>

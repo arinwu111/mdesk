@@ -27,23 +27,21 @@
 
 <header class="top">
   <div class="top-inner">
-    <div class="brand">mdesk<span>港美股行情数据工作台</span></div>
-    <div class="stamp">数据截至 2026-08-19　生成于 2026-08-19 18:54</div>
+    <div class="brand">mdesk<span>自选股事件与决策工作台</span></div>
+    <div class="stamp">数据截至 2026-08-19　生成于 2026-08-31 16:40</div>
   </div>
   <nav class="tabs">
-    <span class="group-label">日常</span>
-    <a href="index.html"       class="">总览</a>
+    <span class="group-label">关注</span>
+    <a href="index.html"       class="">今日行动</a>
+    <a href="calendar.html"    class="">事件</a>
+    <a href="signals.html"     class="">信号</a>
+    <a href="plans.html"       class="">计划</a>
     <a href="watchlist.html"   class="on">自选股</a>
-    <a href="calendar.html"    class="">事件日历</a>
     <span class="sep"></span>
-    <span class="group-label">运营</span>
-    <a href="ops/index.html"      class="">异常清单</a>
-    <a href="ops/corpaction.html" class="">复权核对</a>
-    <a href="ops/coverage.html"   class="">数据覆盖</a>
-    <a href="ops/rules.html"      class="">规则库</a>
-    <a href="ops/ledger.html"     class="">处理台账</a>
-    <a href="ops/report.html"     class="">运营报告</a>
+    <a href="ops/index.html" class="">数据后台</a>
+    <a href="role-transfer.html" class="">能力迁移</a>
   </nav>
+
 </header>
 
 <div class="wrap">
@@ -51,7 +49,7 @@
 
 <h1>自选股</h1>
 <p class="lede">
-  这一页的数字都经过校验层核对过。每行末尾的角标说明该行数据当前可不可信：
+  这里是你的关注范围，不是全市场行情终端。每行末尾的角标只说明数据当前可不可信：
   <span class="badge ok"><span class="dot"></span>灰</span> 无异常，
   <span class="badge explained"><span class="dot"></span>黄</span> 有异常但原因已查明、数字可用，
   <span class="badge open"><span class="dot"></span>红</span> 有异常且原因未明、暂不可信。
@@ -92,7 +90,7 @@
   <th data-sort="num" class="num">PE(TTM)</th>
   <th data-sort="num" class="num">年化波动</th>
   <th data-sort="num" class="num">告警线</th>
-  <th data-sort="num">数据质量</th>
+  <th data-sort="num">数据可信度</th>
 </tr></thead>
 <tbody>
 
@@ -311,8 +309,8 @@
   <td><svg width="104" height="26" viewBox="0 0 104 26" role="img" aria-label="近期走势 +4.3%"><title>区间 52.82 → 55.10，+4.3%</title><path d="M3.0,18.6 L4.7,14.3 L6.3,14.1 L8.0,13.1 L9.6,12.8 L11.3,10.1 L13.0,9.2 L14.6,9.1 L16.3,11.4 L17.9,16.9 L19.6,14.3 L21.3,14.6 L22.9,16.0 L24.6,11.7 L26.3,11.8 L27.9,8.4 L29.6,10.0 L31.2,9.0 L32.9,5.2 L34.6,3.0 L36.2,9.4 L37.9,9.0 L39.5,5.1 L41.2,7.9 L42.9,7.9 L44.5,6.8 L46.2,11.3 L47.8,14.2 L49.5,11.9 L51.2,14.2 L52.8,13.4 L54.5,12.1 L56.2,12.9 L57.8,16.1 L59.5,13.9 L61.1,16.0 L62.8,18.8 L64.5,18.6 L66.1,18.4 L67.8,15.2 L69.4,15.8 L71.1,15.5 L72.8,18.3 L74.4,18.8 L76.1,21.4 L77.7,23.0 L79.4,18.8 L81.1,19.9 L82.7,19.5 L84.4,17.4 L86.1,18.0 L87.7,19.3 L89.4,19.8 L91.0,20.4 L92.7,19.6 L94.4,17.5 L96.0,16.3 L97.7,16.0 L99.3,14.3 L101.0,17.3" fill="none" stroke="var(--series-1)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/><circle cx="101.0" cy="17.3" r="2.2" fill="var(--series-1)"/></svg></td>
   <td class="num dim" data-v="">—</td>
   <td class="num dim" data-v="25.14146">25.1</td>
-  <td class="num dim" data-v="98.44501670422166">98.4%</td>
-  <td class="num dim" data-v="37.20871885899571">±37.2%</td>
+  <td class="num dim" data-v="98.44501670422167">98.4%</td>
+  <td class="num dim" data-v="37.20871885899572">±37.2%</td>
   <td data-v="0"><span class="badge ok" title="今日 -8.76%，未触及该标的告警线 ±37.2%（= 其自身日波动率的 6 倍）">
       <span class="dot"></span>正常</span></td>
 </tr>
@@ -702,15 +700,15 @@
   告警线取其折回单日后的 6 倍（下限 5%）。
   所以智谱的线是 ±67.6%，迪士尼的线是 ±9.9%。
   同样是单日涨 20%，前者属于日常波动，后者是必须查清的重大异动。
-  单日涨跌越过各自的线且当天无公司行动可解释，才会命中规则 DQ-PRC-002 进入异常清单。
+  单日涨跌越过各自的线且当天无公司行动可解释，才会命中规则 DQ-PRC-002，并进入关注信号。
   把鼠标停在角标上能看到该行的具体判据。
 </div>
 
 
 
 <footer class="foot">
-  mdesk 自建港美股行情数据工作台　行情来源 yfinance，仅用于数据质量核对与个人自用，不构成任何投资建议。<br>
-  本轮共 35 只标的、22 条校验规则，未处理异常 41 条。
+  mdesk 自选股事件与决策工作台　提醒来自预设条件，不构成买卖建议。<br>
+  本轮共 35 只标的、22 条后台校验规则；个人计划仅保存在当前浏览器。
 </footer>
 </div>
 

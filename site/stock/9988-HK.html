@@ -27,23 +27,21 @@
 
 <header class="top">
   <div class="top-inner">
-    <div class="brand">mdesk<span>港美股行情数据工作台</span></div>
-    <div class="stamp">数据截至 2026-08-19　生成于 2026-08-19 18:54</div>
+    <div class="brand">mdesk<span>自选股事件与决策工作台</span></div>
+    <div class="stamp">数据截至 2026-08-19　生成于 2026-08-31 16:40</div>
   </div>
   <nav class="tabs">
-    <span class="group-label">日常</span>
-    <a href="../index.html"       class="">总览</a>
+    <span class="group-label">关注</span>
+    <a href="../index.html"       class="">今日行动</a>
+    <a href="../calendar.html"    class="">事件</a>
+    <a href="../signals.html"     class="">信号</a>
+    <a href="../plans.html"       class="">计划</a>
     <a href="../watchlist.html"   class="on">自选股</a>
-    <a href="../calendar.html"    class="">事件日历</a>
     <span class="sep"></span>
-    <span class="group-label">运营</span>
-    <a href="../ops/index.html"      class="">异常清单</a>
-    <a href="../ops/corpaction.html" class="">复权核对</a>
-    <a href="../ops/coverage.html"   class="">数据覆盖</a>
-    <a href="../ops/rules.html"      class="">规则库</a>
-    <a href="../ops/ledger.html"     class="">处理台账</a>
-    <a href="../ops/report.html"     class="">运营报告</a>
+    <a href="../ops/index.html" class="">数据后台</a>
+    <a href="../role-transfer.html" class="">能力迁移</a>
   </nav>
+
 </header>
 
 <div class="wrap">
@@ -54,6 +52,10 @@
 <p class="lede">
   电商　港股　普通股<br>案例价值：港美双重主要上市，对 BABA 按存托比例折算做跨市场价差校验
 </p>
+<div class="context-actions">
+  <a class="primary-link" href="../plans.html?symbol=9988.HK">为这只股票设计划</a>
+  <a class="text-link" href="../signals.html#9988-HK">查看它的关注信号 →</a>
+</div>
 
 <div class="tiles">
   <div class="tile"><div class="k">最新价</div><div class="v">124.200</div>
@@ -64,13 +66,13 @@
     <div class="sub">HKD</div></div>
   <div class="tile"><div class="k">PE(TTM)</div><div class="v">19.4</div>
     <div class="sub">有盈利</div></div>
-  <div class="tile"><div class="k">数据质量</div>
+  <div class="tile"><div class="k">数据可信度</div>
     <div class="v"><span class="badge open" style="font-size:20px">
       <span class="dot" style="width:11px;height:11px"></span>待查</span></div>
     <div class="sub">3 条待查异常</div></div>
 </div>
 
-<h2>复权价走势</h2>
+<h2>价格走势与复权说明</h2>
 
 <div class="legend">
   <span class="item"><span class="swatch" style="background:var(--series-1)"></span>自算复权价</span>
@@ -83,7 +85,7 @@
   上图为复权价，下图为成交量，共用同一条时间轴，共 491 个交易日。
   
   两条价格线本应完全重合，这只标的的自算复权价与数据源给的对不上，
-  差异原因见下方公司行动，以及运营视图的<a href="../ops/corpaction.html">复权核对</a>页。
+  差异原因见下方公司行动，以及数据后台的<a href="../ops/corpaction.html">复权逻辑</a>页。
   
 </figcaption>
 
@@ -198,7 +200,7 @@
 </div>
 <figcaption>
   告警阈值是这只标的自己的单日跳空告警线，等于它近 120 日日波动率的 6 倍。
-  单日涨跌超过这个数且当天没有公司行动可解释，就会命中 DQ-PRC-002 进入异常清单。
+  单日涨跌超过这个数且当天没有公司行动可解释，就会命中 DQ-PRC-002，出现在关注信号与数据校验中。
   每只标的的线都不一样，所以高波动标的不会因为正常波动被反复告警。
 </figcaption>
 
@@ -206,7 +208,7 @@
 
 <div class="scroll">
 <table>
-<thead><tr><th>标的</th><th class="num">最新涨跌</th><th class="num">年化波动</th><th>数据质量</th></tr></thead>
+<thead><tr><th>标的</th><th class="num">最新涨跌</th><th class="num">年化波动</th><th>数据可信度</th></tr></thead>
 <tbody>
 
 <tr >
@@ -262,7 +264,7 @@
 </div>
 
 
-<h2>该标的的异常记录</h2>
+<h2>该标的的数据校验记录</h2>
 
 <div class="scroll">
 <table>
@@ -331,8 +333,8 @@
 
 
 <footer class="foot">
-  mdesk 自建港美股行情数据工作台　行情来源 yfinance，仅用于数据质量核对与个人自用，不构成任何投资建议。<br>
-  本轮共 35 只标的、22 条校验规则，未处理异常 41 条。
+  mdesk 自选股事件与决策工作台　提醒来自预设条件，不构成买卖建议。<br>
+  本轮共 35 只标的、22 条后台校验规则；个人计划仅保存在当前浏览器。
 </footer>
 </div>
 

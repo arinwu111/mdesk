@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>能力迁移 · mdesk</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232a78d6'/%3E%3Cpath d='M6 21.5 L12 14 L17 18.5 L26 8.5' fill='none' stroke='white' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="static/style.css">
+<style>
+.chartbox { position: relative; }
+.chartbox .tip {
+  position: absolute; top: 6px; transform: translateX(-50%);
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 7px 10px; font-size: 12px; pointer-events: none; opacity: 0;
+  transition: opacity .1s; white-space: nowrap; box-shadow: 0 2px 10px rgba(0,0,0,.10);
+  color: var(--ink);
+}
+.chartbox .tip b { display: block; color: var(--ink-muted); font-weight: 500;
+  font-size: 11px; margin-bottom: 3px; }
+.chartbox .tip span { display: flex; align-items: center; gap: 6px; }
+.chartbox .tip i { width: 9px; height: 2px; border-radius: 1px; flex: none; }
+.chartbox .tip em { font-style: normal; margin-left: auto; padding-left: 14px;
+  font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">mdesk<span>自选股事件与决策工作台</span></div>
+    <div class="stamp">数据截至 2026-08-19　生成于 2026-08-31 16:40</div>
+  </div>
+  <nav class="tabs">
+    <span class="group-label">关注</span>
+    <a href="index.html"       class="">今日行动</a>
+    <a href="calendar.html"    class="">事件</a>
+    <a href="signals.html"     class="">信号</a>
+    <a href="plans.html"       class="">计划</a>
+    <a href="watchlist.html"   class="">自选股</a>
+    <span class="sep"></span>
+    <a href="ops/index.html" class="">数据后台</a>
+    <a href="role-transfer.html" class="on">能力迁移</a>
+  </nav>
+
+</header>
+
+<div class="wrap">
+
+
+<h1>从个人工具到财富管理中台</h1>
+<p class="lede">
+  mdesk 首先服务一个真实用户：我自己。下面不是已实现的机构功能，也不虚构客户或产品数据；
+  它说明同一套“事件—信号—计划—行动”方法，进入财富管理团队后可以怎样扩展。
+</p>
+
+<div class="transfer-grid">
+  <article class="transfer-card"><span>个人版</span><h2>自选股与标签</h2><p>限定自己真正关注的范围，按市场、行业和研究主题组织。</p><b>可迁移为</b><p>产品池、产品标签与知识库，帮助 RM 快速找到适合沟通的材料。</p></article>
+  <article class="transfer-card"><span>个人版</span><h2>事件日历</h2><p>跟踪财报、分红、拆股、公告等可能改变判断的节点。</p><b>可迁移为</b><p>产品募集、派息、到期、观察日及材料更新节点管理。</p></article>
+  <article class="transfer-card"><span>个人版</span><h2>信号与优先级</h2><p>价格、波动或成交达到条件后进入关注区，不直接给结论。</p><b>可迁移为</b><p>按重要性、时效性和影响对象排列待跟进事项。</p></article>
+  <article class="transfer-card"><span>个人版</span><h2>个人计划</h2><p>事先写下条件、理由和触发后的下一步，减少临场冲动。</p><b>可迁移为</b><p>把产品条款、客户需求与下一步动作结构化，但仍由持牌人员判断适当性。</p></article>
+  <article class="transfer-card"><span>个人版</span><h2>每日行动页</h2><p>把事件、信号和计划压缩成今天真正需要看的少数事项。</p><b>可迁移为</b><p>RM 晨报、产品一页纸、客户沟通准备与事项推进清单。</p></article>
+  <article class="transfer-card"><span>基础设施</span><h2>数据可信度</h2><p>只有来源矛盾、字段失效或采集异常时才进入数据后台。</p><b>可迁移为</b><p>在材料生成前提示口径和来源边界，避免不可靠数字流入客户材料。</p></article>
+</div>
+
+<h2>如果进入团队，优先增加的三项能力</h2>
+<div class="step-list">
+  <div><b>01　产品节点管理</b><span>哪些产品正在募集、即将派息、到期或需要更新材料。</span></div>
+  <div><b>02　材料生产</b><span>从产品资料生成内部摘要、客户版解释和 RM 风险提示。</span></div>
+  <div><b>03　事项推进</b><span>谁在等待什么材料、下一步由谁处理、什么时候需要跟进。</span></div>
+</div>
+
+<div class="note gap">
+  <b>明确边界</b>：当前版本没有客户资料、适当性判断、持仓建议、多人审批或外部消息发送。
+  这些需要真实业务权限、合规规则与受控数据环境，不能用演示数据假装已经具备。
+</div>
+
+
+
+<footer class="foot">
+  mdesk 自选股事件与决策工作台　提醒来自预设条件，不构成买卖建议。<br>
+  本轮共 35 只标的、22 条后台校验规则；个人计划仅保存在当前浏览器。
+</footer>
+</div>
+
+<script>
+document.querySelectorAll('.chartbox').forEach(function (box) {
+  var cfg = JSON.parse(box.dataset.chart);
+  var svg = box.querySelector('svg');
+  var cross = svg.querySelector('.cross');
+  var dots = svg.querySelectorAll('.hd');
+  var hit = svg.querySelector('.hit');
+  var tip = document.createElement('div');
+  tip.className = 'tip';
+  box.appendChild(tip);
+
+  function nearest(clientX) {
+    var r = svg.getBoundingClientRect();
+    var vx = (clientX - r.left) / r.width * cfg.width;
+    var best = 0, bd = Infinity;
+    for (var i = 0; i < cfg.px.length; i++) {
+      var d = Math.abs(cfg.px[i] - vx);
+      if (d < bd) { bd = d; best = i; }
+    }
+    return best;
+  }
+
+  function show(e) {
+    var i = nearest(e.clientX);
+    cross.setAttribute('x1', cfg.px[i]);
+    cross.setAttribute('x2', cfg.px[i]);
+    cross.setAttribute('opacity', '1');
+    var lines = '<b>' + cfg.x[i] + '</b>';
+    cfg.series.forEach(function (s, k) {
+      var dot = dots[k];
+      if (s.py[i] === null) { dot.setAttribute('opacity', '0'); return; }
+      dot.setAttribute('cx', cfg.px[i]);
+      dot.setAttribute('cy', s.py[i]);
+      dot.setAttribute('opacity', '1');
+      lines += '<span><i style="background:' + s.color + '"></i>' +
+               s.name + '<em>' + s.val[i] + '</em></span>';
+    });
+    tip.innerHTML = lines;
+    var r = svg.getBoundingClientRect();
+    var left = cfg.px[i] / cfg.width * r.width;
+    tip.style.left = Math.min(Math.max(left, 70), r.width - 70) + 'px';
+    tip.style.opacity = '1';
+  }
+
+  function hide() {
+    cross.setAttribute('opacity', '0');
+    dots.forEach(function (d) { d.setAttribute('opacity', '0'); });
+    tip.style.opacity = '0';
+  }
+
+  hit.addEventListener('mousemove', show);
+  hit.addEventListener('mouseleave', hide);
+  hit.addEventListener('touchmove', function (e) {
+    if (e.touches.length) { show(e.touches[0]); }
+  }, { passive: true });
+});
+</script>
+<script>
+(function () {
+  var table = document.getElementById('wl');
+  if (!table) return;
+  var tbody = table.tBodies[0];
+  var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr:not(.grouprow)'));
+  var groupBy = 'market', sortCol = null, sortDir = 1;
+
+  function cellValue(tr, i, kind) {
+    var td = tr.cells[i];
+    if (kind === 'num') {
+      var raw = td.getAttribute('data-v');
+      if (raw === null || raw === '') return null;
+      var n = parseFloat(raw);
+      return isNaN(n) ? null : n;
+    }
+    return (td.textContent || '').trim();
+  }
+
+  function render() {
+    var ordered = rows.slice();
+    if (sortCol !== null) {
+      var kind = table.tHead.rows[0].cells[sortCol].getAttribute('data-sort');
+      ordered.sort(function (a, b) {
+        var x = cellValue(a, sortCol, kind), y = cellValue(b, sortCol, kind);
+        // 空值恒排在后面，不参与升降序
+        if (x === null && y === null) return 0;
+        if (x === null) return 1;
+        if (y === null) return -1;
+        if (kind === 'num') return (x - y) * sortDir;
+        return x.localeCompare(y, 'zh') * sortDir;
+      });
+    }
+    tbody.innerHTML = '';
+    if (groupBy === 'none') {
+      ordered.forEach(function (r) { tbody.appendChild(r); });
+      return;
+    }
+    var seen = [], buckets = {};
+    ordered.forEach(function (r) {
+      var k = r.dataset[groupBy] || '未分类';
+      if (!buckets[k]) { buckets[k] = []; seen.push(k); }
+      buckets[k].push(r);
+    });
+    var ncols = table.tHead.rows[0].cells.length;
+    seen.forEach(function (k) {
+      var tr = document.createElement('tr');
+      tr.className = 'grouprow';
+      var td = document.createElement('td');
+      td.colSpan = ncols;
+      td.innerHTML = k + '<span>' + buckets[k].length + ' 只</span>';
+      tr.appendChild(td);
+      tbody.appendChild(tr);
+      buckets[k].forEach(function (r) { tbody.appendChild(r); });
+    });
+  }
+
+  table.tHead.rows[0].querySelectorAll('th[data-sort]').forEach(function (th, _i) {
+    th.addEventListener('click', function () {
+      var idx = Array.prototype.indexOf.call(th.parentNode.cells, th);
+      sortDir = (sortCol === idx) ? -sortDir : -1;   // 首次点击默认降序
+      sortCol = idx;
+      table.tHead.rows[0].querySelectorAll('th').forEach(function (o) {
+        o.removeAttribute('aria-sort');
+      });
+      th.setAttribute('aria-sort', sortDir === 1 ? 'ascending' : 'descending');
+      render();
+    });
+  });
+
+  document.querySelectorAll('.toolbar button[data-group]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      groupBy = b.dataset.group;
+      document.querySelectorAll('.toolbar button[data-group]').forEach(function (o) {
+        o.setAttribute('aria-pressed', String(o === b));
+      });
+      render();
+    });
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
