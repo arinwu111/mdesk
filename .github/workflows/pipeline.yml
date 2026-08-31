@@ -10,7 +10,7 @@
 #    只发布不报警才是静默失败，只报警不发布则让人看不到问题现场。
 # 2. data/*.duckdb 不进仓库，CI 每次从零建库。人工写的处理台账靠
 #    data/ledger.csv 持久化，管道跑完会把它贴回 dq_results。
-# 3. 提交 site/ 会触发 pages.yml，发布由那个 workflow 完成，两者不重复实现。
+# 3. 机器人提交不会再次触发 push 工作流，所以提交后主动调用 pages.yml 发布。
 
 name: Daily data pipeline
 
@@ -24,6 +24,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: pipeline
@@ -64,6 +65,11 @@ jobs:
             git commit -m "自动更新：行情数据截至 ${DATA_DATE}"
             git push
           fi
+
+      - name: 触发 Pages 发布
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --ref main
 
       - name: 健康检查未通过则让本次运行变红
         if: steps.health.outcome != 'success'
