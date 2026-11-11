@@ -28,7 +28,7 @@
 <header class="top">
   <div class="top-inner">
     <div class="brand">mdesk<span>自选股事件与决策工作台</span></div>
-    <div class="stamp">数据截至 2026-11-10　生成于 2026-11-10 04:17</div>
+    <div class="stamp">数据截至 2026-11-11　生成于 2026-11-11 02:03</div>
   </div>
   <nav class="tabs">
     <span class="group-label">关注</span>
@@ -58,7 +58,7 @@
 
 <h1>规则评估</h1>
 <p class="lede">
-  报告期 2024-11-11 至 2026-11-10（首期，覆盖全部采集窗口）　共监控 35 只标的、22 条校验规则。
+  报告期 2024-11-11 至 2026-11-11（首期，覆盖全部采集窗口）　共监控 35 只标的、22 条校验规则。
   本报告由系统自动汇总，结论与改进建议部分需要人工补充。
 </p>
 
@@ -66,27 +66,27 @@
 <div class="tiles">
   <div class="tile"><div class="k">采集成功率</div><div class="v">100%</div>
     <div class="sub">35/35 个数据集</div></div>
-  <div class="tile"><div class="k">行情数据量</div><div class="v">19,725</div>
+  <div class="tile"><div class="k">行情数据量</div><div class="v">19,756</div>
     <div class="sub">日线行数</div></div>
   <div class="tile"><div class="k">公司行动</div><div class="v">120</div>
     <div class="sub">近两年</div></div>
-  <div class="tile"><div class="k">异常总数</div><div class="v">214</div>
-    <div class="sub">P0 90 · P1 111 · P2 13</div></div>
-  <div class="tile"><div class="k">异常率</div><div class="v">1.085%</div>
+  <div class="tile"><div class="k">异常总数</div><div class="v">213</div>
+    <div class="sub">P0 90 · P1 110 · P2 13</div></div>
+  <div class="tile"><div class="k">异常率</div><div class="v">1.078%</div>
     <div class="sub">异常条数 ÷ 行情行数</div></div>
 </div>
 
 <h2>二、跨期度量</h2>
 <div class="tiles">
-  <div class="tile"><div class="k">本期命中</div><div class="v">214</div>
+  <div class="tile"><div class="k">本期命中</div><div class="v">213</div>
     <div class="sub">无上期快照，本次是第一期</div></div>
   <div class="tile"><div class="k">已关闭</div><div class="v">3</div>
     <div class="sub">explained 2 · fixed 0
       · ignored 1</div></div>
-  <div class="tile"><div class="k">未关闭</div><div class="v">211</div>
+  <div class="tile"><div class="k">未关闭</div><div class="v">210</div>
     <div class="sub">待下期对比</div></div>
   <div class="tile"><div class="k">平均关闭时长</div>
-    <div class="v">-2049.8
+    <div class="v">-2071.6
       </div>
     <div class="sub">小时，样本 3 条
       </div></div>
@@ -112,10 +112,10 @@
 <tbody>
 
 <tr>
-  <td class="mono">DQ-SRC-001</td>
-  <td>两源收盘价不一致</td>
-  <td><span class="sev P0">P0</span></td>
-  <td class="num">82</td>
+  <td class="mono">DQ-SRC-002</td>
+  <td>两源成交量差异过大</td>
+  <td><span class="sev P1">P1</span></td>
+  <td class="num">81</td>
   <td class="num">0</td>
   <td class="num dim">0</td>
   <td class="num dim">0</td>
@@ -125,10 +125,10 @@
 </tr>
 
 <tr>
-  <td class="mono">DQ-SRC-002</td>
-  <td>两源成交量差异过大</td>
-  <td><span class="sev P1">P1</span></td>
-  <td class="num">82</td>
+  <td class="mono">DQ-SRC-001</td>
+  <td>两源收盘价不一致</td>
+  <td><span class="sev P0">P0</span></td>
+  <td class="num">81</td>
   <td class="num">0</td>
   <td class="num dim">0</td>
   <td class="num dim">0</td>
@@ -142,6 +142,19 @@
   <td>无公司行动的异常跳空</td>
   <td><span class="sev P1">P1</span></td>
   <td class="num">24</td>
+  <td class="num">0</td>
+  <td class="num dim">0</td>
+  <td class="num dim">0</td>
+  <td class="num dim">0</td>
+  <td class="num">不可计算</td>
+  <td class="dim wide">已判定 0 条，不足 5 条，不给比率</td>
+</tr>
+
+<tr>
+  <td class="mono">DQ-PRC-001</td>
+  <td>OHLC 逻辑越界</td>
+  <td><span class="sev P0">P0</span></td>
+  <td class="num">6</td>
   <td class="num">0</td>
   <td class="num dim">0</td>
   <td class="num dim">0</td>
@@ -177,16 +190,16 @@
 </tr>
 
 <tr>
-  <td class="mono">DQ-PRC-001</td>
-  <td>OHLC 逻辑越界</td>
+  <td class="mono">DQ-CA-001</td>
+  <td>数据源派息金额与其复权价不自洽</td>
   <td><span class="sev P0">P0</span></td>
-  <td class="num">5</td>
-  <td class="num">0</td>
-  <td class="num dim">0</td>
+  <td class="num">3</td>
+  <td class="num">2</td>
+  <td class="num dim">2</td>
   <td class="num dim">0</td>
   <td class="num dim">0</td>
   <td class="num">不可计算</td>
-  <td class="dim wide">已判定 0 条，不足 5 条，不给比率</td>
+  <td class="dim wide">已判定 2 条，不足 5 条，不给比率</td>
 </tr>
 
 <tr>
@@ -200,19 +213,6 @@
   <td class="num dim">0</td>
   <td class="num">不可计算</td>
   <td class="dim wide">已判定 0 条，不足 5 条，不给比率</td>
-</tr>
-
-<tr>
-  <td class="mono">DQ-CA-001</td>
-  <td>数据源派息金额与其复权价不自洽</td>
-  <td><span class="sev P0">P0</span></td>
-  <td class="num">3</td>
-  <td class="num">2</td>
-  <td class="num dim">2</td>
-  <td class="num dim">0</td>
-  <td class="num dim">0</td>
-  <td class="num">不可计算</td>
-  <td class="dim wide">已判定 2 条，不足 5 条，不给比率</td>
 </tr>
 
 <tr>
@@ -255,11 +255,11 @@
 </figcaption>
 
 <h2>三、异常按域分布</h2>
-<svg viewBox="0 0 880 198" width="880" height="198" role="img"><g><title>source 域命中 164 条</title><text x="210" y="19" text-anchor="end" font-size="12" fill="var(--ink-2)">source（跨源比对域）</text><path d="M222,8 H814.0 A4,4 0 0 1 818.0,12 V18 A4,4 0 0 1 814.0,22 H222 Z" fill="var(--series-1)"/><text x="826.0" y="19" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">164</text></g><g><title>price 域命中 41 条</title><text x="210" y="45" text-anchor="end" font-size="12" fill="var(--ink-2)">price（行情域）</text><path d="M222,34 H367.0 A4,4 0 0 1 371.0,38 V44 A4,4 0 0 1 367.0,48 H222 Z" fill="var(--series-1)"/><text x="379.0" y="45" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">41</text></g><g><title>corp_action 域命中 6 条</title><text x="210" y="71" text-anchor="end" font-size="12" fill="var(--ink-2)">corp_action（公司行动域）</text><path d="M222,60 H239.8048780487805 A4,4 0 0 1 243.8048780487805,64 V70 A4,4 0 0 1 239.8048780487805,74 H222 Z" fill="var(--series-1)"/><text x="251.8048780487805" y="71" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">6</text></g><g><title>fundamental 域命中 3 条</title><text x="210" y="97" text-anchor="end" font-size="12" fill="var(--ink-2)">fundamental（基本面域）</text><path d="M222,86 H228.90243902439025 A4,4 0 0 1 232.90243902439025,90 V96 A4,4 0 0 1 228.90243902439025,100 H222 Z" fill="var(--series-1)"/><text x="240.90243902439025" y="97" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">3</text></g><g><title>ref 域命中 0 条</title><text x="210" y="123" text-anchor="end" font-size="12" fill="var(--ink-2)">ref（主数据域）</text><path d="M222,112 H222.0 A1.5,1.5 0 0 1 223.5,113.5 V124.5 A1.5,1.5 0 0 1 222.0,126 H222 Z" fill="var(--series-1)"/><text x="231.5" y="123" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">0</text></g><g><title>cross 域命中 0 条</title><text x="210" y="149" text-anchor="end" font-size="12" fill="var(--ink-2)">cross（跨市场域）</text><path d="M222,138 H222.0 A1.5,1.5 0 0 1 223.5,139.5 V150.5 A1.5,1.5 0 0 1 222.0,152 H222 Z" fill="var(--series-1)"/><text x="231.5" y="149" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">0</text></g><g><title>ops 域命中 0 条</title><text x="210" y="175" text-anchor="end" font-size="12" fill="var(--ink-2)">ops（作业域）</text><path d="M222,164 H222.0 A1.5,1.5 0 0 1 223.5,165.5 V176.5 A1.5,1.5 0 0 1 222.0,178 H222 Z" fill="var(--series-1)"/><text x="231.5" y="175" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">0</text></g><line x1="222" y1="4" x2="222" y2="194" stroke="var(--axis)" stroke-width="1"/></svg>
+<svg viewBox="0 0 880 198" width="880" height="198" role="img"><g><title>source 域命中 162 条</title><text x="210" y="19" text-anchor="end" font-size="12" fill="var(--ink-2)">source（跨源比对域）</text><path d="M222,8 H814.0 A4,4 0 0 1 818.0,12 V18 A4,4 0 0 1 814.0,22 H222 Z" fill="var(--series-1)"/><text x="826.0" y="19" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">162</text></g><g><title>price 域命中 42 条</title><text x="210" y="45" text-anchor="end" font-size="12" fill="var(--ink-2)">price（行情域）</text><path d="M222,34 H372.5185185185185 A4,4 0 0 1 376.5185185185185,38 V44 A4,4 0 0 1 372.5185185185185,48 H222 Z" fill="var(--series-1)"/><text x="384.5185185185185" y="45" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">42</text></g><g><title>corp_action 域命中 6 条</title><text x="210" y="71" text-anchor="end" font-size="12" fill="var(--ink-2)">corp_action（公司行动域）</text><path d="M222,60 H240.07407407407408 A4,4 0 0 1 244.07407407407408,64 V70 A4,4 0 0 1 240.07407407407408,74 H222 Z" fill="var(--series-1)"/><text x="252.07407407407408" y="71" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">6</text></g><g><title>fundamental 域命中 3 条</title><text x="210" y="97" text-anchor="end" font-size="12" fill="var(--ink-2)">fundamental（基本面域）</text><path d="M222,86 H229.03703703703704 A4,4 0 0 1 233.03703703703704,90 V96 A4,4 0 0 1 229.03703703703704,100 H222 Z" fill="var(--series-1)"/><text x="241.03703703703704" y="97" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">3</text></g><g><title>ref 域命中 0 条</title><text x="210" y="123" text-anchor="end" font-size="12" fill="var(--ink-2)">ref（主数据域）</text><path d="M222,112 H222.0 A1.5,1.5 0 0 1 223.5,113.5 V124.5 A1.5,1.5 0 0 1 222.0,126 H222 Z" fill="var(--series-1)"/><text x="231.5" y="123" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">0</text></g><g><title>cross 域命中 0 条</title><text x="210" y="149" text-anchor="end" font-size="12" fill="var(--ink-2)">cross（跨市场域）</text><path d="M222,138 H222.0 A1.5,1.5 0 0 1 223.5,139.5 V150.5 A1.5,1.5 0 0 1 222.0,152 H222 Z" fill="var(--series-1)"/><text x="231.5" y="149" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">0</text></g><g><title>ops 域命中 0 条</title><text x="210" y="175" text-anchor="end" font-size="12" fill="var(--ink-2)">ops（作业域）</text><path d="M222,164 H222.0 A1.5,1.5 0 0 1 223.5,165.5 V176.5 A1.5,1.5 0 0 1 222.0,178 H222 Z" fill="var(--series-1)"/><text x="231.5" y="175" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">0</text></g><line x1="222" y1="4" x2="222" y2="194" stroke="var(--axis)" stroke-width="1"/></svg>
 <figcaption>横轴为命中条数。域的划分对应规则说明的分组。</figcaption>
 
 <h2>四、异常按标的分布</h2>
-<svg viewBox="0 0 880 640" width="880" height="640" role="img"><g><title>iShares 半导体 ETF 命中 166 条</title><text x="210" y="19" text-anchor="end" font-size="12" fill="var(--ink-2)">iShares 半导体 ETF</text><path d="M222,8 H814.0 A4,4 0 0 1 818.0,12 V18 A4,4 0 0 1 814.0,22 H222 Z" fill="var(--series-1)"/><text x="826.0" y="19" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">166</text></g><g><title>HK 命中 6 条</title><text x="210" y="43" text-anchor="end" font-size="12" fill="var(--ink-2)">HK</text><path d="M222,32 H239.5421686746988 A4,4 0 0 1 243.5421686746988,36 V42 A4,4 0 0 1 239.5421686746988,46 H222 Z" fill="var(--series-1)"/><text x="251.5421686746988" y="43" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">6</text></g><g><title>阿里巴巴-W 命中 4 条</title><text x="210" y="67" text-anchor="end" font-size="12" fill="var(--ink-2)">阿里巴巴-W</text><path d="M222,56 H232.36144578313252 A4,4 0 0 1 236.36144578313252,60 V66 A4,4 0 0 1 232.36144578313252,70 H222 Z" fill="var(--series-1)"/><text x="244.36144578313252" y="67" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">4</text></g><g><title>汇丰控股 命中 4 条</title><text x="210" y="91" text-anchor="end" font-size="12" fill="var(--ink-2)">汇丰控股</text><path d="M222,80 H232.36144578313252 A4,4 0 0 1 236.36144578313252,84 V90 A4,4 0 0 1 232.36144578313252,94 H222 Z" fill="var(--series-1)"/><text x="244.36144578313252" y="91" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">4</text></g><g><title>中芯国际 A 命中 4 条</title><text x="210" y="115" text-anchor="end" font-size="12" fill="var(--ink-2)">中芯国际 A</text><path d="M222,104 H232.36144578313252 A4,4 0 0 1 236.36144578313252,108 V114 A4,4 0 0 1 232.36144578313252,118 H222 Z" fill="var(--series-1)"/><text x="244.36144578313252" y="115" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">4</text></g><g><title>泡泡玛特 命中 3 条</title><text x="210" y="139" text-anchor="end" font-size="12" fill="var(--ink-2)">泡泡玛特</text><path d="M222,128 H228.7710843373494 A4,4 0 0 1 232.7710843373494,132 V138 A4,4 0 0 1 228.7710843373494,142 H222 Z" fill="var(--series-1)"/><text x="240.7710843373494" y="139" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">3</text></g><g><title>迪士尼 命中 3 条</title><text x="210" y="163" text-anchor="end" font-size="12" fill="var(--ink-2)">迪士尼</text><path d="M222,152 H228.7710843373494 A4,4 0 0 1 232.7710843373494,156 V162 A4,4 0 0 1 228.7710843373494,166 H222 Z" fill="var(--series-1)"/><text x="240.7710843373494" y="163" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">3</text></g><g><title>阿斯麦 命中 2 条</title><text x="210" y="187" text-anchor="end" font-size="12" fill="var(--ink-2)">阿斯麦</text><path d="M222,176 H225.18072289156626 A4,4 0 0 1 229.18072289156626,180 V186 A4,4 0 0 1 225.18072289156626,190 H222 Z" fill="var(--series-1)"/><text x="237.18072289156626" y="187" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">2</text></g><g><title>智谱 命中 2 条</title><text x="210" y="211" text-anchor="end" font-size="12" fill="var(--ink-2)">智谱</text><path d="M222,200 H225.18072289156626 A4,4 0 0 1 229.18072289156626,204 V210 A4,4 0 0 1 225.18072289156626,214 H222 Z" fill="var(--series-1)"/><text x="237.18072289156626" y="211" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">2</text></g><g><title>AMD 命中 2 条</title><text x="210" y="235" text-anchor="end" font-size="12" fill="var(--ink-2)">AMD</text><path d="M222,224 H225.18072289156626 A4,4 0 0 1 229.18072289156626,228 V234 A4,4 0 0 1 225.18072289156626,238 H222 Z" fill="var(--series-1)"/><text x="237.18072289156626" y="235" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">2</text></g><g><title>Celsius 命中 2 条</title><text x="210" y="259" text-anchor="end" font-size="12" fill="var(--ink-2)">Celsius</text><path d="M222,248 H225.18072289156626 A4,4 0 0 1 229.18072289156626,252 V258 A4,4 0 0 1 225.18072289156626,262 H222 Z" fill="var(--series-1)"/><text x="237.18072289156626" y="259" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">2</text></g><g><title>台积电 命中 2 条</title><text x="210" y="283" text-anchor="end" font-size="12" fill="var(--ink-2)">台积电</text><path d="M222,272 H225.18072289156626 A4,4 0 0 1 229.18072289156626,276 V282 A4,4 0 0 1 225.18072289156626,286 H222 Z" fill="var(--series-1)"/><text x="237.18072289156626" y="283" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">2</text></g><g><title>小鹏汽车-W 命中 1 条</title><text x="210" y="307" text-anchor="end" font-size="12" fill="var(--ink-2)">小鹏汽车-W</text><path d="M222,296 H222.0 A3.5903614457831328,3.5903614457831328 0 0 1 225.59036144578315,299.5903614457831 V306.4096385542169 A3.5903614457831328,3.5903614457831328 0 0 1 222.0,310 H222 Z" fill="var(--series-1)"/><text x="233.59036144578315" y="307" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>雅诗兰黛 命中 1 条</title><text x="210" y="331" text-anchor="end" font-size="12" fill="var(--ink-2)">雅诗兰黛</text><path d="M222,320 H222.0 A3.5903614457831328,3.5903614457831328 0 0 1 225.59036144578315,323.5903614457831 V330.4096385542169 A3.5903614457831328,3.5903614457831328 0 0 1 222.0,334 H222 Z" fill="var(--series-1)"/><text x="233.59036144578315" y="331" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>谷歌-A 命中 1 条</title><text x="210" y="355" text-anchor="end" font-size="12" fill="var(--ink-2)">谷歌-A</text><path d="M222,344 H222.0 A3.5903614457831328,3.5903614457831328 0 0 1 225.59036144578315,347.5903614457831 V354.4096385542169 A3.5903614457831328,3.5903614457831328 0 0 1 222.0,358 H222 Z" fill="var(--series-1)"/><text x="233.59036144578315" y="355" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>Lumentum 命中 1 条</title><text x="210" y="379" text-anchor="end" font-size="12" fill="var(--ink-2)">Lumentum</text><path d="M222,368 H222.0 A3.5903614457831328,3.5903614457831328 0 0 1 225.59036144578315,371.5903614457831 V378.4096385542169 A3.5903614457831328,3.5903614457831328 0 0 1 222.0,382 H222 Z" fill="var(--series-1)"/><text x="233.59036144578315" y="379" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>优必选 命中 1 条</title><text x="210" y="403" text-anchor="end" font-size="12" fill="var(--ink-2)">优必选</text><path d="M222,392 H222.0 A3.5903614457831328,3.5903614457831328 0 0 1 225.59036144578315,395.5903614457831 V402.4096385542169 A3.5903614457831328,3.5903614457831328 0 0 1 222.0,406 H222 Z" fill="var(--series-1)"/><text x="233.59036144578315" y="403" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>中国石油股份 命中 1 条</title><text x="210" y="427" text-anchor="end" font-size="12" fill="var(--ink-2)">中国石油股份</text><path d="M222,416 H222.0 A3.5903614457831328,3.5903614457831328 0 0 1 225.59036144578315,419.5903614457831 V426.4096385542169 A3.5903614457831328,3.5903614457831328 0 0 1 222.0,430 H222 Z" fill="var(--series-1)"/><text x="233.59036144578315" y="427" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>华虹半导体 命中 1 条</title><text x="210" y="451" text-anchor="end" font-size="12" fill="var(--ink-2)">华虹半导体</text><path d="M222,440 H222.0 A3.5903614457831328,3.5903614457831328 0 0 1 225.59036144578315,443.5903614457831 V450.4096385542169 A3.5903614457831328,3.5903614457831328 0 0 1 222.0,454 H222 Z" fill="var(--series-1)"/><text x="233.59036144578315" y="451" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>Circle 命中 1 条</title><text x="210" y="475" text-anchor="end" font-size="12" fill="var(--ink-2)">Circle</text><path d="M222,464 H222.0 A3.5903614457831328,3.5903614457831328 0 0 1 225.59036144578315,467.5903614457831 V474.4096385542169 A3.5903614457831328,3.5903614457831328 0 0 1 222.0,478 H222 Z" fill="var(--series-1)"/><text x="233.59036144578315" y="475" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>Nebius 命中 1 条</title><text x="210" y="499" text-anchor="end" font-size="12" fill="var(--ink-2)">Nebius</text><path d="M222,488 H222.0 A3.5903614457831328,3.5903614457831328 0 0 1 225.59036144578315,491.5903614457831 V498.4096385542169 A3.5903614457831328,3.5903614457831328 0 0 1 222.0,502 H222 Z" fill="var(--series-1)"/><text x="233.59036144578315" y="499" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>紫金矿业 A 命中 1 条</title><text x="210" y="523" text-anchor="end" font-size="12" fill="var(--ink-2)">紫金矿业 A</text><path d="M222,512 H222.0 A3.5903614457831328,3.5903614457831328 0 0 1 225.59036144578315,515.5903614457832 V522.4096385542168 A3.5903614457831328,3.5903614457831328 0 0 1 222.0,526 H222 Z" fill="var(--series-1)"/><text x="233.59036144578315" y="523" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>恒瑞医药 A 命中 1 条</title><text x="210" y="547" text-anchor="end" font-size="12" fill="var(--ink-2)">恒瑞医药 A</text><path d="M222,536 H222.0 A3.5903614457831328,3.5903614457831328 0 0 1 225.59036144578315,539.5903614457832 V546.4096385542168 A3.5903614457831328,3.5903614457831328 0 0 1 222.0,550 H222 Z" fill="var(--series-1)"/><text x="233.59036144578315" y="547" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>Oklo 命中 1 条</title><text x="210" y="571" text-anchor="end" font-size="12" fill="var(--ink-2)">Oklo</text><path d="M222,560 H222.0 A3.5903614457831328,3.5903614457831328 0 0 1 225.59036144578315,563.5903614457832 V570.4096385542168 A3.5903614457831328,3.5903614457831328 0 0 1 222.0,574 H222 Z" fill="var(--series-1)"/><text x="233.59036144578315" y="571" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>苹果 命中 1 条</title><text x="210" y="595" text-anchor="end" font-size="12" fill="var(--ink-2)">苹果</text><path d="M222,584 H222.0 A3.5903614457831328,3.5903614457831328 0 0 1 225.59036144578315,587.5903614457832 V594.4096385542168 A3.5903614457831328,3.5903614457831328 0 0 1 222.0,598 H222 Z" fill="var(--series-1)"/><text x="233.59036144578315" y="595" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>美的集团 A 命中 1 条</title><text x="210" y="619" text-anchor="end" font-size="12" fill="var(--ink-2)">美的集团 A</text><path d="M222,608 H222.0 A3.5903614457831328,3.5903614457831328 0 0 1 225.59036144578315,611.5903614457832 V618.4096385542168 A3.5903614457831328,3.5903614457831328 0 0 1 222.0,622 H222 Z" fill="var(--series-1)"/><text x="233.59036144578315" y="619" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><line x1="222" y1="4" x2="222" y2="636" stroke="var(--axis)" stroke-width="1"/></svg>
+<svg viewBox="0 0 880 640" width="880" height="640" role="img"><g><title>iShares 半导体 ETF 命中 164 条</title><text x="210" y="19" text-anchor="end" font-size="12" fill="var(--ink-2)">iShares 半导体 ETF</text><path d="M222,8 H814.0 A4,4 0 0 1 818.0,12 V18 A4,4 0 0 1 814.0,22 H222 Z" fill="var(--series-1)"/><text x="826.0" y="19" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">164</text></g><g><title>HK 命中 6 条</title><text x="210" y="43" text-anchor="end" font-size="12" fill="var(--ink-2)">HK</text><path d="M222,32 H239.8048780487805 A4,4 0 0 1 243.8048780487805,36 V42 A4,4 0 0 1 239.8048780487805,46 H222 Z" fill="var(--series-1)"/><text x="251.8048780487805" y="43" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">6</text></g><g><title>汇丰控股 命中 4 条</title><text x="210" y="67" text-anchor="end" font-size="12" fill="var(--ink-2)">汇丰控股</text><path d="M222,56 H232.53658536585365 A4,4 0 0 1 236.53658536585365,60 V66 A4,4 0 0 1 232.53658536585365,70 H222 Z" fill="var(--series-1)"/><text x="244.53658536585365" y="67" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">4</text></g><g><title>中芯国际 A 命中 4 条</title><text x="210" y="91" text-anchor="end" font-size="12" fill="var(--ink-2)">中芯国际 A</text><path d="M222,80 H232.53658536585365 A4,4 0 0 1 236.53658536585365,84 V90 A4,4 0 0 1 232.53658536585365,94 H222 Z" fill="var(--series-1)"/><text x="244.53658536585365" y="91" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">4</text></g><g><title>阿里巴巴-W 命中 4 条</title><text x="210" y="115" text-anchor="end" font-size="12" fill="var(--ink-2)">阿里巴巴-W</text><path d="M222,104 H232.53658536585365 A4,4 0 0 1 236.53658536585365,108 V114 A4,4 0 0 1 232.53658536585365,118 H222 Z" fill="var(--series-1)"/><text x="244.53658536585365" y="115" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">4</text></g><g><title>迪士尼 命中 3 条</title><text x="210" y="139" text-anchor="end" font-size="12" fill="var(--ink-2)">迪士尼</text><path d="M222,128 H228.90243902439025 A4,4 0 0 1 232.90243902439025,132 V138 A4,4 0 0 1 228.90243902439025,142 H222 Z" fill="var(--series-1)"/><text x="240.90243902439025" y="139" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">3</text></g><g><title>泡泡玛特 命中 3 条</title><text x="210" y="163" text-anchor="end" font-size="12" fill="var(--ink-2)">泡泡玛特</text><path d="M222,152 H228.90243902439025 A4,4 0 0 1 232.90243902439025,156 V162 A4,4 0 0 1 228.90243902439025,166 H222 Z" fill="var(--series-1)"/><text x="240.90243902439025" y="163" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">3</text></g><g><title>美的集团 A 命中 2 条</title><text x="210" y="187" text-anchor="end" font-size="12" fill="var(--ink-2)">美的集团 A</text><path d="M222,176 H225.26829268292684 A4,4 0 0 1 229.26829268292684,180 V186 A4,4 0 0 1 225.26829268292684,190 H222 Z" fill="var(--series-1)"/><text x="237.26829268292684" y="187" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">2</text></g><g><title>台积电 命中 2 条</title><text x="210" y="211" text-anchor="end" font-size="12" fill="var(--ink-2)">台积电</text><path d="M222,200 H225.26829268292684 A4,4 0 0 1 229.26829268292684,204 V210 A4,4 0 0 1 225.26829268292684,214 H222 Z" fill="var(--series-1)"/><text x="237.26829268292684" y="211" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">2</text></g><g><title>阿斯麦 命中 2 条</title><text x="210" y="235" text-anchor="end" font-size="12" fill="var(--ink-2)">阿斯麦</text><path d="M222,224 H225.26829268292684 A4,4 0 0 1 229.26829268292684,228 V234 A4,4 0 0 1 225.26829268292684,238 H222 Z" fill="var(--series-1)"/><text x="237.26829268292684" y="235" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">2</text></g><g><title>智谱 命中 2 条</title><text x="210" y="259" text-anchor="end" font-size="12" fill="var(--ink-2)">智谱</text><path d="M222,248 H225.26829268292684 A4,4 0 0 1 229.26829268292684,252 V258 A4,4 0 0 1 225.26829268292684,262 H222 Z" fill="var(--series-1)"/><text x="237.26829268292684" y="259" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">2</text></g><g><title>AMD 命中 2 条</title><text x="210" y="283" text-anchor="end" font-size="12" fill="var(--ink-2)">AMD</text><path d="M222,272 H225.26829268292684 A4,4 0 0 1 229.26829268292684,276 V282 A4,4 0 0 1 225.26829268292684,286 H222 Z" fill="var(--series-1)"/><text x="237.26829268292684" y="283" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">2</text></g><g><title>Celsius 命中 2 条</title><text x="210" y="307" text-anchor="end" font-size="12" fill="var(--ink-2)">Celsius</text><path d="M222,296 H225.26829268292684 A4,4 0 0 1 229.26829268292684,300 V306 A4,4 0 0 1 225.26829268292684,310 H222 Z" fill="var(--series-1)"/><text x="237.26829268292684" y="307" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">2</text></g><g><title>Oklo 命中 1 条</title><text x="210" y="331" text-anchor="end" font-size="12" fill="var(--ink-2)">Oklo</text><path d="M222,320 H222.0 A3.6341463414634148,3.6341463414634148 0 0 1 225.6341463414634,323.6341463414634 V330.3658536585366 A3.6341463414634148,3.6341463414634148 0 0 1 222.0,334 H222 Z" fill="var(--series-1)"/><text x="233.6341463414634" y="331" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>苹果 命中 1 条</title><text x="210" y="355" text-anchor="end" font-size="12" fill="var(--ink-2)">苹果</text><path d="M222,344 H222.0 A3.6341463414634148,3.6341463414634148 0 0 1 225.6341463414634,347.6341463414634 V354.3658536585366 A3.6341463414634148,3.6341463414634148 0 0 1 222.0,358 H222 Z" fill="var(--series-1)"/><text x="233.6341463414634" y="355" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>小鹏汽车-W 命中 1 条</title><text x="210" y="379" text-anchor="end" font-size="12" fill="var(--ink-2)">小鹏汽车-W</text><path d="M222,368 H222.0 A3.6341463414634148,3.6341463414634148 0 0 1 225.6341463414634,371.6341463414634 V378.3658536585366 A3.6341463414634148,3.6341463414634148 0 0 1 222.0,382 H222 Z" fill="var(--series-1)"/><text x="233.6341463414634" y="379" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>雅诗兰黛 命中 1 条</title><text x="210" y="403" text-anchor="end" font-size="12" fill="var(--ink-2)">雅诗兰黛</text><path d="M222,392 H222.0 A3.6341463414634148,3.6341463414634148 0 0 1 225.6341463414634,395.6341463414634 V402.3658536585366 A3.6341463414634148,3.6341463414634148 0 0 1 222.0,406 H222 Z" fill="var(--series-1)"/><text x="233.6341463414634" y="403" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>Lumentum 命中 1 条</title><text x="210" y="427" text-anchor="end" font-size="12" fill="var(--ink-2)">Lumentum</text><path d="M222,416 H222.0 A3.6341463414634148,3.6341463414634148 0 0 1 225.6341463414634,419.6341463414634 V426.3658536585366 A3.6341463414634148,3.6341463414634148 0 0 1 222.0,430 H222 Z" fill="var(--series-1)"/><text x="233.6341463414634" y="427" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>谷歌-A 命中 1 条</title><text x="210" y="451" text-anchor="end" font-size="12" fill="var(--ink-2)">谷歌-A</text><path d="M222,440 H222.0 A3.6341463414634148,3.6341463414634148 0 0 1 225.6341463414634,443.6341463414634 V450.3658536585366 A3.6341463414634148,3.6341463414634148 0 0 1 222.0,454 H222 Z" fill="var(--series-1)"/><text x="233.6341463414634" y="451" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>华虹半导体 命中 1 条</title><text x="210" y="475" text-anchor="end" font-size="12" fill="var(--ink-2)">华虹半导体</text><path d="M222,464 H222.0 A3.6341463414634148,3.6341463414634148 0 0 1 225.6341463414634,467.6341463414634 V474.3658536585366 A3.6341463414634148,3.6341463414634148 0 0 1 222.0,478 H222 Z" fill="var(--series-1)"/><text x="233.6341463414634" y="475" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>Nebius 命中 1 条</title><text x="210" y="499" text-anchor="end" font-size="12" fill="var(--ink-2)">Nebius</text><path d="M222,488 H222.0 A3.6341463414634148,3.6341463414634148 0 0 1 225.6341463414634,491.6341463414634 V498.3658536585366 A3.6341463414634148,3.6341463414634148 0 0 1 222.0,502 H222 Z" fill="var(--series-1)"/><text x="233.6341463414634" y="499" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>Circle 命中 1 条</title><text x="210" y="523" text-anchor="end" font-size="12" fill="var(--ink-2)">Circle</text><path d="M222,512 H222.0 A3.6341463414634148,3.6341463414634148 0 0 1 225.6341463414634,515.6341463414634 V522.3658536585366 A3.6341463414634148,3.6341463414634148 0 0 1 222.0,526 H222 Z" fill="var(--series-1)"/><text x="233.6341463414634" y="523" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>恒瑞医药 A 命中 1 条</title><text x="210" y="547" text-anchor="end" font-size="12" fill="var(--ink-2)">恒瑞医药 A</text><path d="M222,536 H222.0 A3.6341463414634148,3.6341463414634148 0 0 1 225.6341463414634,539.6341463414634 V546.3658536585366 A3.6341463414634148,3.6341463414634148 0 0 1 222.0,550 H222 Z" fill="var(--series-1)"/><text x="233.6341463414634" y="547" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>紫金矿业 A 命中 1 条</title><text x="210" y="571" text-anchor="end" font-size="12" fill="var(--ink-2)">紫金矿业 A</text><path d="M222,560 H222.0 A3.6341463414634148,3.6341463414634148 0 0 1 225.6341463414634,563.6341463414634 V570.3658536585366 A3.6341463414634148,3.6341463414634148 0 0 1 222.0,574 H222 Z" fill="var(--series-1)"/><text x="233.6341463414634" y="571" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>优必选 命中 1 条</title><text x="210" y="595" text-anchor="end" font-size="12" fill="var(--ink-2)">优必选</text><path d="M222,584 H222.0 A3.6341463414634148,3.6341463414634148 0 0 1 225.6341463414634,587.6341463414634 V594.3658536585366 A3.6341463414634148,3.6341463414634148 0 0 1 222.0,598 H222 Z" fill="var(--series-1)"/><text x="233.6341463414634" y="595" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><g><title>中国石油股份 命中 1 条</title><text x="210" y="619" text-anchor="end" font-size="12" fill="var(--ink-2)">中国石油股份</text><path d="M222,608 H222.0 A3.6341463414634148,3.6341463414634148 0 0 1 225.6341463414634,611.6341463414634 V618.3658536585366 A3.6341463414634148,3.6341463414634148 0 0 1 222.0,622 H222 Z" fill="var(--series-1)"/><text x="233.6341463414634" y="619" font-size="12" fill="var(--ink-muted)" style="font-variant-numeric:tabular-nums">1</text></g><line x1="222" y1="4" x2="222" y2="636" stroke="var(--axis)" stroke-width="1"/></svg>
 <figcaption>只列出有异常命中的标的，横轴为异常条数。</figcaption>
 
 <h2>五、本期重点问题</h2>
@@ -382,7 +382,7 @@
   <td class="mono">DQ-PRC-001</td>
   <td>OHLC 逻辑越界</td>
   <td><span class="sev P0">P0</span></td>
-  <td class="num">5</td>
+  <td class="num">6</td>
   <td class="wide dim">最基础的自洽性检查。这条规则刻意扫描全部数据源而不只是主源，因为它是判断一个新接入的源干不干净最快的办法。接入 akshare 后立刻命中 2 条：腾讯 C=445.39999 比 L=445.4 小、阿里 C=130.60001 比 H=130.6 大，差值都在一亿分之一量级，是浮点存储误差不是数据错误。零容忍地比较浮点数必然伪报，因此加入 1e-6 的相对容忍带。真正的 OHLC 越界差值至少在分位上，不会被这个容忍带掩盖。</td>
 </tr>
 
@@ -438,7 +438,7 @@
   <td class="mono">DQ-SRC-001</td>
   <td>两源收盘价不一致</td>
   <td><span class="sev P0">P0</span></td>
-  <td class="num">82</td>
+  <td class="num">81</td>
   <td class="wide dim">跨源域的第一条规则，也是这个域存在的理由。阈值取 0.5% 而不是 0，因为两源的收盘价小数位精度和港股半日市收盘口径可能有细微差别，留出容忍带才能让真正的分歧浮出来。</td>
 </tr>
 
@@ -446,7 +446,7 @@
   <td class="mono">DQ-SRC-002</td>
   <td>两源成交量差异过大</td>
   <td><span class="sev P1">P1</span></td>
-  <td class="num">82</td>
+  <td class="num">81</td>
   <td class="wide dim">成交量比收盘价更容易有口径差异，所以定 P1 而不是 P0。真正要抓的是某一源系统性地少算或多算，而不是个别日期的零星出入。</td>
 </tr>
 
